@@ -1,0 +1,1415 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><style>html,body{margin:0}</style></head><body><title>دفتر المعلم</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: "crayon box" — cream page, each section owns a crayon color (tab, heading, accents); sticker cards with thick ink outline + offset shadow */
+:root{
+  --bg:#FFF8EC; --surface:#FFFFFF; --sunk:#FFF0D9; --ink:#2A2140; --muted:#6B5F80; --line:#EADFCB; --edge:#2A2140;
+  --board:#2A2140; --board-2:#3C3159; --board-ink:#FFF8EC;
+  --accent:#F5B935; --accent-ink:#4A3200; --accent-soft:#FDEBC0;
+  --ok:#2E9E5B; --ok-soft:#DDF5E5; --bad:#E5484D; --bad-soft:#FDE1E1; --warn:#C27C00; --warn-soft:#FDEFCF; --info:#3D7BE0; --info-soft:#DEE9FC;
+  --k-coral:#FF7A59; --k-blue:#4C8DF6; --k-teal:#2FB0A2; --k-pink:#EF5DA8; --k-purple:#8A6CE0; --k-sun:#F5B935; --k-green:#5DBB4F; --k-gray:#8C8399;
+  --sec:var(--k-coral); --sec-ink:#1E1733;
+  --display:"Baloo Bhaijaan 2","Readex Pro",Tahoma,sans-serif;
+  --body:"Readex Pro","Segoe UI",Tahoma,Arial,sans-serif;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1B1630; --surface:#252040; --sunk:#2E2850; --ink:#F5F0FF; --muted:#B4A9CF; --line:#3A3360; --edge:#6E62A3;
+  --board:#2E2850; --board-2:#3A3363; --board-ink:#F5F0FF;
+  --accent:#FFC94D; --accent-ink:#3A2700; --accent-soft:#3D3215;
+  --ok:#55C97F; --ok-soft:#163626; --bad:#FF6B6F; --bad-soft:#3E1C22; --warn:#FFBE3D; --warn-soft:#3B2E12; --info:#7AA7FF; --info-soft:#1C2848;
+  --k-coral:#FF8A6B; --k-blue:#6A9FFF; --k-teal:#3CC4B5; --k-pink:#FF74B8; --k-purple:#A08AF0; --k-sun:#FFC94D; --k-green:#72CC64; --k-gray:#A39BB3;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1B1630; --surface:#252040; --sunk:#2E2850; --ink:#F5F0FF; --muted:#B4A9CF; --line:#3A3360; --edge:#6E62A3;
+  --board:#2E2850; --board-2:#3A3363; --board-ink:#F5F0FF;
+  --accent:#FFC94D; --accent-ink:#3A2700; --accent-soft:#3D3215;
+  --ok:#55C97F; --ok-soft:#163626; --bad:#FF6B6F; --bad-soft:#3E1C22; --warn:#FFBE3D; --warn-soft:#3B2E12; --info:#7AA7FF; --info-soft:#1C2848;
+  --k-coral:#FF8A6B; --k-blue:#6A9FFF; --k-teal:#3CC4B5; --k-pink:#FF74B8; --k-purple:#A08AF0; --k-sun:#FFC94D; --k-green:#72CC64; --k-gray:#A39BB3;
+  color-scheme:dark}
+body[data-tab="attendance"]{--sec:var(--k-coral)}
+body[data-tab="students"]{--sec:var(--k-blue);--sec-ink:#fff}
+body[data-tab="grades"]{--sec:var(--k-teal)}
+body[data-tab="homework"]{--sec:var(--k-pink);--sec-ink:#fff}
+body[data-tab="schedule"]{--sec:var(--k-purple);--sec-ink:#fff}
+body[data-tab="rewards"]{--sec:var(--k-sun);--sec-ink:#4A3200}
+body[data-tab="rules"]{--sec:var(--k-green)}
+body[data-tab="setup"]{--sec:var(--k-gray)}
+body[data-tab="activity"]{--sec:var(--k-pink);--sec-ink:#fff}
+/* alternating student rows: light, then a slightly darker shade, so the row you are grading is easy to follow */
+:root{--row-a:var(--surface);--row-b:color-mix(in srgb,var(--k-sun) 26%,var(--surface))}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:800;line-height:1.25}
+h2{font-size:1.75rem}
+h3{font-size:1.15rem;font-weight:700}
+.num,input[type=number]{font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sec);outline-offset:2px}
+
+/* header */
+.board{background:var(--bg);color:var(--ink);border-bottom:3px solid var(--edge)}
+.board .wrap{padding-block:22px 0;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.title-block{display:flex;flex-direction:column;gap:0;min-width:0}
+.eyebrow{font-size:.85rem;color:var(--muted);font-weight:500}
+.board h1{font-size:clamp(2rem,5vw,2.9rem);line-height:1.1;position:relative;display:inline-block}
+.board h1::after{content:"";display:block;height:7px;margin-top:2px;border-radius:99px;background:repeating-linear-gradient(90deg,var(--k-coral) 0 18%,var(--k-sun) 18% 36%,var(--k-teal) 36% 54%,var(--k-blue) 54% 72%,var(--k-purple) 72% 90%,var(--k-pink) 90% 100%)}
+.meta{display:flex;flex-direction:column;align-items:flex-end;gap:0;font-size:.88rem;color:var(--muted)}
+.meta strong{color:var(--ink);font-family:var(--display);font-weight:700;font-size:1.05rem}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;margin-top:2px}
+.sync i{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.sync[data-s="ok"] i{background:var(--ok)}.sync[data-s="busy"] i{background:var(--accent)}.sync[data-s="local"] i{background:var(--warn)}.sync[data-s="err"] i{background:var(--bad)}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end}
+nav.tabs button{--tc:var(--k-gray);background:var(--surface);border:2.5px solid var(--edge);border-bottom:0;color:var(--ink);padding:7px 14px 8px;border-radius:14px 14px 0 0;cursor:pointer;font-family:var(--display);font-weight:700;font-size:.98rem;position:relative;top:3px;transition:transform .12s,padding .12s}
+nav.tabs button::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--tc);margin-inline-end:7px;vertical-align:1px}
+nav.tabs button:hover{transform:translateY(-3px)}
+nav.tabs button[aria-selected="true"]{background:var(--tc);color:var(--tc-ink,#1E1733);padding-block:11px 11px}
+nav.tabs button[aria-selected="true"]::before{background:currentColor}
+@media (max-width:640px){nav.tabs button{font-size:.88rem;padding:6px 10px 7px}}
+@media (max-width:640px){nav.tabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-top:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}nav.tabs::-webkit-scrollbar{display:none}nav.tabs button{flex:0 0 auto;white-space:nowrap}}
+/* phones and tablets: bigger tap targets, no double-tap zoom delay, and 16px fields so iOS does not zoom in on focus */
+button,select,input,label,summary{touch-action:manipulation}
+@media (pointer:coarse){
+  .ded,.awd,.seg button,.btn,.rtabs button,.act-go,nav.tabs button{min-height:42px}
+  .ded,.awd{padding-inline:14px;font-size:.9rem}
+  .icon{min-width:42px;min-height:42px}
+  input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{font-size:16px;min-height:42px}
+  input[type=checkbox]{width:22px;height:22px}
+}
+
+main .wrap{padding-block:26px 64px}
+.panel{display:flex;flex-direction:column;gap:20px}
+.phead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.phead h2{display:inline-block;background:linear-gradient(transparent 58%,color-mix(in srgb,var(--sec) 45%,transparent) 58% 92%,transparent 92%);padding-inline:4px}
+.phead p{margin:4px 0 0;color:var(--muted);font-size:.92rem;max-width:70ch}
+.card{background:var(--surface);border:2.5px solid var(--edge);border-radius:var(--r);padding:16px;box-shadow:4px 4px 0 var(--edge)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;align-items:start}
+@media (max-width:880px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+
+/* controls */
+.btn{border:2px solid var(--edge);background:var(--surface);padding:6px 15px;border-radius:12px;cursor:pointer;font-family:var(--display);font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 var(--edge);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--edge)}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--edge)}
+.btn.primary{background:var(--sec);color:var(--sec-ink)}
+.btn.accent{background:var(--k-sun);color:#4A3200}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:3px 11px;font-size:.88rem}
+.icon{border:0;background:transparent;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:8px;font-size:1rem;line-height:1}
+.icon:hover{background:var(--sunk);color:var(--ink)}
+.icon.del:hover{color:var(--bad)}
+.icon:disabled{opacity:.3;cursor:default}
+input[type=text],input[type=password],input[type=number],input[type=date],input[type=search],select,textarea{background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;min-width:0}
+textarea{width:100%;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sec);box-shadow:0 0 0 3px color-mix(in srgb,var(--sec) 25%,transparent)}
+.flat{border-color:transparent!important;background:transparent!important;padding:4px 6px!important;width:100%}
+.flat:hover{border-color:var(--line)!important}
+.flat:focus{background:var(--surface)!important;border-color:var(--sec)!important}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);min-width:0}
+label.f input,label.f textarea{color:var(--ink);font-size:.95rem}
+summary{font-weight:500}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 13px;border-radius:99px;font-size:.9rem;font-weight:600;background:var(--sunk);border:2px solid transparent}
+.chip b{font-family:var(--display);font-size:1.05rem}
+.c-p{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}.c-a{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}.c-l{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}.c-e{background:var(--info-soft);color:var(--info);border-color:var(--info)}
+
+/* attendance */
+.att{display:flex;flex-direction:column;padding:6px;gap:4px}
+.att-row{display:grid;grid-template-columns:2.4rem minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--row-a);border:2px solid transparent}
+.att-row:nth-child(even){background:var(--row-b)}
+.att-row .n{width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;background:var(--sec);color:var(--sec-ink);font-family:var(--display);font-weight:800;font-size:.9rem}
+.att-row .nm{font-weight:600;overflow-wrap:anywhere}
+.seg{display:inline-flex;gap:4px}
+.seg button{border:2px solid var(--line);background:var(--surface);padding:3px 11px;cursor:pointer;font-size:.86rem;color:var(--muted);border-radius:99px;font-weight:500}
+.seg button:hover{border-color:var(--edge);color:var(--ink)}
+.seg button.on{color:#fff;font-weight:700}
+.seg button.on[data-v="p"]{background:var(--ok);border-color:var(--ok)}
+.seg button.on[data-v="a"]{background:var(--bad);border-color:var(--bad)}
+.seg button.on[data-v="l"]{background:var(--warn);border-color:var(--warn)}
+.seg button.on[data-v="e"]{background:var(--info);border-color:var(--info)}
+.deds{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px}
+.ded{border:2px dashed var(--line);background:transparent;border-radius:99px;padding:1px 11px;font-size:.8rem;color:var(--muted);cursor:pointer}
+.ded:hover{border-color:var(--bad);color:var(--bad)}
+.ded.on{background:var(--bad-soft);color:var(--bad);border:2px solid var(--bad);font-weight:700}
+.awd{border:2px solid var(--line);background:color-mix(in srgb,var(--k-sun) 10%,var(--surface));border-radius:99px;padding:1px 11px;font-size:.8rem;color:var(--ink);cursor:pointer}
+.awd b{color:var(--warn)}
+.awd:hover{border-color:var(--k-sun)}
+.awd.on{background:var(--k-sun);border-color:var(--edge);color:#4A3200;font-weight:700}.awd.on b{color:#4A3200}
+.awd:active{transform:scale(.95)}
+.gain{color:var(--warn);font-size:.82rem;font-weight:700;background:var(--accent-soft);border-radius:99px;padding:0 8px}
+.pt-row .awds{grid-column:auto}
+.pick{border-style:dashed;background:color-mix(in srgb,var(--k-sun) 12%,var(--surface))}
+th .mx{display:inline-flex;gap:6px;align-items:center;font-weight:400;font-size:.82rem;margin-top:3px}
+th .mx input{width:4.6rem;padding:2px 6px;text-align:center;color:var(--ink);font-family:var(--body)}
+.bal{display:inline-block;background:var(--accent-soft);color:var(--warn);font-weight:700;border-radius:99px;padding:0 10px;font-size:.84rem;margin-inline-start:6px;white-space:nowrap}
+.pick-pts{text-align:center;color:var(--warn);font-weight:700;margin-top:-8px}
+.act-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{border:2.5px solid var(--edge);border-radius:12px;padding:8px;text-align:center;background:var(--surface);font-weight:600;font-size:.92rem;box-shadow:3px 3px 0 var(--edge);overflow-wrap:anywhere;min-height:4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .05s}
+.tile small{color:var(--muted);font-weight:500}
+.tile.done{opacity:.4;box-shadow:none}
+.tile.lit{background:var(--k-sun);color:#4A3200;transform:translate(-2px,-2px) scale(1.05)}
+.tile.lit small{color:#4A3200}
+.tile.won{background:var(--k-pink);color:#fff;animation:wonpulse .3s ease-in-out 3}
+.tile.won small{color:#fff}
+@keyframes wonpulse{50%{transform:scale(1.14)}}
+.act-go{font-family:var(--display);font-weight:800;font-size:1.6rem;background:var(--k-pink);color:#fff;border:3px solid var(--edge);border-radius:99px;padding:10px 38px;cursor:pointer;box-shadow:0 6px 0 var(--edge);transition:transform .08s,box-shadow .08s}
+.act-go:active{transform:translateY(5px);box-shadow:0 1px 0 var(--edge)}
+.act-go:disabled{opacity:.6;cursor:default}
+.act-win{background:var(--surface);border:3px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--edge);padding:16px;text-align:center;display:flex;flex-direction:column;gap:2px;animation:winpop .45s cubic-bezier(.2,1.6,.4,1)}
+.act-name{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.25;overflow-wrap:anywhere}
+.act-pts{font-family:var(--display);font-weight:700;font-size:1.2rem;color:var(--warn)}
+@keyframes winpop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.tile.won,.act-win{animation:none}}
+.rec{font-size:.8rem;font-weight:700;border-radius:99px;padding:0 9px;margin-inline-start:4px}
+.rec.ok{background:var(--ok-soft);color:var(--ok)}.rec.no{background:var(--bad-soft);color:var(--bad)}
+.pick-name{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5vw,2.5rem);text-align:center;padding:10px 6px;line-height:1.3;text-wrap:balance;overflow-wrap:anywhere}
+.pick-end{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:8px 0}
+.pick-end b{font-family:var(--display);font-size:1.7rem;color:var(--ok)}
+.lost{color:var(--bad);font-size:.82rem;font-weight:700;background:var(--bad-soft);border-radius:99px;padding:0 8px}
+.minus{display:block;color:var(--bad);font-size:.75rem;font-weight:600}
+@media (max-width:560px){.att-row{grid-template-columns:2.2rem minmax(0,1fr)}.att-row .seg,.deds{grid-column:1/-1}.seg{width:100%}.seg button{flex:1;padding-inline:4px}}
+.datebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dlabel{font-family:var(--display);font-weight:700;font-size:1.15rem}
+.side-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.side-list li{display:flex;gap:10px;align-items:baseline;justify-content:space-between;padding:6px 0;border-bottom:2px dotted var(--line);font-size:.92rem}
+.side-list li:last-child{border-bottom:0}
+aside .card h3::before{content:"";display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--sec);margin-inline-end:8px;transform:rotate(12deg)}
+
+/* tables */
+.tbox{overflow-x:auto;border:2.5px solid var(--edge);border-radius:var(--r);background:var(--surface);box-shadow:4px 4px 0 var(--edge)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:8px 10px;border-bottom:2px solid var(--line);text-align:start;vertical-align:middle}
+th{background:var(--sec);color:var(--sec-ink);font-family:var(--display);font-weight:700;font-size:.92rem;white-space:nowrap;border-bottom:2.5px solid var(--edge)}
+tbody tr td{background:var(--row-a)}
+tbody tr:nth-child(even) td{background:var(--row-b)}
+tr:last-child td{border-bottom:0}
+td.c,th.c{text-align:center}
+.g-in{width:4.6rem;text-align:center}
+.pill{display:inline-block;padding:1px 11px;border-radius:99px;font-size:.8rem;font-weight:700;white-space:nowrap;border:2px solid currentColor}
+.r5{background:var(--ok-soft);color:var(--ok)}.r4{background:var(--info-soft);color:var(--info)}.r3{background:var(--accent-soft);color:var(--warn)}.r2{background:var(--warn-soft);color:var(--warn)}.r1{background:var(--bad-soft);color:var(--bad)}
+.bar{height:10px;border-radius:99px;background:var(--sunk);overflow:hidden;min-width:60px;border:2px solid var(--line)}
+.bar span{display:block;height:100%;background:var(--sec);border-radius:99px}
+
+/* items editor */
+.items{display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.item.three{grid-template-columns:minmax(0,1fr) 6.5rem auto}
+.item.awrow{grid-template-columns:minmax(0,1fr) 5.5rem auto auto;align-items:center}
+.item.rr{grid-template-columns:auto 9.5rem 5rem minmax(0,1fr) 6rem auto;align-items:center}
+@media (max-width:640px){.item.rr{grid-template-columns:1fr 1fr}}
+.item.shopi{grid-template-columns:minmax(0,1fr) 5.5rem 6.5rem auto}
+.item.four{grid-template-columns:minmax(0,1fr) 8rem auto}
+.item.dd{grid-template-columns:minmax(0,1fr) 5rem 9.5rem auto}
+.item.rnd{grid-template-columns:minmax(0,1fr) auto auto auto auto;align-items:end;padding-bottom:6px;border-bottom:2px dotted var(--line)}
+.item.rnd .pill{margin-bottom:8px}.item.rnd .icon{margin-bottom:4px}
+@media (max-width:720px){.item.rnd{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.item.rnd>input{grid-column:1/-1}}
+.rtabs{display:flex;flex-wrap:wrap;gap:8px}
+.rtabs button{border:2.5px solid var(--edge);background:var(--surface);border-radius:99px;padding:4px 16px;cursor:pointer;font-family:var(--display);font-weight:700}
+.rtabs button[aria-pressed="true"]{background:var(--sec);color:var(--sec-ink);box-shadow:2px 2px 0 var(--edge)}
+.clock{font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
+.round-now{display:inline-flex;align-items:center;gap:6px;background:var(--k-sun);color:#4A3200;border:2px solid var(--edge);border-radius:99px;padding:1px 12px;font-size:.82rem;font-weight:600;margin-top:4px}
+.round-now:empty{display:none}
+.rsel{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;margin-top:6px}
+.rsel[hidden]{display:none}
+.rsel select{font-weight:700;border:2.5px solid var(--edge);border-radius:99px;background:var(--k-sun);color:#4A3200;padding:3px 12px;min-height:32px;cursor:pointer}
+@media (max-width:520px){.item.dd{grid-template-columns:minmax(0,1fr) 4.5rem auto}.item.dd select{grid-column:1/3}}
+.rule{grid-template-columns:2.2rem minmax(0,1fr) auto auto auto}
+.rule .k{font-family:var(--display);font-weight:800;color:var(--sec-ink);background:var(--sec);border-radius:50%;width:2rem;height:2rem;display:grid;place-items:center}
+
+/* homework */
+.hw{border:2.5px solid var(--edge);border-radius:var(--r);background:var(--surface);box-shadow:4px 4px 0 var(--edge);border-inline-start-width:10px;border-inline-start-color:var(--sec)}
+.hw-h{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 14px;align-items:center}
+.hw-h .t{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.hw-h .d{font-size:.84rem;color:var(--muted)}
+.hw-body{border-top:2px dashed var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.due-over{color:var(--bad);font-weight:600}.due-today{color:var(--warn);font-weight:600}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px}
+.checks label{display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:12px;background:var(--sunk);cursor:pointer;font-size:.9rem;border:2px solid transparent}
+.checks label.done{background:var(--ok-soft);color:var(--ok);font-weight:600;border-color:var(--ok)}
+.checks input{accent-color:var(--ok);width:1.05rem;height:1.05rem}
+
+/* schedule */
+.sched td{padding:4px;min-width:110px}
+.sched th.today{background:var(--k-sun);color:#4A3200}
+.sched td.today{background:color-mix(in srgb,var(--k-sun) 18%,transparent)!important}
+.sched .plabel{font-family:var(--display);font-weight:700;white-space:nowrap}
+.sched .ptime{font-size:.78rem;color:var(--muted);white-space:nowrap}
+
+/* store */
+.pts{display:flex;flex-direction:column}
+.pt-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--row-a)}
+.pt-row:nth-child(even){background:var(--row-b)}
+.pts{gap:4px}
+.score{font-family:var(--display);font-weight:800;font-size:1.25rem;color:var(--warn);min-width:2.5rem;text-align:center}
+.score::before{content:"★ ";font-size:.85rem}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.prize{border:2.5px solid var(--edge);border-radius:var(--r);padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:8px;box-shadow:3px 3px 0 var(--edge)}
+.lb-hero{text-align:center;background:linear-gradient(135deg,#FFD84D,#FFB300);color:#3A2600;border:3px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--edge);padding:18px 14px 20px;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.lb-crown{font-size:2.8rem;line-height:1;animation:crownbob 1.8s ease-in-out infinite}
+.lb-label{font-family:var(--display);font-weight:700;font-size:1rem;letter-spacing:.02em;opacity:.85}
+.lb-first{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6vw,3.4rem);line-height:1.2;overflow-wrap:anywhere}
+.lb-pts{font-family:var(--display);font-weight:800;font-size:1.6rem;background:#3A2600;color:#FFD84D;border-radius:99px;padding:2px 20px;margin-top:6px}
+@keyframes crownbob{50%{transform:translateY(-6px) rotate(-4deg)}}
+.lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.lb-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:2.5px solid var(--edge);border-radius:14px;padding:10px 14px;box-shadow:3px 3px 0 var(--edge)}
+.lb-row.top{background:color-mix(in srgb,var(--k-teal) 16%,var(--surface))}
+.lb-rank{font-family:var(--display);font-weight:800;font-size:1.25rem;text-align:center;min-width:2.4rem}
+.lb-name,.lb-first{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+.lb-name{font-weight:700;font-size:1.1rem;overflow-wrap:anywhere;flex:0 1 auto}
+.lb-name:hover,.lb-first:hover{text-decoration:underline wavy;text-underline-offset:5px}
+.lb-first{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6vw,3.4rem);line-height:1.2;text-align:center}
+.pop{animation:lbpop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes lbpop{0%{transform:scale(1)}40%{transform:scale(1.12) rotate(-2deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+.lb-score{font-family:var(--display);font-weight:800;font-size:1.45rem;line-height:1;background:var(--k-sun);color:#4A3200;border:2.5px solid var(--edge);border-radius:99px;padding:5px 16px;box-shadow:2px 2px 0 var(--edge);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){.lb-crown{animation:none}}
+.store-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;border:3px solid var(--edge);border-radius:var(--r);padding:12px 16px;background:var(--k-sun);color:#4A3200;box-shadow:4px 4px 0 var(--edge)}
+.store-top .muted{color:#4A3200}
+.bal-big{font-family:var(--display);font-weight:800;font-size:1.5rem}
+.shop{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+.prize{align-items:center;text-align:center;padding:20px 14px;font-size:1.05rem;transition:transform .12s}
+.prize:hover{transform:translateY(-3px) rotate(-.6deg)}
+.prize .ico{font-size:2.6rem;line-height:1;background:var(--surface);border:2.5px solid var(--edge);border-radius:50%;width:4.4rem;height:4.4rem;display:grid;place-items:center}
+.prize .cost{font-size:2rem}
+.prize.out{opacity:.55;filter:grayscale(.6)}
+.prize .btn{width:100%}
+.prize:nth-child(4n+1){background:color-mix(in srgb,var(--k-coral) 14%,var(--surface))}
+.prize:nth-child(4n+2){background:color-mix(in srgb,var(--k-teal) 14%,var(--surface))}
+.prize:nth-child(4n+3){background:color-mix(in srgb,var(--k-purple) 14%,var(--surface))}
+.prize:nth-child(4n+4){background:color-mix(in srgb,var(--k-blue) 14%,var(--surface))}
+.prize .cost{font-family:var(--display);font-weight:800;font-size:1.7rem;color:var(--warn);line-height:1}
+.prize .cost small{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:500}
+
+/* rules presentation */
+.present{background:var(--surface);border:3px solid var(--edge);box-shadow:6px 6px 0 var(--edge);border-radius:22px;padding:28px clamp(18px,4vw,44px)}
+.present h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:18px;color:var(--ink)}
+.present ol{margin:0;padding:0;list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:14px;font-size:clamp(1.15rem,2.6vw,1.6rem);font-family:var(--display);font-weight:700}
+.present li{counter-increment:r;display:flex;gap:14px;align-items:center}
+.present li::before{content:counter(r);flex:none;width:2.2em;height:2.2em;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.8em;background:var(--k-coral)}
+.present li:nth-child(6n+2)::before{background:var(--k-teal)}.present li:nth-child(6n+3)::before{background:var(--k-sun);color:#4A3200}.present li:nth-child(6n+4)::before{background:var(--k-purple)}.present li:nth-child(6n+5)::before{background:var(--k-blue)}.present li:nth-child(6n+6)::before{background:var(--k-pink)}
+
+/* empty + misc */
+.empty{border:2.5px dashed var(--edge);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--surface)}
+.empty h3{font-size:1.3rem}
+.empty p{margin:0;color:var(--muted);max-width:52ch}
+.note{background:var(--accent-soft);color:var(--ink);border:2px solid var(--accent);border-radius:12px;padding:10px 14px;font-size:.9rem;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.toast{position:fixed;inset-inline:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;z-index:50;padding-inline:16px}
+.toast span{background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:99px;font-size:.92rem;font-weight:600;opacity:0;transform:translateY(8px);transition:.2s}
+.toast span.show{opacity:1;transform:none}
+.modal{position:fixed;inset:0;background:rgba(27,22,48,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.modal .box{background:var(--surface);border-radius:18px;padding:20px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:14px;border:3px solid var(--edge);box-shadow:5px 5px 0 var(--edge)}
+.modal .box p{margin:0;font-weight:500}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="board">
+  <div class="wrap">
+    <div class="top">
+      <div class="title-block">
+        <span class="eyebrow" id="hdrSub">دفتر المعلم</span>
+        <h1 id="hdrClass">فصلي</h1>
+      </div>
+      <div class="meta">
+        <span class="clock" id="hdrTime"></span>
+        <strong id="hdrDate"></strong>
+        <span id="hdrHijri"></span>
+        <span class="round-now" id="hdrRound"></span>
+        <label class="rsel" id="rselBox"><select id="roundSel" aria-label="اختيار الجولة"></select></label>
+        <span class="sync" id="sync" data-s="busy"><i></i><span>جارٍ التحميل…</span></span>
+        <button class="btn sm" id="sfxBtn" data-act="sfx" style="margin-top:6px" aria-label="تشغيل أو إيقاف الأصوات">الأصوات</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+  </div>
+</header>
+<main><div class="wrap" id="view"></div></main>
+<div class="toast"><span id="toast"></span></div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+"use strict";
+const DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+const SECTIONS=["settings","students","attendance","grades","homework","schedule","store","rules"];
+const TABS=[
+  ["attendance","التحضير اليومي"],["activity","النشاط الفصلي"],["students","كشف الطلاب"],["grades","الاختبارات"],["follow","المتابعة اليومية"],["board","لوحة النقاط"],["homework","الواجبات"],
+  ["schedule","جدول المعلم"],["rewards","متجر الجوائز"],["rules","قوانين الفصل"],["setup","الإعدادات"]];
+const TAB_COLOR={activity:"pink",follow:"green",board:"teal",attendance:"coral",students:"blue",grades:"teal",homework:"pink",schedule:"purple",rewards:"sun",rules:"green",setup:"gray"};
+const ST={p:"حاضر",a:"غائب",l:"متأخر",e:"مستأذن"};
+const LS_KEY="teacher-book-v1";
+
+/* 8-bit sound effects synthesized with Web Audio (square/saw oscillators), so no audio files are needed */
+const SFX=(()=>{
+  const AC=window.AudioContext||window.webkitAudioContext;let ctx=null,on=true;
+  try{on=localStorage.getItem("teacher-sfx")!=="off"}catch(e){}
+  function note(f,t,d,type,g,f2){
+    const o=ctx.createOscillator(),v=ctx.createGain();o.type=type||"square";
+    o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
+    v.gain.setValueAtTime(0.0001,t);v.gain.exponentialRampToValueAtTime(g||.1,t+.008);v.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(v);v.connect(ctx.destination);o.start(t);o.stop(t+d+.03);
+  }
+  function noise(t,d,g){
+    const n=Math.max(1,Math.floor(ctx.sampleRate*d)),buf=ctx.createBuffer(1,n,ctx.sampleRate),a=buf.getChannelData(0);
+    for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);
+    const s=ctx.createBufferSource(),v=ctx.createGain();s.buffer=buf;v.gain.value=g||.1;s.connect(v);v.connect(ctx.destination);s.start(t);
+  }
+  const S={
+    click:t=>{note(1800,t,.012,"square",.05);noise(t,.02,.05)},
+    thump:t=>{note(140,t,.24,"triangle",.2,45);noise(t,.08,.08)},
+    zap:t=>note(1400,t,.28,"sawtooth",.07,120),
+    pow:t=>{noise(t,.38,.16);note(500,t,.3,"square",.07,60)},
+    coin:t=>{note(988,t,.07);note(1319,t+.07,.3)},
+    win:t=>{[523,659,784,1047].forEach((f,i)=>note(f,t+i*.07,.1))},
+    low:t=>{note(196,t,.12,"sawtooth",.09,110);note(131,t+.12,.2,"sawtooth",.09,82)},
+    fail:t=>{[392,330,262].forEach((f,i)=>note(f,t+i*.14,.16,"square",.09,f*.7))},
+    blip:t=>note(660,t,.05),
+    undo:t=>{note(660,t,.05);note(440,t+.05,.08)},
+    tick:t=>note(900,t,.025,"square",.05),
+    reveal:t=>{[392,523,659,784].forEach((f,i)=>note(f,t+i*.09,.12));note(1047,t+.38,.45)},
+    end:t=>{[523,659,784,1047,784,1047].forEach((f,i)=>note(f,t+i*.11,i===5?.5:.12))},
+    powerup:t=>note(262,t,.45,"square",.09,1568)
+  };
+  function play(name){
+    if(!on||!S[name]||!AC)return;
+    try{if(!ctx)ctx=new AC();if(ctx.state==="suspended")ctx.resume();S[name](ctx.currentTime+.01)}catch(e){}
+  }
+  function act(a,b){
+    let s={award:"coin",undoaward:"undo",undoact:"undo",allp:"win",day:"blip",today:"blip"}[a];
+    if(a==="ded")s=b.classList.contains("on")?"undo":"low";
+    else if(a==="mark")s=b.dataset.v==="a"?"low":b.classList.contains("on")?"undo":"blip";
+    else if(a==="pt")s=Number(b.dataset.n)>0?"coin":"low";
+    if(s)play(s);
+  }
+  function toggle(){on=!on;try{localStorage.setItem("teacher-sfx",on?"on":"off")}catch(e){}}
+  return {play,act,toggle,isOn:()=>on};
+})();
+
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const z=n=>String(n).padStart(2,"0");
+const dkey=d=>d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());
+const parseKey=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d)};
+const fmtDate=(d,opt)=>{try{return d.toLocaleDateString("ar-EG-u-nu-latn",opt||{weekday:"long",day:"numeric",month:"long",year:"numeric"})}catch(e){return dkey(d)}};
+const fmtHijri=d=>{try{return d.toLocaleDateString("ar-SA-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"long",year:"numeric"})}catch(e){return ""}};
+
+function defaults(){
+  return {
+    settings:{className:"فصلي",teacher:"",subject:"",school:""},
+    students:{list:[]},
+    attendance:{days:{}},
+    grades:{items:[{id:"hw",name:"الواجبات",max:3},{id:"part",name:"المشاركة",max:3},{id:"beh",name:"السلوك",max:5},{id:"rec",name:"التسميع",max:5}],scores:{},
+      deductions:[{id:"d1",name:"سلوك سلبي",pts:5,itemId:"beh"},{id:"d2",name:"لم يحفظ",pts:2,itemId:"rec"},{id:"d3",name:"لم يحل الواجب",pts:3,itemId:"hw"},{id:"d4",name:"لم يشارك",pts:1,itemId:"part"}],log:{},
+      rounds:[],rscores:{},
+      exams:{items:[{id:"e1",name:"اختبار الفترة الأولى",max:""},{id:"e2",name:"اختبار الفترة الثانية",max:""}],scores:{}}},
+    homework:{list:[]},
+    schedule:{periods:[["الأولى","7:00"],["الثانية","7:45"],["الثالثة","8:30"],["الرابعة","9:35"],["الخامسة","10:20"],["السادسة","11:05"],["السابعة","11:50"]].map(([l,t])=>({id:uid(),label:l,time:t})),cells:{}},
+    store:{items:[{id:uid(),name:"اختيار المقعد ليوم كامل",cost:10},{id:uid(),name:"قائد الفصل ليوم",cost:15},{id:uid(),name:"إعفاء من واجب واحد",cost:25},{id:uid(),name:"شهادة تميّز",cost:30}],points:{},log:[],
+      awards:[{id:"a1",name:"المشاركة",pts:3},{id:"a2",name:"الواجبات",pts:3},{id:"a3",name:"التسميع",pts:5},{id:"a4",name:"السلوك",pts:5},{id:"a5",name:"السؤال الذهبي",pts:8},{id:"a6",name:"تحفيز",pts:2}],alog:[],actDone:{},actPts:5,actNoRepeat:true,cur:"r1",rounds:[{id:"r1",name:"الجولة الأولى"},{id:"r2",name:"الجولة الثانية"}],archive:{}},
+    rules:{list:["أحترم معلمي وزملائي في القول والفعل","أرفع يدي قبل أن أتكلم","أحضر في الوقت المحدد ومعي أدواتي","أحافظ على نظافة الفصل وممتلكاته","أسلّم واجباتي في موعدها","أستمع جيداً عندما يتحدث غيري"].map(t=>({id:uid(),text:t}))}
+  };
+}
+let state=defaults();
+let ui={tab:"attendance",date:dkey(new Date()),search:"",openHw:{},present:false,redeemSid:"",loaded:false};
+
+/* ---------- storage ---------- */
+const S={mode:"local",db:null,uid:null};
+const lastJSON={},dirty={},timers={},chains={};
+let localHad={};
+function readLocal(){try{const raw=localStorage.getItem(LS_KEY);if(!raw)return null;return JSON.parse(raw)}catch(e){return null}}
+function writeLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(state))}catch(e){}}
+function applyLocal(){
+  const l=readLocal();if(!l)return;
+  for(const s of SECTIONS){if(l[s]){state[s]=Object.assign(defaults()[s],l[s]);localHad[s]=true}}
+}
+function setSync(s,text){const el=document.getElementById("sync");el.dataset.s=s;el.lastElementChild.textContent=text}
+function save(sec){
+  dirty[sec]=true;writeLocal();
+  if(sec==="students"||sec==="grades"||sec==="store")pushBoard();
+  if(S.mode!=="db"){setSync("local","محفوظ على هذا الجهاز فقط");return}
+  setSync("busy","يحفظ…");
+  clearTimeout(timers[sec]);timers[sec]=setTimeout(()=>flush(sec),500);
+}
+function flush(sec){
+  const js=JSON.stringify(state[sec]);
+  if(js===lastJSON[sec]){dirty[sec]=false;setSync("ok","محفوظ في حسابك");return}
+  const ref=S.db.collection("data/users/"+S.uid).doc(sec);
+  chains[sec]=(chains[sec]||Promise.resolve()).then(()=>ref.set({v:JSON.parse(js)})).then(()=>{
+    lastJSON[sec]=js;
+    if(JSON.stringify(state[sec])===js)dirty[sec]=false;
+    if(!Object.values(dirty).some(Boolean))setSync("ok","محفوظ في حسابك");
+  }).catch(e=>{
+    dirty[sec]=false;
+    setSync("err",e&&e.code==="quota_exceeded"?"امتلأت مساحة الحفظ":"تعذّر الحفظ، تحقق من الاتصال");
+  });
+}
+/* backup file: everything the teacher entered, so it can be moved to another device or restored if the browser clears its storage */
+async function exportBackup(){
+  const name="teacher-book-"+dkey(new Date())+".json",text=JSON.stringify({app:"teacher-book",v:1,saved:new Date().toISOString(),state},null,1);
+  const done=()=>{try{localStorage.setItem("teacher-bk-last",dkey(new Date()))}catch(e){}toast("تم حفظ النسخة الاحتياطية");render()};
+  try{
+    const dl=window.claude&&typeof window.claude.use==="function"?await window.claude.use("downloads"):null;
+    if(dl){try{await dl.save({filename:name,data:text});done()}catch(e){if(!e||e.code!=="declined")toast("تعذّر حفظ الملف")}return}
+    const blob=new Blob([text],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);done();
+  }catch(e){toast("تعذّر تنزيل الملف في هذا المتصفح")}
+}
+function importBackup(file){
+  const rd=new FileReader();
+  rd.onerror=()=>toast("تعذّرت قراءة الملف");
+  rd.onload=()=>{
+    let d;try{d=JSON.parse(rd.result)}catch(e){toast("الملف غير صالح");return}
+    const st=d&&d.app==="teacher-book"&&d.state;if(!st||!SECTIONS.some(s=>st[s])){toast("هذا ليس ملف نسخة احتياطية من دفتر المعلم");return}
+    confirmBox("استعادة النسخة الاحتياطية؟ ستحل محل البيانات الحالية.","استعادة",()=>{
+      for(const s of SECTIONS)if(st[s]){state[s]=Object.assign(defaults()[s],st[s]);save(s)}
+      toast("تمت الاستعادة");render();
+    });
+  };
+  rd.readAsText(file);
+}
+window.addEventListener("pagehide",()=>{try{writeLocal()}catch(e){}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)try{writeLocal()}catch(e){}});
+async function initStorage(){
+  let db=null,user=null,id=null;
+  try{
+    if(window.claude&&typeof window.claude.use==="function"){
+      [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+      if(db&&user)id=await user.id();
+    }
+  }catch(e){}
+  if(!db||!id){ui.loaded=true;setSync("local","محفوظ على هذا الجهاز فقط");setupOnce();render();
+    try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}return}
+  if(!user.isOwner()){
+    ui.student=true;ui.loaded=true;
+    db.doc("board/live").onSnapshot(snap=>{ui.board=snap.exists?snap.data().v:null;render()},()=>{ui.board=null;render()});
+    render();return;
+  }
+  S.mode="db";S.db=db;S.uid=id;
+  let migrated=false;
+  const t=setTimeout(()=>{if(!ui.loaded){setSync("err","لم نتمكن من الوصول لبياناتك بعد");ui.loaded=true;render()}},10000);
+  db.collection("data/users/"+id).onSnapshot(snap=>{
+    let changed=false;const seen=new Set();
+    for(const d of snap.docs){
+      if(!SECTIONS.includes(d.id))continue;seen.add(d.id);
+      if(dirty[d.id])continue;
+      const body=d.data();if(!body||body.v==null)continue;
+      const js=JSON.stringify(body.v);
+      if(js!==lastJSON[d.id]){lastJSON[d.id]=js;state[d.id]=Object.assign(defaults()[d.id],JSON.parse(js));changed=true}
+    }
+    if(!snap.metadata.fromCache){
+      clearTimeout(t);
+      if(!migrated){migrated=true;for(const s of SECTIONS)if(!seen.has(s)&&localHad[s])save(s);setupOnce();changed=true}
+      if(!Object.values(dirty).some(Boolean))setSync("ok","محفوظ في حسابك");
+      if(!ui.loaded){ui.loaded=true;changed=true}
+    }
+    if(changed){writeLocal();render()}
+  },e=>{clearTimeout(t);ui.loaded=true;setSync("err","انقطع الاتصال بالحفظ، أعد فتح الصفحة");render()});
+}
+
+/* ---------- helpers ---------- */
+const students=()=>state.students.list;
+const sortedStudents=()=>[...students()].sort((a,b)=>(Number(a.num)||9999)-(Number(b.num)||9999)||a.name.localeCompare(b.name,"ar"));
+const stuById=id=>students().find(s=>s.id===id);
+function attCounts(sid){const c={p:0,a:0,l:0,e:0};for(const k in state.attendance.days){const v=state.attendance.days[k][sid];if(v)c[v]++}return c}
+/* an empty grade cell means full marks; deductions logged in daily attendance subtract from their linked item */
+/* rounds: teacher-set periods (start/end date-time). Each round restarts at full marks and only counts deductions dated inside it;
+   "all" sums the rounds, or covers the whole term when no rounds are set */
+const ORD=["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة"];
+const rounds=()=>state.grades.rounds;
+const roundById=id=>rounds().find(x=>x.id===id);
+const inRound=(k,r)=>!!r&&k>=String(r.start).slice(0,10)&&k<=String(r.end).slice(0,10);
+const roundForDate=k=>rounds().find(r=>inRound(k,r));
+function roundNow(){const t=Date.now();return rounds().find(r=>new Date(r.start)<=t&&t<=new Date(r.end))}
+function curGRound(){
+  if(ui.gRound==="all"||roundById(ui.gRound))return ui.gRound;
+  const n=roundNow();return n?n.id:rounds().length?rounds()[rounds().length-1].id:"all";
+}
+function dedTotals(sid,r){
+  const out={},deds=state.grades.deductions,log=state.grades.log;
+  for(const k in log){if(r&&!inRound(k,r))continue;if(!r&&rounds().length&&!roundForDate(k))continue;
+    for(const did of (log[k][sid]||[])){const d=deds.find(x=>x.id===did);if(d)out[d.itemId]=(out[d.itemId]||0)+(Number(d.pts)||0)}}
+  return out;
+}
+function scoresFor(sid,rid){const src=rid&&rid!=="all"?(state.grades.rscores[rid]||{}):state.grades.scores;return src[sid]||{}}
+const AWARD_ITEM={a1:"part",a2:"hw",a3:"rec",a4:"beh"};
+/* points given with the matching award buttons count toward that grade item, dated inside the same round */
+function gainTotals(sid,r){
+  const out={};
+  for(const l of state.store.alog){if(l.sid!==sid)continue;const it=AWARD_ITEM[l.aid];if(!it)continue;
+    if(r?!inRound(l.date,r):(rounds().length&&!roundForDate(l.date)))continue;out[it]=(out[it]||0)+(Number(l.pts)||0)}
+  return out;
+}
+function itemScore(it,sc,dt,gn){const base=Number(sc[it.id])||0;return Math.min(Number(it.max)||0,Math.max(0,base+(gn[it.id]||0)-(dt[it.id]||0)))}
+const pctOf=(got,max)=>max?Math.round(got/max*1000)/10:0;
+function gradeTotal(sid,rid){
+  rid=rid||"all";
+  if(rid==="all"&&rounds().length){let got=0,max=0;rounds().forEach(r=>{const g=gradeTotal(sid,r.id);got+=g.got;max+=g.max});return {got:Math.round(got*10)/10,max,pct:pctOf(got,max)}}
+  const r=rid==="all"?null:roundById(rid),dt=dedTotals(sid,r),gn=gainTotals(sid,r),sc=scoresFor(sid,rid);let got=0,max=0;
+  for(const it of state.grades.items){max+=Number(it.max)||0;got+=itemScore(it,sc,dt,gn)}
+  return {got:Math.round(got*10)/10,max,pct:pctOf(got,max)};
+}
+function untilText(ms){
+  const m=Math.max(0,Math.floor(ms/60000)),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mi=m%60;
+  return d?`${d} يوم${h?` و${h} ساعة`:""}`:h?`${h} ساعة${mi?` و${mi} دقيقة`:""}`:`${mi} دقيقة`;
+}
+function roundStatus(){
+  const t=Date.now(),n=roundNow();
+  if(n)return `${n.name} · تنتهي بعد ${untilText(new Date(n.end)-t)}`;
+  const next=rounds().filter(r=>new Date(r.start)>t).sort((a,b)=>new Date(a.start)-new Date(b.start))[0];
+  if(next)return `${next.name} تبدأ بعد ${untilText(new Date(next.start)-t)}`;
+  return rounds().length?"لا توجد جولة جارية":"";
+}
+function rating(p){return p>=90?["ممتاز","r5"]:p>=80?["جيد جداً","r4"]:p>=65?["جيد","r3"]:p>=50?["مقبول","r2"]:["يحتاج دعماً","r1"]}
+const points=sid=>Number(state.store.points[sid])||0;
+/* award buttons add reward points; each grant is logged with its date so it can be shown per day and undone */
+/* "once a day" awards: pressing the button again cancels the point, so a wrong tap is easy to take back */
+const onceAward=a=>a.once!==undefined?!!a.once:(a.id==="a1"||a.id==="a2");
+function award(sid,aid,date){
+  const a=state.store.awards.find(x=>x.id===aid);if(!a)return;
+  state.store.points[sid]=points(sid)+(Number(a.pts)||0);
+  state.store.alog.push({id:uid(),sid,aid,name:a.name,pts:Number(a.pts)||0,date:date||dkey(new Date()),t:Date.now()});
+  state.store.alog=state.store.alog.slice(-600);save("store");
+}
+function unaward(lid){
+  const l=state.store.alog.find(x=>x.id===lid);if(!l)return;
+  state.store.points[l.sid]=Math.max(0,points(l.sid)-l.pts);
+  state.store.alog=state.store.alog.filter(x=>x.id!==lid);save("store");
+}
+/* manual correction: positive adds, negative deducts (never below 0); logged so it can be undone from the recent list */
+function manualPoints(sid,delta,reason){
+  const before=points(sid),after=Math.max(0,before+delta),applied=after-before;
+  if(!applied)return 0;
+  state.store.points[sid]=after;
+  state.store.alog.push({id:uid(),sid,aid:"manual",name:reason||"تصحيح يدوي",pts:applied,date:dkey(new Date()),t:Date.now()});
+  state.store.alog=state.store.alog.slice(-600);save("store");return applied;
+}
+const dayAwards=(sid,date)=>state.store.alog.filter(l=>l.sid===sid&&l.date===date);
+const fmtTime=t=>{try{return new Date(t).toLocaleTimeString("ar-EG-u-nu-latn",{hour:"numeric",minute:"2-digit"})}catch(e){return ""}};
+let toastT;
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),2200)}
+function confirmBox(msg,yesLabel,onYes){
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal" role="dialog" aria-modal="true"><div class="box"><p>${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn" id="mNo">إلغاء</button><button class="btn primary" id="mYes">${esc(yesLabel)}</button></div></div></div>`;
+  const close=()=>root.innerHTML="";
+  root.querySelector("#mNo").onclick=close;
+  root.querySelector(".modal").onclick=e=>{if(e.target.classList.contains("modal"))close()};
+  root.querySelector("#mYes").onclick=()=>{close();onYes()};
+  root.querySelector("#mYes").focus();
+}
+function emptyStudents(where){
+  return `<div class="empty"><h3>لا يوجد طلاب في الكشف بعد</h3><p>أضف أسماء طلابك من كشف الطلاب، أو الصق القائمة كاملة دفعة واحدة. ${where||""}</p>
+  <div class="row" style="justify-content:center"><button class="btn primary" data-act="goto" data-tab="students">إضافة الطلاب</button><button class="btn" data-act="sample">تجربة ببيانات مثال</button></div></div>`;
+}
+
+/* ---------- header + tabs ---------- */
+function tick(){
+  const now=new Date(),set=(id,v)=>{const el=document.getElementById(id);if(el.textContent!==v)el.textContent=v};
+  let tm;try{tm=now.toLocaleTimeString("ar-EG-u-nu-latn",{hour:"numeric",minute:"2-digit",second:"2-digit"})}catch(e){tm=z(now.getHours())+":"+z(now.getMinutes())}
+  set("hdrTime",tm);set("hdrDate",fmtDate(now));set("hdrHijri",fmtHijri(now));set("hdrRound",roundStatus());
+}
+setInterval(tick,1000);
+/* rounds: the live points, award log, redemptions and follow-up deductions belong to the selected round; the others wait in store.archive */
+const roundsList=()=>state.store.rounds&&state.store.rounds.length?state.store.rounds:[{id:"r1",name:"الجولة الأولى"}];
+const roundName=id=>(roundsList().find(x=>x.id===id)||{}).name||"";
+function switchRound(to){
+  const st=state.store,g=state.grades;if(!to||to===st.cur)return;
+  st.archive=st.archive||{};
+  st.archive[st.cur]={points:st.points,alog:st.alog,log:st.log,actDone:st.actDone||{},glog:g.log||{},rscores:g.rscores||{}};
+  const s=st.archive[to]||{points:{},alog:[],log:[],actDone:{},glog:{},rscores:{}};
+  delete st.archive[to];
+  st.points=s.points||{};st.alog=s.alog||[];st.log=s.log||[];st.actDone=s.actDone||{};g.log=s.glog||{};g.rscores=s.rscores||{};
+  st.cur=to;ui.actWinner=null;save("store");save("grades");toast("أنت الآن في: "+roundName(to));render();
+}
+function renderHeader(){
+  const s=state.settings,now=new Date();
+  document.getElementById("hdrClass").textContent=s.className||"فصلي";
+  document.getElementById("hdrSub").textContent=[s.school,s.subject,s.teacher&&("أ. "+s.teacher)].filter(Boolean).join(" · ")||"دفتر المعلم";
+  tick();
+  const sb=document.getElementById("sfxBtn");sb.hidden=!!ui.student;sb.textContent=SFX.isOn()?"الأصوات: تعمل":"الأصوات: متوقفة";
+  document.body.dataset.tab=ui.tab;
+  const rb=document.getElementById("rselBox");rb.hidden=!!ui.student;
+  if(!ui.student){const rs=roundsList(),sel=document.getElementById("roundSel");
+    const html=rs.map(r=>`<option value="${r.id}" ${r.id===state.store.cur?"selected":""}>${esc(r.name)}</option>`).join("");
+    if(sel.innerHTML!==html)sel.innerHTML=html;sel.value=state.store.cur}
+  document.getElementById("tabs").innerHTML=ui.student?"":TABS.map(([k,l])=>`<button role="tab" data-act="tab" data-tab="${k}" aria-selected="${ui.tab===k}" style="--tc:var(--k-${TAB_COLOR[k]})${["students","homework","schedule"].includes(k)?";--tc-ink:#fff":""}">${l}</button>`).join("");
+}
+
+/* ---------- attendance ---------- */
+function vAttendance(){
+  const day=state.attendance.days[ui.date]||{};
+  const list=sortedStudents();const d=parseKey(ui.date);const isToday=ui.date===dkey(new Date());
+  const c={p:0,a:0,l:0,e:0,none:0};list.forEach(s=>{day[s.id]?c[day[s.id]]++:c.none++});
+  const wd=d.getDay();const periods=state.schedule.periods;
+  const todayCls=wd<=4?periods.map(p=>({p,v:state.schedule.cells[wd+"-"+p.id]})).filter(x=>x.v):[];
+  const due=state.homework.list.filter(h=>h.due===ui.date);
+  const absentees=list.filter(s=>day[s.id]==="a");
+  const deds=state.grades.deductions,dl=state.grades.log[ui.date]||{},dRound=roundForDate(ui.date),pk=getPick(ui.date);
+  return `<section class="panel">
+  <div class="phead"><div><h2>التحضير اليومي</h2><p>سجّل حضور الطلاب لكل يوم. يُحفظ كل اختيار فوراً.</p></div>
+    <div class="datebar"><button class="btn sm" data-act="day" data-d="1" aria-label="اليوم السابق">→</button>
+    <input type="date" id="attDate" value="${ui.date}" aria-label="تاريخ التحضير">
+    <button class="btn sm" data-act="day" data-d="-1" aria-label="اليوم التالي">←</button>
+    ${isToday?"":`<button class="btn sm" data-act="today">اليوم</button>`}</div></div>
+  <div class="grid2">
+    <div class="stack">
+      <div class="card stack">
+        <div class="row" style="justify-content:space-between"><span class="dlabel">${esc(fmtDate(d))}</span>
+          ${list.length?`<div class="row"><button class="btn sm primary" data-act="allp">تحضير الكل حاضر</button><button class="btn sm" data-act="clearday">مسح اليوم</button></div>`:""}</div>
+        ${rounds().length?(dRound?`<div class="small"><span class="pill r3">${esc(dRound.name)}</span> <span class="muted">تُحتسب خصومات هذا اليوم في ${esc(dRound.name)}</span></div>`
+          :`<div class="note"><span>هذا اليوم خارج كل الجولات، فلن تُحتسب خصوماته في الدرجات. عدّل مواعيد الجولات من قسم المتابعة اليومية.</span></div>`):""}
+        <div class="chips"><span class="chip c-p">حاضر <b>${c.p}</b></span><span class="chip c-a">غائب <b>${c.a}</b></span><span class="chip c-l">متأخر <b>${c.l}</b></span><span class="chip c-e">مستأذن <b>${c.e}</b></span>${c.none?`<span class="chip">لم يُحضَّر <b>${c.none}</b></span>`:""}</div>
+      </div>
+      ${list.length?vPicker():""}
+      ${list.length?`<div class="card att">${list.map((s,i)=>{const mine=dl[s.id]||[];const lost=mine.reduce((a,id)=>a+(Number((deds.find(d=>d.id===id)||{}).pts)||0),0);
+        const got=dayAwards(s.id,ui.date),gotPts=got.reduce((a,l)=>a+l.pts,0);
+        return `<div class="att-row"><span class="n num">${esc(s.num||i+1)}</span><span class="nm">${esc(s.name)} <span class="bal num" title="رصيد النقاط">${points(s.id)} ★</span>${lost?` <span class="lost num">−${lost}</span>`:""}${gotPts?` <span class="gain num">${gotPts>0?"+":""}${gotPts} ★</span>`:""}${recChip(pk,s.id)}</span>
+        <div class="seg" role="group" aria-label="حالة ${esc(s.name)}">${Object.entries(ST).map(([k,l])=>`<button data-act="mark" data-sid="${s.id}" data-v="${k}" class="${day[s.id]===k?"on":""}" aria-pressed="${day[s.id]===k}">${l}</button>`).join("")}</div>
+        ${deds.length?`<div class="deds" role="group" aria-label="خصومات ${esc(s.name)}">${deds.map(d=>{const on=mine.includes(d.id);return `<button class="ded ${on?"on":""}" data-act="ded" data-sid="${s.id}" data-id="${d.id}" aria-pressed="${on}">${esc(d.name)} <b class="num">−${esc(d.pts)}</b></button>`}).join("")}</div>`:""}
+        ${awardBtns(s.id,ui.date,got)}</div>`}).join("")}</div>`:emptyStudents()}
+    </div>
+    <aside class="stack">
+      <div class="card stack"><h3>حصص ${wd<=4?esc(DAYS[wd]):"اليوم"}</h3>
+        ${todayCls.length?`<ul class="side-list">${todayCls.map(x=>`<li><span>${esc(x.v)}</span><span class="muted small num">${esc(x.p.label)} · ${esc(x.p.time)}</span></li>`).join("")}</ul>`:`<p class="muted small" style="margin:0">${wd<=4?"لا توجد حصص مسجلة لهذا اليوم في جدولك.":"عطلة نهاية الأسبوع."}</p>`}
+      </div>
+      <div class="card stack"><h3>واجبات تُسلَّم في هذا اليوم</h3>
+        ${due.length?`<ul class="side-list">${due.map(h=>`<li><span>${esc(h.title)}</span><span class="muted small num">${Object.values(h.done||{}).filter(Boolean).length}/${list.length}</span></li>`).join("")}</ul>`:`<p class="muted small" style="margin:0">لا يوجد.</p>`}
+      </div>
+      ${absentees.length?`<div class="card stack"><h3>الغائبون</h3><ul class="side-list">${absentees.map(s=>`<li><span>${esc(s.name)}</span><span class="muted small num">${attCounts(s.id).a} غياب</span></li>`).join("")}</ul></div>`:""}
+    </aside>
+  </div></section>`;
+}
+
+/* ---------- students ---------- */
+/* roster rating: starts empty; the teacher adds conditions on a student's points, the first matching one wins */
+const rrules=()=>state.store.rateRules||(state.store.rateRules=[]);
+function rateByPoints(sid){
+  const p=points(sid);
+  const r=(state.store.rateRules||[]).find(x=>x.label&&x.val!==""&&(x.op==="lt"?p<Number(x.val):x.op==="gt"?p>Number(x.val):p>=Number(x.val)));
+  return r?`<span class="pill ${esc(r.color||"r1")}">${esc(r.label)}</span>`:"";
+}
+const RR_OPS=[["lt","أقل من"],["gte","أكبر من أو يساوي"],["gt","أكبر من"]];
+const RR_COLORS=[["r1","أحمر"],["r2","برتقالي"],["r3","أصفر"],["r4","أزرق"],["r5","أخضر"]];
+/* points earned today only (from the award log), shown without a maximum */
+const todayPoints=sid=>{const d=dkey(new Date());return state.store.alog.filter(l=>l.sid===sid&&l.date===d).reduce((a,l)=>a+(Number(l.pts)||0),0)};
+function vStudents(){
+  const q=ui.search.trim();const list=sortedStudents().filter(s=>!q||s.name.includes(q)||String(s.num).includes(q));
+  const hasEx=students().some(s=>s.example);const slots=students().filter(s=>s.slot).length;
+  return `<section class="panel">
+  <div class="phead"><div><h2>كشف الطلاب</h2><p>${students().length} طالب في الكشف. عدّل أي اسم أو رقم بالنقر عليه مباشرة.</p></div>
+    ${students().length?`<input type="search" id="stuSearch" placeholder="بحث بالاسم أو الرقم" value="${esc(ui.search)}" aria-label="بحث">`:""}</div>
+  ${hasEx?`<div class="note"><span>تعرض الصفحة طلاباً للمثال فقط. احذفهم عندما تضيف طلابك.</span><button class="btn sm" data-act="clearsample">حذف طلاب المثال</button></div>`:""}
+  ${slots?`<div class="note"><span>في الكشف ${slots} خانة بأسماء مؤقتة. استورد ملف الأسماء من نظام نور أدناه لتحل محلها، أو انقر على أي اسم لتعديله.</span></div>`:""}
+  <div class="card stack">
+    <h3>استيراد الأسماء من ملف Excel</h3>
+    <p class="small muted" style="margin:0">اختر كشف أسماء الطلاب من نظام نور (ملف xlsx). تُقرأ الأسماء على جهازك وتحل محل الخانات المؤقتة بالترتيب.</p>
+    <div class="row"><label class="btn primary" for="xlsxFile" style="cursor:pointer">اختيار الملف</label><input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv" style="position:absolute;width:1px;height:1px;opacity:0"><span class="small muted" id="xlsxMsg"></span></div>
+  </div>
+  <div class="card stack">
+    <h3>إضافة طالب</h3>
+    <form class="row" id="addStu"><input type="text" id="newName" placeholder="اسم الطالب" style="flex:1 1 220px" required><input type="number" id="newNum" placeholder="الرقم" style="width:6rem" min="1"><button class="btn primary">إضافة</button></form>
+    <details><summary class="small muted" style="cursor:pointer">${slots?"لصق أسماء الطلاب بالترتيب":"إضافة عدة طلاب دفعة واحدة"}</summary>
+      <form class="stack" id="bulkStu" style="margin-top:8px"><textarea id="bulkNames" rows="5" placeholder="اكتب أو الصق اسماً واحداً في كل سطر"></textarea><div><button class="btn primary">إضافة القائمة</button></div></form></details>
+  </div>
+  <div class="card stack">
+    <h3>شروط التقدير</h3>
+    <p class="small muted" style="margin:0">عمود التقدير فارغ حتى تضيف شروطاً. يُطبَّق أول شرط ينطبق على نقاط الطالب، مثل: إذا كانت النقاط أقل من 10 يظهر «يحتاج دعماً».</p>
+    ${rrules().length?`<div class="items">${rrules().map(x=>`<div class="item rr"><span class="muted small">النقاط</span><select data-f="rr-op" data-id="${x.id}" aria-label="الشرط">${RR_OPS.map(([k,n])=>`<option value="${k}" ${x.op===k?"selected":""}>${n}</option>`).join("")}</select><input type="number" data-f="rr-val" data-id="${x.id}" value="${esc(x.val)}" style="width:5rem" aria-label="عدد النقاط"><input type="text" data-f="rr-label" data-id="${x.id}" value="${esc(x.label)}" placeholder="التقدير" aria-label="نص التقدير"><select data-f="rr-color" data-id="${x.id}" aria-label="اللون">${RR_COLORS.map(([k,n])=>`<option value="${k}" ${x.color===k?"selected":""}>${n}</option>`).join("")}</select><button class="icon del" data-act="delrr" data-id="${x.id}" aria-label="حذف الشرط">✕</button></div>`).join("")}</div>`:""}
+    <form class="row" id="addRr"><span class="muted small">إذا كانت النقاط</span><select id="rrOp" aria-label="الشرط">${RR_OPS.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select><input type="number" id="rrVal" placeholder="العدد" style="width:5.5rem" required aria-label="عدد النقاط"><input type="text" id="rrLabel" placeholder="التقدير، مثل: يحتاج دعماً" style="flex:1 1 160px" required><select id="rrColor" aria-label="اللون">${RR_COLORS.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select><button class="btn primary">إضافة شرط</button></form>
+  </div>
+  ${students().length?`<div class="tbox"><table><thead><tr><th class="c">الرقم</th><th>الاسم</th><th class="c">غياب</th><th class="c">تأخر</th><th class="c">المتابعة اليوم</th><th class="c">التقدير</th><th class="c">الاختبارات</th><th class="c">النقاط</th><th>ملاحظات</th><th></th></tr></thead><tbody>
+  ${list.map(s=>{const c=attCounts(s.id);return `<tr>
+    <td class="c" style="width:5rem"><input class="flat num c" style="text-align:center" type="number" data-f="stu-num" data-id="${s.id}" value="${esc(s.num)}" aria-label="رقم الطالب"></td>
+    <td style="min-width:180px"><input class="flat" type="text" data-f="stu-name" data-id="${s.id}" value="${esc(s.name)}" aria-label="اسم الطالب"></td>
+    <td class="c num">${c.a?`<span class="pill r1">${c.a}</span>`:"0"}</td><td class="c num">${c.l}</td>
+    <td class="c num">${todayPoints(s.id)}</td><td class="c">${rateByPoints(s.id)}</td>
+    <td class="c num">${examText(s.id)}</td><td class="c num">${points(s.id)}</td>
+    <td style="min-width:160px"><input class="flat" type="text" data-f="stu-notes" data-id="${s.id}" value="${esc(s.notes)}" placeholder="—" aria-label="ملاحظات"></td>
+    <td><button class="icon del" data-act="delstu" data-id="${s.id}" aria-label="حذف ${esc(s.name)}" title="حذف">✕</button></td></tr>`}).join("")}
+  </tbody></table></div>`:emptyStudents()}
+  </section>`;
+}
+
+/* ---------- grades ---------- */
+function examTotal(sid){
+  const ex=state.grades.exams,sc=ex.scores[sid]||{};let got=0,max=0,any=false;
+  for(const e of ex.items){max+=Number(e.max)||0;if(sc[e.id]!=null){got+=Number(sc[e.id])||0;any=true}}
+  return {got:Math.round(got*10)/10,max,any};
+}
+const examText=sid=>{const t=examTotal(sid);return t.any?(t.max>0?`${t.got} / ${t.max}`:`${t.got}`):"—"};
+function vGrades(){
+  const ex=state.grades.exams,list=sortedStudents();
+  const maxSum=ex.items.reduce((a,e)=>a+(Number(e.max)||0),0);
+  let table;
+  if(!list.length)table=emptyStudents();
+  else if(!ex.items.length)table=`<div class="empty"><h3>أضف اختباراً واحداً على الأقل</h3><p>كل اختبار يظهر عموداً في الجدول.</p></div>`;
+  else table=`<div class="tbox"><table><thead><tr><th>الطالب</th>${ex.items.map(e=>`<th class="c">${esc(e.name)}<br><label class="mx">الدرجة من <input type="number" min="0" step="0.5" data-f="ex-max" data-id="${e.id}" value="${esc(e.max)}" placeholder="حدّد" aria-label="الدرجة العظمى لـ ${esc(e.name)}"></label></th>`).join("")}<th class="c">المجموع<br><span class="num" style="font-weight:400">${maxSum>0?"من ":""}<span id="exMaxSum">${maxSum>0?maxSum:""}</span></span></th></tr></thead><tbody>
+    ${list.map(s=>{const sc=ex.scores[s.id]||{};return `<tr data-row="${s.id}"><td style="white-space:nowrap;font-weight:600"><span class="muted num" style="font-weight:400">${esc(s.num)}.</span> ${esc(s.name)}</td>
+      ${ex.items.map(e=>`<td class="c"><input class="g-in num" type="number" min="0" max="${esc(e.max)}" step="0.5" data-f="exam" data-sid="${s.id}" data-eid="${e.id}" value="${sc[e.id]??""}" aria-label="${esc(e.name)} — ${esc(s.name)}"></td>`).join("")}
+      <td class="c num" data-cell="etot" style="font-weight:700">${examText(s.id)}</td></tr>`}).join("")}
+    </tbody></table></div>`;
+  return `<section class="panel">
+  <div class="phead"><div><h2>الاختبارات</h2><p>اكتب درجة كل طالب في خانته، ويُحسب المجموع تلقائياً.</p></div></div>
+  ${table}
+  <div class="card stack"><div class="row" style="justify-content:space-between"><h3>أسماء الاختبارات ودرجاتها</h3><span class="muted small num">المجموع الكلي: ${maxSum}</span></div>
+    <div class="items">${ex.items.map(e=>`<div class="item three"><input type="text" data-f="ex-name" data-id="${e.id}" value="${esc(e.name)}" aria-label="اسم الاختبار"><input type="number" min="0" data-f="ex-max" data-id="${e.id}" value="${esc(e.max)}" aria-label="الدرجة العظمى" title="الدرجة العظمى"><button class="icon del" data-act="delex" data-id="${e.id}" aria-label="حذف الاختبار">✕</button></div>`).join("")}</div>
+    <form class="row" id="addEx"><input type="text" id="exName" placeholder="اختبار جديد، مثل: الاختبار النهائي" style="flex:1 1 200px" required><input type="number" id="exMax" placeholder="من" min="1" style="width:6.5rem" required><button class="btn primary">إضافة اختبار</button></form>
+  </div></section>`;
+}
+function vFollow(){
+  const items=state.grades.items;const list=sortedStudents();const rs=rounds();
+  const maxSum=items.reduce((a,b)=>a+(Number(b.max)||0),0);
+  const rid=curGRound(),r=roundById(rid),nowR=roundNow();
+  const last=rs[rs.length-1];const sd=last?parseKey(String(last.end).slice(0,10)):new Date();if(last)sd.setDate(sd.getDate()+1);
+  const ed=new Date(sd);ed.setDate(ed.getDate()+13);
+  const roundState=x=>x.id===(nowR&&nowR.id)?`<span class="pill r5">جارية</span>`:new Date(x.end)<new Date()?`<span class="pill r2">منتهية</span>`:`<span class="pill r4">قادمة</span>`;
+  const roundsCard=`<div class="card stack"><div class="row" style="justify-content:space-between"><h3>الجولات</h3><span class="muted small">كل جولة تبدأ من صفر، وتُحتسب فيها نقاطها وخصوماتها من أيامها فقط</span></div>
+    ${rs.length?`<div class="items">${rs.map(x=>`<div class="item rnd"><input type="text" data-f="r-name" data-id="${x.id}" value="${esc(x.name)}" aria-label="اسم الجولة">
+      <label class="f">البداية<input type="datetime-local" data-f="r-start" data-id="${x.id}" value="${esc(x.start)}"></label>
+      <label class="f">النهاية<input type="datetime-local" data-f="r-end" data-id="${x.id}" value="${esc(x.end)}"></label>
+      ${roundState(x)}<button class="icon del" data-act="delround" data-id="${x.id}" aria-label="حذف الجولة">✕</button></div>`).join("")}</div>`
+      :`<p class="muted small" style="margin:0">لم تحدد جولات بعد، فتُحسب الدرجات على الفصل الدراسي كله.</p>`}
+    <form class="row" id="addRound" style="align-items:flex-end"><label class="f" style="flex:1 1 150px">اسم الجولة<input type="text" id="rName" value="الجولة ${ORD[rs.length]||rs.length+1}" required></label>
+      <label class="f">البداية<input type="datetime-local" id="rStart" required value="${dkey(sd)}T07:00"></label>
+      <label class="f">النهاية<input type="datetime-local" id="rEnd" required value="${dkey(ed)}T12:00"></label><button class="btn primary">إضافة جولة</button></form></div>`;
+  const picker=rs.length?`<div class="rtabs" role="group" aria-label="عرض درجات">${rs.map(x=>`<button data-act="ground" data-id="${x.id}" aria-pressed="${rid===x.id}">${esc(x.name)}</button>`).join("")}<button data-act="ground" data-id="all" aria-pressed="${rid==="all"}">المجموع الكلي</button></div>`:"";
+  let table="";
+  if(!list.length)table=emptyStudents();
+  else if(!items.length)table=`<div class="empty"><h3>أضف بنداً واحداً على الأقل</h3><p>البنود هي أعمدة جدول الدرجات.</p></div>`;
+  else if(rid==="all"&&rs.length){
+    table=`<div class="tbox"><table><thead><tr><th>الطالب</th>${rs.map(x=>`<th class="c">${esc(x.name)}<br><span class="num" style="font-weight:400">من ${maxSum}</span></th>`).join("")}<th class="c">المجموع</th><th class="c">النسبة</th><th class="c">التقدير</th></tr></thead><tbody>
+    ${list.map(s=>{const g=gradeTotal(s.id,"all"),rt=rating(g.pct);return `<tr><td style="white-space:nowrap;font-weight:600"><span class="muted num" style="font-weight:400">${esc(s.num)}.</span> ${esc(s.name)}</td>
+      ${rs.map(x=>`<td class="c num">${gradeTotal(s.id,x.id).got}</td>`).join("")}
+      <td class="c num">${g.got}/${g.max}</td><td class="c" style="min-width:110px">${pctCell(g.pct)}</td><td class="c"><span class="pill ${rt[1]}">${rt[0]}</span></td></tr>`}).join("")}
+    </tbody></table></div>`;
+  }else{
+    table=`${r?`<p class="small muted" style="margin:0">${esc(r.name)}: من ${esc(fmtDT(r.start))} إلى ${esc(fmtDT(r.end))}</p>`:""}
+    <div class="tbox"><table><thead><tr><th>الطالب</th>${items.map(it=>`<th class="c">${esc(it.name)}<br><span class="num" style="font-weight:400">من ${esc(it.max)}</span></th>`).join("")}<th class="c">المجموع</th><th class="c">النسبة</th><th class="c">التقدير</th></tr></thead><tbody>
+    ${list.map(s=>{const sc=scoresFor(s.id,rid),dt=dedTotals(s.id,r),gn=gainTotals(s.id,r),g=gradeTotal(s.id,rid),rt=rating(g.pct);return `<tr data-row="${s.id}"><td style="white-space:nowrap;font-weight:600"><span class="muted num" style="font-weight:400">${esc(s.num)}.</span> ${esc(s.name)}</td>
+      ${items.map(it=>`<td class="c"><input class="g-in num" type="number" min="0" max="${esc(it.max)}" step="0.5" data-f="grade" data-sid="${s.id}" data-iid="${it.id}" value="${sc[it.id]??""}" placeholder="0" aria-label="${esc(it.name)} — ${esc(s.name)}">${gn[it.id]?`<span class="gain num">+${gn[it.id]}</span>`:""}${dt[it.id]?`<span class="minus num">خصم −${dt[it.id]}</span>`:""}</td>`).join("")}
+      <td class="c num" data-cell="tot">${g.got}/${g.max}</td><td class="c" data-cell="pct" style="min-width:110px">${pctCell(g.pct)}</td><td class="c" data-cell="rate"><span class="pill ${rt[1]}">${rt[0]}</span></td></tr>`}).join("")}
+    </tbody></table></div>`;
+  }
+  return `<section class="panel">
+  <div class="phead"><div><h2>المتابعة اليومية</h2><p>يبدأ كل طالب من صفر. تُضاف له الدرجات تلقائياً من أزرار التحفيز في التحضير اليومي، وتُخصم منه المخالفات. ويمكنك كتابة درجة يدوية في أي خانة.</p></div></div>
+  ${roundsCard}
+  ${picker}
+  ${table}
+  <div class="card stack"><div class="row" style="justify-content:space-between"><h3>بنود التقييم</h3><span class="muted small num">مجموع الجولة: ${maxSum}</span></div>
+    <div class="items">${items.map(it=>`<div class="item three"><input type="text" data-f="gi-name" data-id="${it.id}" value="${esc(it.name)}" aria-label="اسم البند"><input type="number" min="0" data-f="gi-max" data-id="${it.id}" value="${esc(it.max)}" aria-label="الدرجة العظمى" title="الدرجة العظمى"><button class="icon del" data-act="delgi" data-id="${it.id}" aria-label="حذف البند">✕</button></div>`).join("")}</div>
+    <form class="row" id="addGi"><input type="text" id="giName" placeholder="بند جديد، مثل: مشروع" style="flex:1 1 200px" required><input type="number" id="giMax" placeholder="من" min="1" style="width:6.5rem" required><button class="btn primary">إضافة بند</button></form>
+  </div>
+  <div class="card stack"><div class="row" style="justify-content:space-between"><h3>بنود الخصم</h3><span class="muted small">تظهر أزرارها بجانب كل طالب في التحضير اليومي</span></div>
+    <div class="items">${state.grades.deductions.map(d=>`<div class="item dd"><input type="text" data-f="dd-name" data-id="${d.id}" value="${esc(d.name)}" aria-label="اسم الخصم"><input type="number" min="0" step="0.5" data-f="dd-pts" data-id="${d.id}" value="${esc(d.pts)}" aria-label="درجات الخصم" title="درجات الخصم"><select data-f="dd-item" data-id="${d.id}" aria-label="يُخصم من">${itemOpts(d.itemId)}</select><button class="icon del" data-act="deldd" data-id="${d.id}" aria-label="حذف الخصم">✕</button></div>`).join("")}</div>
+    <form class="row" id="addDd"><input type="text" id="ddName" placeholder="خصم جديد، مثل: لم يحضر الكتاب" style="flex:1 1 200px" required><input type="number" id="ddPts" placeholder="الدرجات" min="0" step="0.5" style="width:6rem" required><select id="ddItem" aria-label="يُخصم من">${itemOpts()}</select><button class="btn primary">إضافة خصم</button></form>
+  </div>
+  </section>`;
+}
+const fmtDT=v=>{const d=new Date(v);if(isNaN(d))return "";try{return d.toLocaleString("ar-EG-u-nu-latn",{weekday:"long",day:"numeric",month:"long",hour:"numeric",minute:"2-digit"})}catch(e){return String(v)}};
+const itemOpts=sel=>state.grades.items.map(it=>`<option value="${it.id}" ${it.id===sel?"selected":""}>يُخصم من ${esc(it.name)}</option>`).join("");
+const pctCell=p=>`<div class="row" style="flex-wrap:nowrap;gap:6px"><div class="bar" style="flex:1"><span style="width:${Math.min(100,p)}%"></span></div><span class="num small">${p}%</span></div>`;
+
+/* ---------- homework ---------- */
+function vHomework(){
+  const list=[...state.homework.list].sort((a,b)=>(b.due||"").localeCompare(a.due||""));const stu=sortedStudents();const today=dkey(new Date());
+  return `<section class="panel">
+  <div class="phead"><div><h2>الواجبات</h2><p>أضف الواجب وتاريخ تسليمه، ثم أشّر على من سلّمه.</p></div></div>
+  <form class="card stack" id="addHw"><h3>واجب جديد</h3>
+    <div class="row" style="align-items:flex-end"><label class="f" style="flex:1 1 240px">عنوان الواجب<input type="text" id="hwTitle" required placeholder="مثال: حل تمارين صفحة 42"></label>
+    <label class="f">تاريخ التسليم<input type="date" id="hwDue" value="${today}"></label></div>
+    <label class="f">التفاصيل (اختياري)<textarea id="hwDesc" rows="2"></textarea></label>
+    <div><button class="btn primary">إضافة الواجب</button></div></form>
+  ${list.length?list.map(h=>{const n=stu.filter(s=>h.done&&h.done[s.id]).length;const open=!!ui.openHw[h.id];
+    const dc=h.due<today&&n<stu.length?"due-over":h.due===today?"due-today":"";
+    return `<div class="hw"><div class="hw-h"><div style="min-width:0"><div class="t">${esc(h.title)}</div>
+      <div class="d"><span class="${dc}">التسليم: ${h.due?esc(fmtDate(parseKey(h.due),{weekday:"long",day:"numeric",month:"long"})):"بدون تاريخ"}</span> · <span class="num">سلّم ${n} من ${stu.length}</span></div>
+      ${h.desc?`<div class="small muted" style="margin-top:4px">${esc(h.desc)}</div>`:""}</div>
+      <div class="row"><button class="btn sm" data-act="hwtoggle" data-id="${h.id}" aria-expanded="${open}">${open?"إخفاء":"تسجيل التسليم"}</button><button class="icon del" data-act="delhw" data-id="${h.id}" aria-label="حذف الواجب">✕</button></div></div>
+      ${open?`<div class="hw-body">${stu.length?`<div class="row"><button class="btn sm" data-act="hwall" data-id="${h.id}">الكل سلّم</button><button class="btn sm" data-act="hwnone" data-id="${h.id}">إلغاء الكل</button></div>
+      <div class="checks">${stu.map(s=>{const on=!!(h.done&&h.done[s.id]);return `<label class="${on?"done":""}"><input type="checkbox" data-f="hwdone" data-id="${h.id}" data-sid="${s.id}" ${on?"checked":""}>${esc(s.name)}</label>`}).join("")}</div>`:`<p class="muted small" style="margin:0">أضف طلاباً أولاً.</p>`}</div>`:""}</div>`}).join(""):`<div class="empty"><h3>لا توجد واجبات</h3><p>أضف أول واجب من النموذج أعلاه.</p></div>`}
+  </section>`;
+}
+
+/* ---------- schedule ---------- */
+function vSchedule(){
+  const sc=state.schedule;const wd=new Date().getDay();
+  return `<section class="panel">
+  <div class="phead"><div><h2>جدول المعلم</h2><p>اكتب في كل خانة المادة أو الفصل. يظهر عمود اليوم مميزاً.</p></div></div>
+  <div class="tbox"><table class="sched"><thead><tr><th>الحصة</th>${DAYS.map((d,i)=>`<th class="c ${i===wd?"today":""}">${d}</th>`).join("")}</tr></thead><tbody>
+  ${sc.periods.map(p=>`<tr><td><div class="plabel">${esc(p.label)}</div><div class="ptime num">${esc(p.time)}</div></td>
+    ${DAYS.map((d,i)=>`<td class="${i===wd?"today":""}"><input class="flat" type="text" data-f="cell" data-k="${i}-${p.id}" value="${esc(sc.cells[i+"-"+p.id])}" placeholder="—" aria-label="${d} ${esc(p.label)}"></td>`).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <div class="card stack"><h3>الحصص وأوقاتها</h3>
+    <div class="items">${sc.periods.map(p=>`<div class="item four"><input type="text" data-f="p-label" data-id="${p.id}" value="${esc(p.label)}" aria-label="اسم الحصة"><input type="text" data-f="p-time" data-id="${p.id}" value="${esc(p.time)}" aria-label="وقت الحصة" class="num"><button class="icon del" data-act="delp" data-id="${p.id}" aria-label="حذف الحصة">✕</button></div>`).join("")}</div>
+    <form class="row" id="addP"><input type="text" id="pLabel" placeholder="اسم الحصة، مثل: الثامنة" style="flex:1 1 180px" required><input type="text" id="pTime" placeholder="الوقت 12:35" style="width:8rem"><button class="btn primary">إضافة حصة</button></form>
+  </div></section>`;
+}
+
+/* ---------- rewards ---------- */
+const hasQty=it=>it.qty!==undefined&&it.qty!==null&&it.qty!=="";
+function vRewards(){
+  const stu=sortedStudents();const items=state.store.items;const sel=stuById(ui.redeemSid)?ui.redeemSid:"";
+  const log=state.store.log.slice(-10).reverse();const today=dkey(new Date());
+  const alog=state.store.alog.slice(-12).reverse();
+  const sec=["shop","give","log","admin"].includes(ui.rwSec)?ui.rwSec:"shop";
+  const ICONS=["🎁","🏆","⭐","🎈","🎨","📚","🍬","🎮"];
+  const tabs=[["shop","المتجر"],["give","منح النقاط"],["log","السجل"],["admin","الإدارة"]];
+  const picker=`<div class="rtabs" role="group" aria-label="أقسام المتجر">${tabs.map(([k,n])=>`<button data-act="rwsec" data-id="${k}" aria-pressed="${sec===k}">${n}</button>`).join("")}</div>`;
+  const shopView=`<div class="store-top"><label class="row" style="gap:8px;font-weight:600">الطالب<select id="redeemStu" aria-label="اختر الطالب"><option value="">اختر الطالب…</option>${stu.map(s=>`<option value="${s.id}" ${s.id===sel?"selected":""}>${esc(s.name)} (${points(s.id)} نقطة)</option>`).join("")}</select></label>${sel?`<span class="bal-big num">رصيده: ${points(sel)} ★</span>`:`<span class="muted small">اختر الطالب ثم اضغط استبدال على الجائزة</span>`}</div>
+    ${items.length?`<div class="shop">${items.map((it,i)=>{const out=hasQty(it)&&Number(it.qty)<=0,can=!out&&sel&&points(sel)>=Number(it.cost);return `<div class="prize ${out?"out":""}"><div class="ico" aria-hidden="true">${ICONS[i%ICONS.length]}</div><div class="cost num">${esc(it.cost)} <small>نقطة</small></div><div style="font-weight:600">${esc(it.name)}</div>${hasQty(it)?`<div class="small ${out?"":"muted"} num" style="${out?"color:var(--bad);font-weight:600":""}">${out?"نفدت الكمية":`المتبقي: ${Number(it.qty)}`}</div>`:""}
+          <button class="btn sm ${can?"accent":""}" data-act="redeem" data-id="${it.id}" ${can?"":"disabled"} style="${can?"":"opacity:.55;cursor:not-allowed"}">${out?"انتهت الفرصة":!sel?"اختر طالباً":can?"استبدال":"النقاط لا تكفي"}</button></div>`}).join("")}</div>`:`<p class="muted" style="margin:0">المتجر فارغ. أضف جوائز من الأسفل.</p>`}`;
+  const giveView=`<div class="card stack"><div class="row" style="justify-content:space-between"><h3>منح النقاط</h3><span class="muted small">اليوم: ${esc(fmtDate(new Date(),{weekday:"long",day:"numeric",month:"long"}))}</span></div>
+      ${stu.length?`<div class="pts">${stu.map(s=>{const got=dayAwards(s.id,today);return `<div class="pt-row"><div class="stack" style="gap:4px;min-width:0">
+        <span style="font-weight:600;overflow-wrap:anywhere"><span class="muted num" style="font-weight:400">${esc(s.num)}.</span> ${esc(s.name)}</span>${awardBtns(s.id,today,got)}</div>
+        <span class="score num">${points(s.id)}</span>
+        <span class="row" style="gap:0;flex-wrap:nowrap"><button class="icon" data-act="pt" data-sid="${s.id}" data-n="-1" aria-label="خصم نقطة من ${esc(s.name)}" title="خصم نقطة">−1</button><button class="icon" data-act="fixpick" data-sid="${s.id}" aria-label="تصحيح نقاط ${esc(s.name)}" title="تصحيح يدوي">✎</button></span></div>`}).join("")}</div>`
+      :`<p class="muted small" style="margin:0">أضف طلاباً أولاً من كشف الطلاب.</p>`}
+    </div>`;
+  const logView=`<div class="stack">${alog.length?`<div class="card stack"><h3>آخر النقاط الممنوحة</h3><ul class="side-list">${alog.map(l=>`<li><span>${esc((stuById(l.sid)||{}).name||"طالب محذوف")} · ${esc(l.name)} <b class="num" style="color:${l.pts<0?"var(--bad)":"var(--ok)"}">${l.pts>0?"+":""}${l.pts}</b></span><span class="row" style="gap:2px;flex-wrap:nowrap"><span class="muted small num">${l.date===today?esc(fmtTime(l.t)):esc(l.date)}</span><button class="icon del" data-act="undoaward" data-id="${l.id}" aria-label="إلغاء هذه النقاط" title="إلغاء">✕</button></span></li>`).join("")}</ul></div>`:""}${log.length?`<div class="card stack"><h3>آخر عمليات الاستبدال</h3><ul class="side-list">${log.map(l=>`<li><span>${esc((stuById(l.sid)||{}).name||"طالب محذوف")} ← ${esc(l.item)}</span><span class="muted small num">${esc(l.date)} · −${esc(l.cost)}</span></li>`).join("")}</ul></div>`:""}${!state.store.alog.length&&!state.store.log.length?`<p class="muted">لا توجد عمليات بعد.</p>`:""}</div>`;
+  const adminView=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:22px;align-items:start">
+    <div class="card stack" id="fixCard"><h3>تصحيح النقاط يدوياً</h3>
+      <p class="small muted" style="margin:0">اكتب عدداً موجباً للإضافة أو سالباً للخصم، أو اضبط رصيد الطالب على رقم محدد.</p>
+      <form class="stack" id="fixForm">
+        <select id="fixStu" aria-label="الطالب"><option value="">اختر الطالب…</option>${stu.map(s=>`<option value="${s.id}" ${s.id===ui.fixSid?"selected":""}>${esc(s.name)} (${points(s.id)} نقطة)</option>`).join("")}</select>
+        <div class="row"><input type="number" id="fixAmt" step="1" placeholder="مثل 5 أو -3" style="width:9rem" aria-label="عدد النقاط"><input type="text" id="fixWhy" placeholder="السبب (اختياري)" style="flex:1 1 160px" aria-label="السبب"></div>
+        <div class="row"><button class="btn primary">إضافة أو خصم</button><button type="button" class="btn" data-act="fixset">ضبط الرصيد على هذا الرقم</button></div>
+      </form></div>
+    <div class="card stack"><h3>أزرار نقاط التحفيز</h3>
+      <div class="items">${state.store.awards.map(a=>`<div class="item awrow"><input type="text" data-f="aw-name" data-id="${a.id}" value="${esc(a.name)}" aria-label="اسم البند"><input type="number" min="1" data-f="aw-pts" data-id="${a.id}" value="${esc(a.pts)}" aria-label="عدد النقاط" title="عدد النقاط"><label class="small muted" style="white-space:nowrap;cursor:pointer" title="النقر الثاني على الزر في نفس اليوم يلغي النقاط"><input type="checkbox" data-f="aw-once" data-id="${a.id}" ${onceAward(a)?"checked":""}> مرة باليوم</label><button class="icon del" data-act="delaw" data-id="${a.id}" aria-label="حذف ${esc(a.name)}">✕</button></div>`).join("")}</div>
+      <form class="row" id="addAw"><input type="text" id="awName" placeholder="بند جديد، مثل: الخط الجميل" style="flex:1 1 180px" required><input type="number" id="awPts" placeholder="النقاط" min="1" style="width:6.5rem" required><button class="btn primary">إضافة</button></form>
+    </div>
+    <div class="card stack"><h3>جوائز المتجر</h3>
+      <div class="items">${items.map(it=>`<div class="item shopi"><input type="text" data-f="si-name" data-id="${it.id}" value="${esc(it.name)}" aria-label="اسم الجائزة"><input type="number" min="1" data-f="si-cost" data-id="${it.id}" value="${esc(it.cost)}" aria-label="السعر بالنقاط" title="السعر بالنقاط"><input type="number" min="0" step="1" data-f="si-qty" data-id="${it.id}" value="${hasQty(it)?esc(it.qty):""}" placeholder="غير محدود" aria-label="الكمية المتاحة" title="الكمية المتاحة (اتركها فارغة لغير محدود)"><button class="icon del" data-act="delsi" data-id="${it.id}" aria-label="حذف الجائزة">✕</button></div>`).join("")}</div>
+      <form class="row" id="addSi"><input type="text" id="siName" placeholder="جائزة جديدة" style="flex:1 1 180px" required><input type="number" id="siCost" placeholder="النقاط" min="1" style="width:6.5rem" required><input type="number" id="siQty" placeholder="الكمية (اختياري)" min="1" step="1" style="width:9rem" aria-label="الكمية المتاحة"><button class="btn primary">إضافة جائزة</button></form>
+    </div>
+  </div>`;
+  return `<section class="panel">
+  <div class="phead"><div><h2>متجر الجوائز</h2><p>${sec==="shop"?"اختر الطالب ثم استبدل نقاطه بجائزة.":sec==="give"?"امنح الطلاب نقاطاً بأزرار التحفيز. الأزرار نفسها تظهر في التحضير اليومي.":sec==="log"?"آخر النقاط الممنوحة وعمليات الاستبدال.":"تعديل الجوائز وأزرار التحفيز وتصحيح النقاط."}</p></div></div>
+  ${picker}
+  ${sec==="shop"?shopView:sec==="give"?giveView:sec==="log"?logView:adminView}
+  </section>`;
+}
+
+/* random picker: round 1 draws from everyone present; a skipped student is parked until round 2, which draws only from the skipped */
+const blankPick=()=>({round:1,done:[],skipped:[],done2:[],fail:[],cur:null});
+const getPick=date=>(state.attendance.picks||{})[date]||blankPick();
+const clonePick=()=>JSON.parse(JSON.stringify(getPick(ui.date)));
+function setPick(date,p){(state.attendance.picks||(state.attendance.picks={}))[date]=p;save("attendance")}
+function pickInfo(date){
+  const p=getPick(date),day=state.attendance.days[date]||{};
+  const all=sortedStudents().filter(s=>day[s.id]!=="a"&&day[s.id]!=="e");
+  const ids=new Set(all.map(s=>s.id)),clean=a=>(a||[]).filter(id=>ids.has(id));
+  const done=clean(p.done),skipped=clean(p.skipped),done2=clean(p.done2),fail=clean(p.fail);
+  return {p,all,done,skipped,done2,fail,cur:all.find(s=>s.id===p.cur),
+    pool1:all.filter(s=>!done.includes(s.id)&&!skipped.includes(s.id)),
+    pool2:all.filter(s=>skipped.includes(s.id)&&!done2.includes(s.id)&&!fail.includes(s.id))};
+}
+/* "لم يسمّع" applies the existing "لم يحفظ" deduction for that day; "سمّع" gives the recitation award (التسميع) */
+function applyDed(sid,did,date){
+  if(!state.grades.deductions.some(x=>x.id===did))return;
+  const day=state.grades.log[date]||(state.grades.log[date]={}),arr=day[sid]||[];
+  if(!arr.includes(did))day[sid]=arr.concat(did);
+  save("grades");
+}
+const recChip=(pk,sid)=>(pk.done||[]).includes(sid)||(pk.done2||[]).includes(sid)?`<span class="rec ok">سمّع</span>`:(pk.fail||[]).includes(sid)?`<span class="rec no">لم يسمّع</span>`:"";
+function shuffleFx(el,names,final){
+  if(!el||!names.length)return;
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){SFX.play("reveal");return}
+  let n=0;const t=setInterval(()=>{el.textContent=names[Math.floor(Math.random()*names.length)];SFX.play("tick");
+    if(++n>=12){clearInterval(t);el.textContent=final;SFX.play("reveal")}},60);
+}
+function vPicker(){
+  const I=pickInfo(ui.date),r2=I.p.round===2,pool=r2?I.pool2:I.pool1,left=pool.length-(I.cur?1:0);
+  const names=a=>a.map(id=>(stuById(id)||{}).name).filter(Boolean);
+  let body;
+  if(!I.all.length)body=`<p class="muted small" style="margin:0;text-align:center">لا يوجد طلاب حاضرون في هذا اليوم.</p>`;
+  else if(I.cur)body=`<div class="pick-name" id="pickName">${esc(I.cur.name)}</div><div class="pick-pts num">رصيده: ${points(I.cur.id)} ★</div>
+    <div class="row" style="justify-content:center"><button class="btn primary" data-act="pdone">سمّع</button>${r2?`<button class="btn danger" data-act="pfail">لم يسمّع</button>`:`<button class="btn" data-act="pskip">تخطي</button>`}</div>`;
+  else if(!pool.length)body=`<div class="pick-end"><b>${r2?"انتهت الجولة الثانية":"انتهت الجولة الأولى"}</b>
+    <span>${r2?"انتهى كل من تخطّى في الجولة الأولى.":I.skipped.length?`تخطّى ${I.skipped.length} من الطلاب. تبدأ الجولة الثانية بأسمائهم فقط.`:"لم يتخطَّ أحد."}</span>
+    ${!r2&&I.skipped.length?`<button class="btn accent" data-act="pstart2">ابدأ الجولة الثانية</button>`:`<button class="btn" data-act="preset">جولة جديدة</button>`}</div>`;
+  else body=`<div class="pick-name muted" id="pickName">؟</div><div class="row" style="justify-content:center"><button class="btn accent" data-act="ppick">اختيار عشوائي</button></div>`;
+  return `<div class="card pick stack"><div class="row" style="justify-content:space-between"><h3>الاختيار العشوائي</h3>
+    <div class="row"><span class="pill r3">${r2?"الجولة الثانية":"الجولة الأولى"}</span><button class="btn sm" data-act="preset">إعادة</button></div></div>
+    ${body}
+    <div class="chips" style="justify-content:center"><span class="chip">المتبقون <b>${Math.max(0,left)}</b></span><span class="chip c-p">سمّع <b>${r2?I.done2.length+I.done.length:I.done.length}</b></span>${I.fail.length?`<span class="chip c-a">لم يسمّع <b>${I.fail.length}</b></span>`:""}${I.skipped.length?`<span class="chip c-l">تخطّوا <b>${I.skipped.length}</b></span>`:""}</div>
+    ${!r2&&I.skipped.length?`<p class="small muted" style="margin:0;text-align:center">المتخطّون: ${names(I.skipped).map(esc).join("، ")}</p>`:""}</div>`;
+}
+/* classroom activity: lit tiles chase across the present students and stop on one winner, who gets points.
+   Sounds are noise clicks, a zap, a thump and a pow, not melodies. */
+const todayKey=()=>dkey(new Date());
+function actPool(){
+  const key=todayKey(),day=state.attendance.days[key]||{};
+  const all=sortedStudents().filter(s=>day[s.id]!=="a"&&day[s.id]!=="e");
+  const done=((state.store.actDone||{})[key])||[];
+  return {all,done,fresh:all.filter(s=>!done.includes(s.id))};
+}
+function spinPlan(n,w){const i0=Math.floor(Math.random()*n),laps=Math.max(1,Math.ceil(20/n));return {i0,total:((w-i0+n)%n)+laps*n}}
+function actGive(s){
+  const pts=Number(state.store.actPts)>0?Number(state.store.actPts):5,key=todayKey();
+  state.store.points[s.id]=points(s.id)+pts;
+  state.store.alog.push({id:uid(),sid:s.id,aid:"activity",name:"النشاط الفصلي",pts,date:key,t:Date.now()});
+  state.store.alog=state.store.alog.slice(-600);
+  const ad=state.store.actDone||(state.store.actDone={});(ad[key]||(ad[key]=[])).push(s.id);
+  save("store");ui.actWinner={sid:s.id,pts,date:key};toast(`${s.name}: +${pts}`);render();
+}
+function runActivity(){
+  if(ui.spinning)return;
+  const A=actPool(),pool=state.store.actNoRepeat!==false?A.fresh:A.all;
+  if(!pool.length){toast("لا يوجد طلاب متاحون للسحب");return}
+  const win=pool[Math.floor(Math.random()*pool.length)],n=pool.length,{i0,total}=spinPlan(n,pool.indexOf(win));
+  const board=document.getElementById("actBoard"),tiles=pool.map(s=>board&&board.querySelector(`[data-sid="${s.id}"]`));
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  ui.spinning=true;ui.actWinner=null;
+  const finish=()=>{ui.spinning=false;actGive(win)};
+  SFX.play("zap");
+  if(!board||reduce||tiles.some(t=>!t)){setTimeout(()=>{SFX.play("thump");SFX.play("pow");finish()},300);return}
+  const go=document.querySelector(".act-go");if(go)go.disabled=true;
+  const wm=document.querySelector(".act-win");if(wm)wm.remove();
+  let step=0,prev=null;
+  const tick=()=>{
+    if(prev)prev.classList.remove("lit");
+    const el=tiles[(i0+step)%n];el.classList.add("lit");prev=el;SFX.play("click");
+    if(step>=total){
+      el.classList.remove("lit");el.classList.add("won");
+      setTimeout(()=>{SFX.play("thump");setTimeout(()=>SFX.play("pow"),140)},60);setTimeout(finish,950);return;
+    }
+    step++;setTimeout(tick,30+Math.pow(step/total,3)*260);
+  };
+  tick();
+}
+function vActivity(){
+  const A=actPool(),pts=Number(state.store.actPts)>0?Number(state.store.actPts):5,noRep=state.store.actNoRepeat!==false;
+  const pool=noRep?A.fresh:A.all,key=todayKey();
+  const win=ui.actWinner&&ui.actWinner.date===key?stuById(ui.actWinner.sid):null;
+  const wins=state.store.alog.filter(l=>l.aid==="activity"&&l.date===key).reverse();
+  if(!A.all.length)return `<section class="panel"><div class="phead"><div><h2>النشاط الفصلي</h2></div></div>${students().length?`<div class="empty"><h3>لا يوجد طلاب حاضرون اليوم</h3><p>يُستبعد الغائبون والمستأذنون من السحب. سجّل الحضور من التحضير اليومي.</p></div>`:emptyStudents()}</section>`;
+  return `<section class="panel">
+  <div class="phead"><div><h2>النشاط الفصلي</h2><p>اضغط ابدأ السحب لتتحرك الأضواء بين الطلاب الحاضرين وتقف على فائز يحصل على ${pts} نقاط. يُستبعد الغائبون والمستأذنون.</p></div></div>
+  ${win?`<div class="act-win"><span class="small muted">الفائز</span><div class="act-name">${esc(win.name)}</div><div class="act-pts num">+${ui.actWinner.pts} ★ · رصيده الآن ${points(win.id)}</div></div>`:""}
+  <div class="card stack">
+    <div class="act-board" id="actBoard">${A.all.map(s=>{const d=noRep&&A.done.includes(s.id);return `<div class="tile ${d?"done":""}" data-sid="${s.id}"><span>${esc(s.name)}</span><small class="num">${points(s.id)} ★${d?" · شارك":""}</small></div>`}).join("")}</div>
+    <div class="row" style="justify-content:center;padding-top:6px">${pool.length?`<button class="act-go" data-act="actgo">ابدأ السحب</button>`:`<div class="stack" style="align-items:center"><b>شارك كل الحاضرين اليوم</b><button class="btn accent" data-act="actreset">جولة جديدة</button></div>`}</div>
+  </div>
+  <div class="card stack"><h3>الإعدادات</h3>
+    <div class="row"><label class="row" style="gap:8px">نقاط الفائز<input type="number" min="1" step="1" data-f="act-pts" value="${pts}" style="width:5.5rem" aria-label="نقاط الفائز"></label>
+    <label class="row" style="gap:6px;cursor:pointer"><input type="checkbox" id="actNoRep" ${noRep?"checked":""}> لا يتكرر الطالب حتى يشارك الجميع</label>
+    <button class="btn sm" data-act="actreset">إعادة الجولة</button></div></div>
+  ${wins.length?`<div class="card stack"><h3>فائزو اليوم</h3><ul class="side-list">${wins.map(l=>`<li><span>${esc((stuById(l.sid)||{}).name||"طالب محذوف")} <b class="num" style="color:var(--ok)">+${l.pts}</b></span><span class="row" style="gap:2px;flex-wrap:nowrap"><span class="muted small num">${esc(fmtTime(l.t))}</span><button class="icon del" data-act="undoact" data-id="${l.id}" aria-label="إلغاء النقاط" title="إلغاء">✕</button></span></li>`).join("")}</ul></div>`:""}
+  </section>`;
+}
+/* the live board is written to a shared doc that students can read; only the owner can write it */
+function boardData(){
+  const n=roundNow(),rid=n?n.id:(rounds().length?rounds()[rounds().length-1].id:"all"),r=roundById(rid);
+  return {title:roundName(state.store.cur)+" · "+(r?r.name:"الفصل كله")+(n?" · جارية":""),updated:Date.now(),
+    rows:students().map(s=>{const g=gradeTotal(s.id,rid);return {n:Number(s.num)||0,name:s.name,got:g.got,max:g.max,pts:points(s.id)}})};
+}
+/* hosted copy: the student board lives in a Google Apps Script web app; only each student's name and points leave this browser.
+   The script address and secret stay in localStorage, outside state, so they never end up in a backup file */
+const WEB_KEY="teacher-web-board";
+const webCfg=()=>{try{return JSON.parse(localStorage.getItem(WEB_KEY))||{}}catch(e){return {}}};
+function setWebCfg(k,v){const c=webCfg();c[k]=v;try{localStorage.setItem(WEB_KEY,JSON.stringify(c))}catch(e){}}
+const webId=u=>(String(u||"").match(/\/s\/([\w-]{20,})\/exec/)||[])[1]||"";
+const webUrl=id=>"https://script.google.com/macros/s/"+id+"/exec";
+const studentLink=()=>{const id=webId(webCfg().url);return id?location.origin+location.pathname+"?board="+id:""};
+const shortName=n=>String(n||"").trim().split(/\s+/).slice(0,2).join(" ");
+function webBoard(){
+  const b=boardData(),full=webCfg().full===true;
+  return {title:b.title,updated:b.updated,rows:[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n).map(r=>({name:full?r.name:shortName(r.name),pts:r.pts}))};
+}
+let webPending=false;
+function webPush(opts){
+  const c=webCfg(),id=webId(c.url);opts=opts||{};
+  if(!id||!c.secret){if(opts.manual)toast("اكتب رابط البرنامج وكلمة السر أولاً");return}
+  webPending=false;
+  return fetch(webUrl(id),{method:"POST",keepalive:!!opts.keepalive,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({secret:c.secret,board:webBoard()})})
+    .then(r=>r.json()).then(j=>{if(!j||!j.ok)throw 0;if(opts.manual)toast("نُشرت اللوحة")})
+    .catch(()=>toast("تعذّر تحديث لوحة الطلاب، تحقق من الرابط وكلمة السر"));
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&webPending){clearTimeout(boardT);webPush({keepalive:true})}});
+/* student view of the hosted copy: reads the board once a minute, and again when the tab comes back into view */
+function webStudent(id){
+  ui.student=true;ui.loaded=true;
+  let last="";
+  const load=()=>{if(document.hidden)return;
+    fetch(webUrl(id),{cache:"no-store"}).then(r=>r.json()).then(b=>{
+      setSync("ok","اللوحة محدّثة");
+      const js=JSON.stringify(b);if(js===last)return;last=js;
+      ui.board=b&&Array.isArray(b.rows)?{title:String(b.title||""),updated:Number(b.updated)||Date.now(),rows:b.rows.map(r=>({name:String(r.name||""),pts:Number(r.pts)||0,got:0,n:0}))}:null;
+      render();
+    }).catch(()=>setSync("err","تعذّر تحديث اللوحة، ستُعاد المحاولة"));
+  };
+  render();load();setInterval(load,60000);
+  document.addEventListener("visibilitychange",load);
+}
+function webCard(){
+  const c=webCfg(),link=studentLink();
+  return `<div class="card stack" style="max-width:640px"><h3>لوحة الطلاب على الإنترنت</h3>
+    <p class="small muted" style="margin:0">تتحدث اللوحة تلقائياً بعد كل تغيير. يصل للطلاب اسم الطالب ونقاطه فقط، ولا تصلهم الدرجات أو الحضور أو الملاحظات. يستطيع أي شخص لديه رابط الطلاب رؤية اللوحة.</p>
+    <label class="f">رابط برنامج Google (ينتهي بـ exec)<input type="text" dir="ltr" data-f="web-url" value="${esc(c.url)}" autocomplete="off"></label>
+    <label class="f">كلمة السر<input type="password" dir="ltr" data-f="web-secret" value="${esc(c.secret)}" autocomplete="off"></label>
+    <label class="row" style="gap:6px;cursor:pointer"><input type="checkbox" data-f="web-full" ${c.full?"checked":""}> إظهار الاسم الكامل (الافتراضي: أول كلمتين من الاسم)</label>
+    <div class="row"><button class="btn primary" data-act="webpush">نشر اللوحة الآن</button><button class="btn" data-act="webcopy" ${link?"":"disabled"}>نسخ رابط الطلاب</button></div>
+    ${link?`<input type="text" dir="ltr" readonly value="${esc(link)}" aria-label="رابط الطلاب">`:""}
+  </div>`;
+}
+let boardT;
+function pushBoard(){
+  clearTimeout(boardT);
+  if(S.mode!=="db"){const c=webCfg();if(webId(c.url)&&c.secret){webPending=true;boardT=setTimeout(()=>webPush(),3000)}return}
+  boardT=setTimeout(()=>{S.db.doc("board/live").set({v:boardData()}).catch(()=>{})},700);
+}
+function vBoard(b){
+  const hint=ui.student?"":`<div class="note"><span>${S.mode==="db"?`هذه اللوحة يراها الطلاب. شارك رابط الصفحة معهم بصلاحية "عرض" (Viewer)، فيرون هذه اللوحة فقط ولا يرون بياناتك.`:"هذه معاينة لما يراه الطلاب. انشر اللوحة وانسخ رابطها من الإعدادات."}</span></div>`;
+  if(!b)return `<section class="panel">${hint}<div class="empty"><h3>لا توجد لوحة بعد</h3><p>ستظهر النقاط هنا عندما تبدأ بإضافة الدرجات أو النقاط.</p></div></section>`;
+  const rows=[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n);
+  const top=rows.length?rows[0].pts:0,rankOf=r=>1+rows.filter(x=>x.pts>r.pts).length;
+  const leaders=top>0?rows.filter(r=>r.pts===top):[],rest=rows.filter(r=>!leaders.includes(r));
+  const medal=n=>n===2?"🥈":n===3?"🥉":"";
+  const hero=leaders.length?`<div class="lb-hero"><div class="lb-crown" aria-hidden="true">👑</div><div class="lb-label">${leaders.length>1?"المتصدرون":"المركز الأول"}</div>
+    ${leaders.map(r=>`<button class="lb-first" data-act="bsound" data-k="1">${esc(r.name)}</button>`).join("")}<div class="lb-pts num">${top} ★</div></div>`:"";
+  return `<section class="panel"><div class="phead"><div><h2>لوحة النقاط</h2><p>${esc(b.title)} · آخر تحديث ${esc(fmtTime(b.updated))}</p></div></div>${hint}
+  ${hero}
+  <ol class="lb">${rest.map((r,i)=>{const k=top>0?rankOf(r):i+1;return `<li class="lb-row ${k<=3&&r.pts>0?"top":""}"><span class="lb-rank num">${(r.pts>0&&medal(k))||k}</span><button class="lb-name" data-act="bsound" data-k="${k}">${esc(r.name)}</button><span class="lb-score num">${r.pts} ★</span></li>`}).join("")}</ol></section>`;
+}
+function awardBtns(sid,date,got){
+  const aw=state.store.awards;if(!aw.length)return "";
+  return `<div class="deds awds" role="group" aria-label="نقاط التحفيز">${aw.map(a=>{const n=got.filter(l=>l.aid===a.id).length;
+    return `<button class="awd ${n?"on":""}" data-act="award" data-sid="${sid}" data-id="${a.id}" data-date="${date}">${esc(a.name)} <b class="num">+${esc(a.pts)}</b>${n>1?` <span class="num">×${n}</span>`:""}</button>`}).join("")}
+    ${got.length?`<button class="icon" data-act="undoaward" data-id="${got[got.length-1].id}" title="تراجع عن آخر نقاط" aria-label="تراجع عن آخر نقاط">↶</button>`:""}</div>`;
+}
+/* ---------- rules ---------- */
+function vRules(){
+  const r=state.rules.list;
+  if(ui.present)return `<section class="panel"><div class="phead"><div></div><button class="btn" data-act="present">العودة للتعديل</button></div>
+    <div class="present"><h2>قوانين ${esc(state.settings.className||"الفصل")}</h2><ol>${r.map(x=>`<li>${esc(x.text)}</li>`).join("")}</ol></div></section>`;
+  return `<section class="panel">
+  <div class="phead"><div><h2>قوانين الفصل</h2><p>أضف القوانين ورتّبها، ثم اعرضها على السبورة للطلاب.</p></div><button class="btn accent" data-act="present" ${r.length?"":"disabled"}>عرض للطلاب</button></div>
+  <div class="card stack">
+    ${r.length?`<div class="items">${r.map((x,i)=>`<div class="item rule"><span class="k num">${i+1}</span><input type="text" data-f="rule" data-id="${x.id}" value="${esc(x.text)}" aria-label="القانون ${i+1}">
+      <button class="icon" data-act="mvrule" data-id="${x.id}" data-d="-1" aria-label="نقل لأعلى" ${i===0?"disabled":""}>↑</button><button class="icon" data-act="mvrule" data-id="${x.id}" data-d="1" aria-label="نقل لأسفل" ${i===r.length-1?"disabled":""}>↓</button><button class="icon del" data-act="delrule" data-id="${x.id}" aria-label="حذف القانون">✕</button></div>`).join("")}</div>`:`<p class="muted" style="margin:0">لا توجد قوانين بعد.</p>`}
+    <form class="row" id="addRule"><input type="text" id="ruleText" placeholder="قانون جديد" style="flex:1 1 260px" required><button class="btn primary">إضافة</button></form>
+  </div></section>`;
+}
+
+/* ---------- settings ---------- */
+function vSetup(){
+  const s=state.settings;
+  const f=(k,l,ph)=>`<label class="f">${l}<input type="text" data-f="set" data-k="${k}" value="${esc(s[k])}" placeholder="${ph}"></label>`;
+  return `<section class="panel">
+  <div class="phead"><div><h2>الإعدادات</h2><p>${S.mode==="db"?"بياناتك محفوظة في حسابك وخاصة بك وحدك، ولا يراها من تشاركه رابط الصفحة.":"بياناتك محفوظة في هذا المتصفح فقط، فنزّل نسخة احتياطية بانتظام."}</p></div></div>
+  <div class="card stack" style="max-width:640px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">${f("className","اسم الفصل","مثال: الخامس / أ")}${f("subject","المادة","مثال: الرياضيات")}${f("teacher","اسم المعلم","")}${f("school","المدرسة","")}</div>
+  </div>
+  <div class="card stack" style="max-width:640px"><h3>النسخة الاحتياطية</h3>
+    <p class="small muted" style="margin:0">${(()=>{try{return localStorage.getItem("teacher-bk-last")?`<b>آخر نسخة احتياطية: ${esc(localStorage.getItem("teacher-bk-last"))}</b><br>`:"<b>لم تنزّل نسخة احتياطية بعد.</b><br>"}catch(e){return ""}})()}يُحفظ كل ما تدخله تلقائياً لحظة إدخاله. نزّل نسخة احتياطية من حين لآخر، وتفيدك لنقل البيانات إلى جهاز آخر أو استعادتها إن مسح المتصفح بياناته.</p>
+    <div class="row"><button class="btn primary" data-act="exportbk">تنزيل نسخة احتياطية</button><label class="btn" for="bkFile" style="cursor:pointer">استعادة من ملف</label><input type="file" id="bkFile" accept=".json,application/json" style="position:absolute;width:1px;height:1px;opacity:0"></div>
+  </div>
+  ${S.mode==="db"?"":webCard()}
+  <div class="card stack" style="max-width:640px"><h3>إدارة البيانات</h3>
+    <div class="row"><button class="btn" data-act="newterm">بدء فصل دراسي جديد</button><span class="muted small">يمسح الحضور والدرجات والواجبات والنقاط، ويُبقي الطلاب والجدول والقوانين.</span></div>
+    <div class="row"><button class="btn" data-act="zeropts">تصفير جميع النقاط</button><span class="muted small">يجعل نقاط كل الطلاب صفراً في الجولة الحالية فقط، ويمسح سجل نقاطها واستبدالاتها. لا يمسّ الجولات الأخرى.</span></div>
+    <div class="row"><button class="btn danger" data-act="wipe">مسح كل البيانات</button></div>
+  </div></section>`;
+}
+
+/* ---------- render ---------- */
+const VIEWS={activity:vActivity,follow:vFollow,board:()=>vBoard(S.mode==="db"?boardData():webBoard()),attendance:vAttendance,students:vStudents,grades:vGrades,homework:vHomework,schedule:vSchedule,rewards:vRewards,rules:vRules,setup:vSetup};
+function render(){
+  renderHeader();
+  const v=document.getElementById("view");
+  if(ui.student){v.innerHTML=vBoard(ui.board);return}
+  if(!ui.loaded&&!students().length){v.innerHTML=`<div class="empty"><h3>جارٍ تحميل دفترك…</h3><p>نحضر طلابك ودرجاتك المحفوظة.</p></div>`;return}
+  const a=document.activeElement;const keep=a&&a.id&&v.contains(a)?{id:a.id,s:a.selectionStart}:null;
+  v.innerHTML=VIEWS[ui.tab]();
+  if(keep){const el=document.getElementById(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.s)}catch(e){}}}
+}
+function go(tab){ui.tab=tab;ui.present=false;try{history.replaceState(null,"","#"+tab)}catch(e){}render();window.scrollTo({top:0})}
+
+/* ---------- actions ---------- */
+/* names fill the placeholder slots first (in roster order), then extend the roster */
+function addStudents(names){
+  const slots=sortedStudents().filter(s=>s.slot);let last=null;
+  let n=students().reduce((m,s)=>Math.max(m,Number(s.num)||0),0);
+  names.map(x=>x.trim()).filter(Boolean).forEach(name=>{
+    const sl=slots.shift();
+    if(sl){sl.name=name;delete sl.slot;last=sl}
+    else{last={id:uid(),name,num:++n,notes:""};students().push(last)}
+  });
+  save("students");return last;
+}
+/* roster import: Noor's name report lays each student out as [name, number]; header rows carry "value : label" */
+function loadXLSX(){
+  if(window.XLSX)return Promise.resolve(window.XLSX);
+  return new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>window.XLSX?res(window.XLSX):rej();s.onerror=rej;document.head.appendChild(s)});
+}
+function parseRoster(rows){
+  const list=[],info={},seen=new Set();
+  for(const r of rows){
+    const v=r.map(c=>String(c??"").replace(/\s+/g," ").trim()).filter(Boolean);if(!v.length)continue;
+    const numI=v.findIndex(x=>/^\d{1,3}$/.test(x));
+    const name=v.find(x=>/[؀-ۿ]/.test(x)&&x.split(" ").length>=2&&x.length<70&&!x.includes(":"));
+    if(numI>=0&&name&&v.length<=4&&!v.includes(":")){if(!seen.has(name)){seen.add(name);list.push({num:Number(v[numI]),name})}continue}
+    if(v.includes(":")&&v.length>=3){
+      const pair=(lab)=>v[0].includes(lab)?v[v.length-1]:v[v.length-1].includes(lab)?v[0]:null;
+      info.grade=info.grade||pair("الصف");info.cls=info.cls||pair("الفصل");info.dept=info.dept||pair("القسم");
+    }else if(v.length===1&&/(ابتدائية|متوسطة|ثانوية|مدرسة|مدارس)/.test(v[0]))info.school=v[0];
+  }
+  return {list:list.sort((a,b)=>a.num-b.num),info};
+}
+function applyRoster(r){
+  const slots=sortedStudents().filter(s=>s.slot),have=new Set(students().map(s=>s.name));let added=0;
+  r.list.forEach(x=>{if(have.has(x.name))return;const sl=slots.shift();
+    if(sl){sl.name=x.name;sl.num=x.num;delete sl.slot}else students().push({id:uid(),name:x.name,num:x.num,notes:""});added++});
+  if(slots.length)removeIds(slots.map(s=>s.id));
+  const st=state.settings;
+  if(r.info.grade&&(!st.className||st.className==="فصلي"))st.className=r.info.grade+(r.info.cls?" / "+r.info.cls:"");
+  if(r.info.school&&!st.school)st.school=r.info.school;
+  if(r.info.dept&&!st.subject)st.subject=r.info.dept;
+  save("students");save("settings");return added;
+}
+async function importFile(file){
+  const msg=t=>{const el=document.getElementById("xlsxMsg");if(el)el.textContent=t};
+  msg("جارٍ قراءة الملف…");
+  try{
+    const X=await loadXLSX();const wb=X.read(await file.arrayBuffer(),{type:"array"});
+    let best={list:[],info:{}};
+    for(const n of wb.SheetNames){const r=parseRoster(X.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:""}));if(r.list.length>best.list.length)best=r}
+    if(!best.list.length){msg("لم نجد أسماء طلاب في هذا الملف. تأكد أنه كشف الأسماء، أو الصق الأسماء يدوياً.");return}
+    msg("");
+    const where=[best.info.grade,best.info.cls&&("فصل "+best.info.cls)].filter(Boolean).join(" ");
+    confirmBox(`وجدنا ${best.list.length} طالباً في الملف${where?" ("+where+")":""}، أولهم ${best.list[0].name}. استيراد الأسماء إلى الكشف؟`,"استيراد",()=>{
+      const n=applyRoster(best);toast(n?`استُورد ${n} طالباً`:"كل الأسماء موجودة في الكشف مسبقاً");render()});
+  }catch(e){msg("تعذّرت قراءة الملف. جرّب حفظه بصيغة xlsx ثم اختره مرة أخرى.")}
+}
+let setupDone=false;
+/* a hosted copy can ship a starting class list; the Claude version leaves this null */
+const SEED_STUDENTS=null;
+function setupOnce(){
+  if(setupDone)return;setupDone=true;
+  if(state.grades.v!==2){state.grades=Object.assign(defaults().grades,{v:2});save("grades")}
+  if(!students().length){
+    if(SEED_STUDENTS)SEED_STUDENTS.forEach(([name,num])=>students().push({id:uid(),name,num,notes:""}));
+    else for(let i=1;i<=24;i++)students().push({id:uid(),name:"الطالب "+i,num:i,notes:"",slot:true});
+    save("students")}
+}
+function loadSample(){
+  const names=["عبدالله الحربي","فيصل القحطاني","سعود العتيبي","تركي الشهري","يوسف الزهراني","خالد الدوسري","مازن الغامدي","نواف المطيري"];
+  let n=students().reduce((m,s)=>Math.max(m,Number(s.num)||0),0);
+  const added=names.map(name=>({id:uid(),name,num:++n,notes:"",example:true}));
+  students().push(...added);
+  const today=dkey(new Date());const day=state.attendance.days[today]||(state.attendance.days[today]={});
+  added.forEach((s,i)=>{day[s.id]=i===2?"a":i===5?"l":"p";state.store.points[s.id]=[12,30,4,18,9,26,15,7][i];
+    const sc=state.grades.scores[s.id]={};state.grades.items.forEach((it,j)=>sc[it.id]=Math.round(it.max*(0.55+((i*7+j*3)%10)/22)*2)/2)});
+  ["students","attendance","store","grades"].forEach(save);
+  toast("أُضيف 8 طلاب للمثال");render();
+}
+function removeIds(ids){
+  const set=new Set(ids);
+  state.students.list=students().filter(s=>!set.has(s.id));
+  for(const k in state.attendance.days)ids.forEach(id=>delete state.attendance.days[k][id]);
+  ids.forEach(id=>{delete state.grades.scores[id];delete state.store.points[id]});
+  state.store.alog=state.store.alog.filter(l=>!set.has(l.sid));
+  for(const k in state.grades.log)ids.forEach(id=>delete state.grades.log[k][id]);
+  for(const k in state.grades.rscores)ids.forEach(id=>delete state.grades.rscores[k][id]);
+  ids.forEach(id=>delete state.grades.exams.scores[id]);
+  state.homework.list.forEach(h=>ids.forEach(id=>h.done&&delete h.done[id]));
+  ["students","attendance","grades","store","homework"].forEach(save);
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b||b.disabled)return;
+  const a=b.dataset.act,id=b.dataset.id;
+  SFX.act(a,b);
+  switch(a){
+    case "tab":case "goto":go(b.dataset.tab);break;
+    case "sample":loadSample();break;
+    case "clearsample":confirmBox("حذف كل طلاب المثال وبياناتهم؟","حذف",()=>{removeIds(students().filter(s=>s.example).map(s=>s.id));toast("حُذف طلاب المثال");render()});break;
+    case "mark":{const day=state.attendance.days[ui.date]||(state.attendance.days[ui.date]={});const v=b.dataset.v;
+      day[b.dataset.sid]=day[b.dataset.sid]===v?undefined:v;if(!day[b.dataset.sid])delete day[b.dataset.sid];save("attendance");render();break}
+    case "ded":{const log=state.grades.log,day=log[ui.date]||(log[ui.date]={}),sid=b.dataset.sid,arr=day[sid]||[];
+      day[sid]=arr.includes(id)?arr.filter(x=>x!==id):arr.concat(id);
+      if(!day[sid].length)delete day[sid];if(!Object.keys(day).length)delete log[ui.date];save("grades");render();break}
+    case "ppick":{const I=pickInfo(ui.date),pool=I.p.round===2?I.pool2:I.pool1;if(!pool.length){render();break}
+      const s=pool[Math.floor(Math.random()*pool.length)],p=clonePick();p.cur=s.id;setPick(ui.date,p);render();
+      shuffleFx(document.getElementById("pickName"),pool.map(x=>x.name),s.name);break}
+    case "pdone":case "pskip":case "pfail":{const p=clonePick(),r2=p.round===2,sid=p.cur;if(!sid)break;
+      const nm=(stuById(sid)||{}).name||"",aw=state.store.awards.find(x=>x.id==="a3");let msg="";
+      if(a==="pskip"){if(r2)break;p.skipped.push(sid)}
+      else if(a==="pfail"){if(!r2)break;(p.fail||(p.fail=[])).push(sid);applyDed(sid,"d2",ui.date);msg=`${nm}: لم يسمّع`}
+      else{(r2?p.done2:p.done).push(sid);if(aw){award(sid,"a3",ui.date);msg=`${nm}: سمّع +${aw.pts}`}else msg=`${nm}: سمّع`}
+      p.cur=null;setPick(ui.date,p);const J=pickInfo(ui.date),ended=!(r2?J.pool2:J.pool1).length;
+      if(ended)msg=r2?"انتهت الجولة الثانية":"انتهت الجولة الأولى";
+      SFX.play(ended?"end":a==="pdone"?"win":a==="pfail"?"fail":"blip");
+      if(msg)toast(msg);render();break}
+    case "pstart2":{const p=clonePick();p.round=2;p.cur=null;setPick(ui.date,p);render();break}
+    case "preset":setPick(ui.date,blankPick());render();break;
+    case "rwsec":ui.rwSec=id;render();break;
+    case "bsound":{const k=Number(b.dataset.k)||9;
+      if(k===1){SFX.play("win");setTimeout(()=>SFX.play("powerup"),380)}else if(k<=3)SFX.play("powerup");else SFX.play("coin");
+      const el=b.closest(".lb-hero,.lb-row")||b;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");break}
+    case "exportbk":exportBackup();break;
+    case "webpush":webPush({manual:true});break;
+    case "webcopy":{const l=studentLink();if(!l)break;try{navigator.clipboard.writeText(l).then(()=>toast("نُسخ رابط الطلاب"),()=>toast("انسخ الرابط من الخانة"))}catch(e){toast("انسخ الرابط من الخانة")}break}
+    case "actgo":runActivity();break;
+    case "actreset":{const ad=state.store.actDone||(state.store.actDone={});ad[todayKey()]=[];save("store");ui.actWinner=null;render();break}
+    case "undoact":{const l=state.store.alog.find(x=>x.id===id),ad=state.store.actDone||{};
+      if(l&&ad[l.date])ad[l.date]=ad[l.date].filter(x=>x!==l.sid);unaward(id);ui.actWinner=null;toast("أُلغيت النقاط");render();break}
+    case "fixpick":{ui.fixSid=b.dataset.sid;render();const c=document.getElementById("fixCard");if(c)c.scrollIntoView({block:"center"});const f=document.getElementById("fixAmt");if(f)f.focus();break}
+    case "fixset":{const sid=document.getElementById("fixStu").value,raw=document.getElementById("fixAmt").value,why=document.getElementById("fixWhy").value.trim();
+      if(!sid||raw===""||!(Number(raw)>=0)){toast("اختر الطالب واكتب رصيداً صحيحاً من صفر فأكثر");break}
+      const target=Math.round(Number(raw)),d=manualPoints(sid,target-points(sid),why||"ضبط الرصيد إلى "+target);
+      ui.fixSid=sid;if(d){SFX.play(d>0?"coin":"low");toast(`رصيد ${(stuById(sid)||{}).name}: ${target}`)}else toast("الرصيد كما هو");render();break}
+    case "sfx":SFX.toggle();renderHeader();SFX.play("blip");break;
+    case "delex":{const e=state.grades.exams.items.find(x=>x.id===id);confirmBox(`حذف "${e.name}" ودرجاته لجميع الطلاب؟`,"حذف",()=>{const ex=state.grades.exams;ex.items=ex.items.filter(x=>x.id!==id);for(const k in ex.scores)delete ex.scores[k][id];save("grades");render()});break}
+    case "ground":ui.gRound=id;render();break;
+    case "delround":{const x=roundById(id);confirmBox(`حذف "${x.name}" ودرجاتها اليدوية؟ تبقى الخصومات المسجلة في أيامها.`,"حذف",()=>{state.grades.rounds=rounds().filter(r=>r.id!==id);delete state.grades.rscores[id];if(ui.gRound===id)ui.gRound="";save("grades");render()});break}
+    case "award":{const aw=state.store.awards.find(x=>x.id===id),d=b.dataset.date,prev=aw&&onceAward(aw)?dayAwards(b.dataset.sid,d).filter(l=>l.aid===id).pop():null;
+      if(prev){unaward(prev.id);SFX.play("undo");toast("أُلغيت النقاط");}else award(b.dataset.sid,id,d);render();break}
+    case "undoaward":unaward(id);toast("أُلغيت النقاط");render();break;
+    case "delaw":{const x=state.store.awards.find(a=>a.id===id);confirmBox(`حذف زر "${x.name}"؟ تبقى النقاط التي حصل عليها الطلاب.`,"حذف",()=>{state.store.awards=state.store.awards.filter(a=>a.id!==id);save("store");render()});break}
+    case "deldd":state.grades.deductions=state.grades.deductions.filter(x=>x.id!==id);save("grades");render();break;
+    case "allp":{const day=state.attendance.days[ui.date]||(state.attendance.days[ui.date]={});students().forEach(s=>{if(!day[s.id])day[s.id]="p"});save("attendance");toast("حُضِّر الجميع حاضرين، عدّل الغائبين");render();break}
+    case "clearday":confirmBox("مسح تحضير هذا اليوم؟","مسح",()=>{delete state.attendance.days[ui.date];save("attendance");render()});break;
+    case "day":{const d=parseKey(ui.date);d.setDate(d.getDate()-Number(b.dataset.d));ui.date=dkey(d);render();break}
+    case "today":ui.date=dkey(new Date());render();break;
+    case "delstu":{const s=stuById(id);confirmBox(`حذف ${s.name} من الكشف مع حضوره ودرجاته ونقاطه؟`,"حذف",()=>{removeIds([id]);toast("حُذف الطالب");render()});break}
+    case "delgi":{const it=state.grades.items.find(x=>x.id===id);confirmBox(`حذف بند "${it.name}" ودرجاته لجميع الطلاب؟`,"حذف",()=>{state.grades.items=state.grades.items.filter(x=>x.id!==id);for(const k in state.grades.scores)delete state.grades.scores[k][id];state.grades.deductions=state.grades.deductions.filter(d=>d.itemId!==id);save("grades");render()});break}
+    case "hwtoggle":ui.openHw[id]=!ui.openHw[id];render();break;
+    case "hwall":case "hwnone":{const h=state.homework.list.find(x=>x.id===id);h.done={};if(a==="hwall")students().forEach(s=>h.done[s.id]=true);save("homework");render();break}
+    case "delhw":confirmBox("حذف هذا الواجب وسجل تسليمه؟","حذف",()=>{state.homework.list=state.homework.list.filter(x=>x.id!==id);save("homework");render()});break;
+    case "delp":confirmBox("حذف هذه الحصة من الجدول؟","حذف",()=>{state.schedule.periods=state.schedule.periods.filter(x=>x.id!==id);for(const k in state.schedule.cells)if(k.endsWith("-"+id))delete state.schedule.cells[k];save("schedule");render()});break;
+    case "pt":{const sid=b.dataset.sid;state.store.points[sid]=Math.max(0,points(sid)+Number(b.dataset.n));save("store");render();break}
+    case "redeem":{const it=state.store.items.find(x=>x.id===id),s=stuById(ui.redeemSid);if(!it||!s)break;
+      if(hasQty(it)&&Number(it.qty)<=0){toast("نفدت كمية هذه الجائزة");render();break}
+      confirmBox(`استبدال "${it.name}" لـ ${s.name} مقابل ${it.cost} نقطة؟`,"تأكيد الاستبدال",()=>{if(hasQty(it)&&Number(it.qty)<=0){toast("نفدت كمية هذه الجائزة");render();return}
+        SFX.play("powerup");if(hasQty(it))it.qty=Number(it.qty)-1;state.store.points[s.id]=points(s.id)-Number(it.cost);
+        state.store.log.push({sid:s.id,item:it.name,cost:Number(it.cost),date:dkey(new Date())});state.store.log=state.store.log.slice(-200);save("store");toast(hasQty(it)&&it.qty<=0?`حصل ${s.name} على: ${it.name} — نفدت الكمية`:`حصل ${s.name} على: ${it.name}`);render()});break}
+    case "delrr":state.store.rateRules=rrules().filter(x=>x.id!==id);save("store");render();break;
+    case "delsi":state.store.items=state.store.items.filter(x=>x.id!==id);save("store");render();break;
+    case "present":ui.present=!ui.present;render();break;
+    case "mvrule":{const l=state.rules.list,i=l.findIndex(x=>x.id===id),j=i+Number(b.dataset.d);if(j<0||j>=l.length)break;[l[i],l[j]]=[l[j],l[i]];save("rules");render();break}
+    case "delrule":state.rules.list=state.rules.list.filter(x=>x.id!==id);save("rules");render();break;
+    case "newterm":confirmBox("بدء فصل دراسي جديد؟ سيُمسح الحضور والدرجات والواجبات والنقاط.","بدء فصل جديد",()=>{state.attendance={days:{}};state.grades.scores={};state.grades.log={};state.grades.rscores={};state.grades.rounds=[];state.grades.exams.scores={};state.homework={list:[]};state.store.points={};state.store.log=[];state.store.alog=[];state.store.actDone={};state.store.archive={};state.store.cur="r1";["attendance","grades","homework","store"].forEach(save);toast("بدأ فصل دراسي جديد");render()});break;
+    case "zeropts":confirmBox(`تصفير نقاط جميع الطلاب في "${roundName(state.store.cur)}"؟ لا يمكن التراجع، ويُنصح بتنزيل نسخة احتياطية أولاً.`,"تصفير النقاط",()=>{state.store.points={};state.store.alog=[];state.store.log=[];state.store.actDone={};ui.actWinner=null;save("store");toast("صُفّرت جميع النقاط");render()});break;
+    case "wipe":confirmBox("مسح كل البيانات نهائياً، بما فيها الطلاب والجدول والقوانين؟","مسح الكل",()=>{state=defaults();state.grades.v=2;SECTIONS.forEach(save);toast("مُسحت البيانات");go("attendance")});break;
+  }
+});
+
+document.addEventListener("input",e=>{
+  const t=e.target,f=t.dataset.f;
+  if(t.id==="stuSearch"){ui.search=t.value;render();return}
+  if(!f)return;const id=t.dataset.id;
+  const find=(arr)=>arr.find(x=>x.id===id);
+  switch(f){
+    case "stu-name":{const s=find(students());s.name=t.value;delete s.slot;save("students");break}
+    case "dd-name":find(state.grades.deductions).name=t.value;save("grades");break;
+    case "dd-pts":find(state.grades.deductions).pts=Number(t.value)||0;save("grades");break;
+    case "dd-item":find(state.grades.deductions).itemId=t.value;save("grades");break;
+    case "stu-num":find(students()).num=t.value;save("students");break;
+    case "stu-notes":find(students()).notes=t.value;save("students");break;
+    case "gi-name":find(state.grades.items).name=t.value;save("grades");break;
+    case "gi-max":find(state.grades.items).max=Number(t.value)||0;save("grades");break;
+    case "act-pts":state.store.actPts=Number(t.value)>0?Math.round(Number(t.value)):5;save("store");break;
+    case "ex-name":find(state.grades.exams.items).name=t.value;save("grades");break;
+    case "ex-max":{const ex=state.grades.exams;find(ex.items).max=t.value===""?"":Number(t.value)||0;
+      document.querySelectorAll('input[data-f="ex-max"]').forEach(i=>{if(i.dataset.id===id&&i!==t)i.value=t.value});
+      document.querySelectorAll('input[data-f="exam"]').forEach(i=>{if(i.dataset.eid===id)i.max=t.value});
+      document.querySelectorAll('[data-cell="etot"]').forEach(td=>{td.textContent=examText(td.closest("tr").dataset.row)});
+      const sum=ex.items.reduce((a,e)=>a+(Number(e.max)||0),0),ms=document.getElementById("exMaxSum");if(ms)ms.textContent=sum>0?sum:"";
+      save("grades");break}
+    case "exam":{const ex=state.grades.exams,sid=t.dataset.sid,sc=ex.scores[sid]||(ex.scores[sid]={});
+      if(t.value==="")delete sc[t.dataset.eid];else sc[t.dataset.eid]=Number(t.value);
+      const e=ex.items.find(x=>x.id===t.dataset.eid);t.style.borderColor=Number(e.max)>0&&Number(t.value)>Number(e.max)?"var(--bad)":"";
+      t.closest("tr").querySelector('[data-cell="etot"]').textContent=examText(sid);save("grades");break}
+    case "r-name":find(rounds()).name=t.value;save("grades");break;
+    case "r-start":case "r-end":if(t.value){find(rounds())[f==="r-start"?"start":"end"]=t.value;rounds().sort((a,b)=>String(a.start).localeCompare(String(b.start)));save("grades");renderHeader()}break;
+    case "grade":{const sid=t.dataset.sid,rid=curGRound(),bag=rid==="all"?state.grades.scores:(state.grades.rscores[rid]||(state.grades.rscores[rid]={})),sc=bag[sid]||(bag[sid]={});
+      if(t.value==="")delete sc[t.dataset.iid];else sc[t.dataset.iid]=Number(t.value);
+      const it=state.grades.items.find(x=>x.id===t.dataset.iid);t.style.borderColor=Number(t.value)>Number(it.max)?"var(--bad)":"";
+      const g=gradeTotal(sid,rid),r=rating(g.pct),row=t.closest("tr");
+      row.querySelector('[data-cell="tot"]').textContent=g.got+"/"+g.max;row.querySelector('[data-cell="pct"]').innerHTML=pctCell(g.pct);
+      row.querySelector('[data-cell="rate"]').innerHTML=`<span class="pill ${r[1]}">${r[0]}</span>`;save("grades");break}
+    case "hwdone":{const h=find(state.homework.list);h.done=h.done||{};if(t.checked)h.done[t.dataset.sid]=true;else delete h.done[t.dataset.sid];save("homework");render();break}
+    case "cell":if(t.value.trim())state.schedule.cells[t.dataset.k]=t.value;else delete state.schedule.cells[t.dataset.k];save("schedule");break;
+    case "p-label":find(state.schedule.periods).label=t.value;save("schedule");break;
+    case "p-time":find(state.schedule.periods).time=t.value;save("schedule");break;
+    case "aw-name":find(state.store.awards).name=t.value;save("store");break;
+    case "aw-pts":find(state.store.awards).pts=Math.max(1,Number(t.value)||1);save("store");break;
+    case "si-name":find(state.store.items).name=t.value;save("store");break;
+    case "aw-once":find(state.store.awards).once=t.checked;save("store");break;
+    case "rr-op":find(rrules()).op=t.value;save("store");break;
+    case "rr-val":find(rrules()).val=t.value===""?"":Number(t.value);save("store");break;
+    case "rr-label":find(rrules()).label=t.value.trim();save("store");break;
+    case "rr-color":find(rrules()).color=t.value;save("store");break;
+    case "si-qty":{const it=find(state.store.items);it.qty=t.value===""?"":Math.max(0,Math.floor(Number(t.value))||0);save("store");break}
+    case "si-cost":find(state.store.items).cost=Math.max(1,Number(t.value)||1);save("store");break;
+    case "rule":find(state.rules.list).text=t.value;save("rules");break;
+    case "set":state.settings[t.dataset.k]=t.value;save("settings");renderHeader();break;
+    case "web-url":setWebCfg("url",t.value.trim());break;
+    case "web-secret":setWebCfg("secret",t.value);break;
+    case "web-full":setWebCfg("full",t.checked);break;
+  }
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="attDate"&&t.value){ui.date=t.value;render()}
+  if(t.dataset&&(t.dataset.f==="si-qty"||/^(rr|web)-/.test(t.dataset.f||"")))render();
+  if(t.id==="redeemStu"){ui.redeemSid=t.value;render()}
+  if(t.id==="fixStu")ui.fixSid=t.value;
+  if(t.id==="roundSel"){const to=t.value;
+    if(to===state.store.cur)return;
+    if((state.store.archive||{})[to]){switchRound(to);return}
+    confirmBox(`الدخول إلى "${roundName(to)}" للمرة الأولى؟ ستبدأ النقاط والمتابعة من الصفر، وتبقى بيانات "${roundName(state.store.cur)}" محفوظة ويمكنك الرجوع إليها من القائمة.`,"ابدأ من الصفر",()=>switchRound(to));
+    t.value=state.store.cur;return}
+  if(t.id==="bkFile"){if(t.files[0])importBackup(t.files[0]);t.value="";return}
+  if(t.id==="actNoRep"){state.store.actNoRepeat=t.checked;save("store");render()}
+  if(t.id==="xlsxFile"&&t.files&&t.files[0]){importFile(t.files[0]);t.value=""}
+});
+document.addEventListener("submit",e=>{
+  e.preventDefault();const id=e.target.id;const val=x=>document.getElementById(x).value.trim();
+  switch(id){
+    case "fixForm":{const sid=val("fixStu"),amt=Math.round(Number(document.getElementById("fixAmt").value));
+      if(!sid||!amt){toast("اختر الطالب واكتب عدداً غير الصفر");return}
+      const d=manualPoints(sid,amt,val("fixWhy"));ui.fixSid=sid;
+      if(d){SFX.play(d>0?"coin":"low");toast(`${(stuById(sid)||{}).name}: ${d>0?"+":""}${d}`)}else toast("الرصيد صفر بالفعل");render();break}
+    case "addEx":state.grades.exams.items.push({id:uid(),name:val("exName"),max:Number(val("exMax"))||20});save("grades");render();break;
+    case "addRound":{const st=val("rStart"),en=val("rEnd");if(!st||!en)return;
+      if(en<=st){toast("يجب أن تكون نهاية الجولة بعد بدايتها");return}
+      const nr={id:uid(),name:val("rName"),start:st,end:en};rounds().push(nr);rounds().sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+      ui.gRound=nr.id;save("grades");toast("أُضيفت "+nr.name);render();renderHeader();break}
+    case "addDd":state.grades.deductions.push({id:uid(),name:val("ddName"),pts:Number(val("ddPts"))||0,itemId:val("ddItem")});save("grades");render();break;
+    case "addStu":{const name=val("newName");if(!name)return;const num=val("newNum");const s=addStudents([name]);if(num&&s)s.num=num;save("students");toast("أُضيف "+name);render();document.getElementById("newName").focus();break}
+    case "bulkStu":{const names=document.getElementById("bulkNames").value.split(/\n|،|,/).map(x=>x.trim()).filter(Boolean);if(!names.length)return;addStudents(names);toast("أُضيف "+names.length+" طالب");render();break}
+    case "addGi":state.grades.items.push({id:uid(),name:val("giName"),max:Number(val("giMax"))||10});save("grades");render();break;
+    case "addHw":state.homework.list.push({id:uid(),title:val("hwTitle"),due:val("hwDue"),desc:val("hwDesc"),done:{}});save("homework");toast("أُضيف الواجب");render();break;
+    case "addP":state.schedule.periods.push({id:uid(),label:val("pLabel"),time:val("pTime")});save("schedule");render();break;
+    case "addAw":state.store.awards.push({id:uid(),name:val("awName"),pts:Math.max(1,Number(val("awPts"))||1)});save("store");toast("أُضيف زر "+val("awName"));render();break;
+    case "addRr":rrules().push({id:uid(),op:val("rrOp"),val:Number(val("rrVal")),label:val("rrLabel"),color:val("rrColor")});save("store");render();break;
+    case "addSi":state.store.items.push({id:uid(),name:val("siName"),cost:Math.max(1,Number(val("siCost"))||1),qty:val("siQty")===""?"":Math.max(1,Math.floor(Number(val("siQty")))||1)});save("store");render();break;
+    case "addRule":state.rules.list.push({id:uid(),text:val("ruleText")});save("rules");render();document.getElementById("ruleText").focus();break;
+  }
+});
+
+/* ---------- boot ---------- */
+document.documentElement.setAttribute("dir","rtl");document.documentElement.setAttribute("lang","ar");
+const boardParam=new URLSearchParams(location.search).get("board");
+if(boardParam&&/^[\w-]{20,}$/.test(boardParam)){webStudent(boardParam);return}
+const h=(location.hash||"").slice(1);if(TABS.some(t=>t[0]===h))ui.tab=h;
+applyLocal();
+if(students().length)ui.loaded=true;
+render();
+initStorage();
+})();
+</script>
+</body></html>
