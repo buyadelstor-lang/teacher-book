@@ -362,7 +362,7 @@ const total=()=>Object.values(S.stars).reduce((a,b)=>a+b,0)+(S.words||0)+Object.
 const unlocked=i=>i===0||(i<4?!!S.stars[LET[i-1].L]:!!S.stars.D);
 // ---------- scenes ----------
 function show(id){document.querySelectorAll('.scene').forEach(s=>s.hidden=s.id!==id);$('buddy').hidden=!['learn','trace','bub','words','vlearn','vgame'].includes(id);if(id==='worlds')drawWorlds();hideSay();idle(id==='learn'?'learnmore':id==='trace'?'traceme':null);if(id==='map')drawMap();if(id==='album')drawAlbum();}
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{seqId++;if(cur)cur.pause();show(b.dataset.go);}));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{seqId++;stopCur();show(b.dataset.go);}));
 let firstPlay=true;
 $('play').addEventListener('click',()=>{unlock();preload(['hello','letsgo','great','awesome','yes','tryagain','oops2','oops3','cheer1','cheer2','cheer3','youdidit','sticker','isledone','newwords','tappic','letsplay'],true);setTimeout(()=>preload([...AUDIO_KEYS]),1500);show('worlds');if(firstPlay){firstPlay=false;play(['hello']);}else play('letsgo');});
 // parent corner: hold 2s
