@@ -485,6 +485,81 @@ body.bigq .gcats{display:none}
 body.fsmode .gcats{margin-bottom:6px}body.fsmode .gcats button{padding:5px 8px;font-size:1rem}
 .tug-turn{display:inline-block;align-self:center;font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,2.4vw,1.7rem);color:#fff;padding:4px 18px;border:3px solid var(--edge);box-shadow:4px 4px 0 var(--edge);text-shadow:2px 2px 0 rgba(0,0,0,.35)}
 .tug-team.on{outline:3px dashed var(--ink);outline-offset:4px}
+.tabs button:nth-child(9)[aria-selected="true"]{background:var(--k-pink);color:#fff}
+.tabs button:nth-child(10)[aria-selected="true"]{background:var(--k-teal);color:#08201D}
+.tabs button:nth-child(11)[aria-selected="true"]{background:var(--k-blue);color:#fff}
+.tabs button:nth-child(12)[aria-selected="true"]{background:var(--k-coral);color:#2A0E05}
+.tabs button:nth-child(n+13)[aria-selected="true"]{background:var(--k-green);color:#13260F}
+/* million ladder */
+.mil{display:grid;grid-template-columns:1fr 210px;gap:16px;width:100%;align-items:start}
+.mil-ladder{list-style:none;margin:0;padding:6px;display:flex;flex-direction:column;gap:4px;border:3px solid var(--edge);background:var(--surface);box-shadow:4px 4px 0 var(--edge)}
+.mil-ladder li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 10px;font-family:var(--pixel);font-size:.75rem;direction:ltr;color:var(--muted)}
+.mil-ladder li b{font-weight:400;color:var(--ink)}
+.mil-ladder li:first-child b{color:var(--k-pink)}
+.mil-ladder li.done{background:color-mix(in srgb,var(--k-green) 35%,transparent)}
+.mil-ladder li.now{background:var(--k-sun);color:#3A2600;outline:3px solid var(--edge);animation:blinkb 1s steps(2) infinite}
+.mil-ladder li.now b{color:#3A2600}
+.mil-helps button{font-size:.95rem;padding:8px 12px}
+.mil-helps button:disabled{opacity:.35;text-decoration:line-through}
+.opt.gone{visibility:hidden}
+/* hidden word */
+.hid-box{position:relative;width:min(100%,760px);height:clamp(130px,20vh,200px);border:3px solid var(--edge);box-shadow:4px 4px 0 var(--edge);background:var(--surface);display:grid;place-items:center;overflow:hidden}
+.hid-word{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,8vw,5.5rem);line-height:1.2;color:var(--ink);padding:0 12px}
+.hid-tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr)}
+.hid-tile{border:2px solid var(--edge);box-shadow:none;font-family:var(--pixel);font-size:1rem;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.35);padding:0;min-height:0}
+.hid-tile.open{visibility:hidden}
+.hid-tiles.can .hid-tile:not(.open){animation:blinkb 1s steps(2) infinite;cursor:pointer}
+.hid-clue{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--k-purple);min-height:0;margin:0}
+.hid-clue:empty{display:none}
+body.bigq .hid-box{height:clamp(200px,34vh,320px);width:min(100%,1000px)}
+/* tic tac toe */
+.xo{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.xo-main{display:grid;grid-template-columns:minmax(200px,300px) 1fr;gap:18px;width:100%;align-items:start}
+.xo-board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;aspect-ratio:1}
+.xo-cell{position:relative;padding:0;min-height:0;display:grid;place-items:center;background:var(--surface);font-family:var(--pixel)}
+.xo-cell .xo-n{font-size:.8rem;color:var(--muted)}
+.xo-cell b{font-size:clamp(2.2rem,6vw,3.6rem);color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.35);font-weight:400}
+.xo-cell.sel{background:var(--k-sun);animation:blinkb 1s steps(2) infinite}
+.xo-board.locked .xo-cell:not(.sel):not(.own){opacity:.55}
+.xo-cell.winline{outline:4px solid var(--ink);outline-offset:-8px;animation:pxpop .4s steps(5)}
+@media (max-width:700px){.xo-main{grid-template-columns:1fr}.xo-board{max-width:340px;margin:0 auto}.mil{grid-template-columns:1fr}}
+/* fastest hand */
+.xo-q .opts{grid-template-columns:1fr}
+body.pairg #turn{display:none}
+.fast{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.fast-btns{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.fast-btn{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:96px;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.35)}
+.fast-btn .fast-name{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.2}
+.fast-btn .fast-sc{font-family:var(--pixel);font-size:1rem;direction:ltr}
+.fast-btn:disabled{opacity:.5}
+.fast-btn.on{opacity:1;outline:4px dashed var(--ink);outline-offset:4px}
+.fast-st{display:inline-block;align-self:center;font-family:var(--display);font-weight:800;font-size:clamp(1.1rem,2.2vw,1.5rem);padding:4px 16px;border:3px solid var(--edge);background:var(--surface);color:var(--ink)}
+.fast-st[style*="background"]{color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.35)}
+.fast .opt:disabled:not(.right):not(.wrong){opacity:.6}
+/* auction */
+.auc{width:100%;display:flex;flex-direction:column;gap:12px;align-items:center}
+.auc-head{font-family:var(--pixel);font-size:.9rem}
+.auc-table{display:grid;gap:8px;width:min(100%,720px)}
+.auc-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:8px 12px;border:3px solid var(--edge);background:var(--surface);box-shadow:3px 3px 0 var(--edge);text-align:start}
+.auc-row.on{background:var(--k-sun);color:#3A2600}
+.auc-name{font-family:var(--display);font-weight:800;font-size:1.25rem}
+.auc-coins{font-family:var(--pixel);font-size:.9rem;direction:ltr}
+.auc-ctl{display:flex;align-items:center;gap:8px}
+.auc-step{width:44px;height:44px;padding:0;font-size:1.4rem;line-height:1}
+.auc-bid{font-family:var(--pixel);font-size:1.1rem;min-width:2.2ch;text-align:center}
+.auc-lose{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--k-coral)}
+/* raid */
+.raid{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.raid-top{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;width:100%}
+.raid-boss{width:clamp(96px,11vw,140px);height:auto;image-rendering:pixelated;animation:bob 1.6s steps(2) infinite}
+.raid-boss.hit{animation:shake .4s steps(6);filter:brightness(2.2) saturate(.3)}
+.raid-bars{display:flex;flex-direction:column;gap:6px;min-width:min(100%,320px);flex:1;max-width:520px;text-align:start}
+.raid-lbl{font-family:var(--display);font-weight:800;font-size:1.1rem}
+.raid-hp{position:relative;height:28px;border:3px solid var(--edge);background:var(--surface)}
+.raid-hp i{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(90deg,var(--k-coral) 0 12px,color-mix(in srgb,var(--k-coral) 70%,#fff) 12px 16px);transition:width .4s steps(6)}
+.raid-hptxt{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--pixel);font-size:.7rem;direction:ltr;text-shadow:1px 1px 0 var(--surface)}
+.raid-hearts{display:flex;gap:6px;font-size:2rem;line-height:1;color:var(--k-coral)}
+.raid-hearts .lost{color:var(--muted);opacity:.35}
 </style>
 </head><body>
 
@@ -1945,8 +2020,256 @@ GAMES.push({id:'cup',name:'البطولة',mount(st){
 
 
 let stopCurrent=()=>{};
+/* ===== shared helpers for the new games ===== */
+function whoNow(){return S.mode==='groups'?'فريق '+S.teams[S.turn].name:S.mode==='individual'?(S.cur||''):'الفصل'}
+/* n points to whoever has the turn (team / student), one hit on the boss */
+function bonusHere(n){if(S.mode==='groups'){S.teams[S.turn].score+=n;popKey='t'+S.turn}else if(S.mode==='individual'&&S.cur){S.sScore[S.cur]=(S.sScore[S.cur]||0)+n;popKey='s'+S.cur}save();addGoal(1);renderBoard()}
+/* two sides: two students in the 1v1 section, two teams elsewhere (same choice as شد الحبل) */
+function pairCtx(){const duel=S.gcat==='duel';
+  if(duel&&S.students.length<2)return {err:'يحتاج طالبين على الأقل. أضف الأسماء من الإعدادات.'};
+  if(!duel&&S.teams.length<2)return {err:'يحتاج فريقين على الأقل. غيّر عدد الفرق من الإعدادات.'};
+  if(!S.tug)S.tug={a:0,b:1,steps:4};
+  if(!S.teams[S.tug.a])S.tug.a=0;if(!S.teams[S.tug.b]||S.tug.b===S.tug.a)S.tug.b=S.tug.a===0?1:0;
+  const draw=()=>{S.duelBag=(S.duelBag||[]).filter(x=>S.students.includes(x));if(S.duelBag.length<2)S.duelBag=shuffle(S.students.filter(x=>!S.duelBag.includes(x))).concat(S.duelBag);
+    S.duel={a:S.duelBag.pop(),b:S.duelBag.pop()};save()};
+  if(duel&&(!S.duel||!S.students.includes(S.duel.a)||!S.students.includes(S.duel.b)||S.duel.a===S.duel.b))draw();
+  const T=k=>duel?{name:S.duel[k],color:k==='a'?'#FF7A59':'#4C8DF6'}:S.teams[S.tug[k]];
+  const lbl=k=>(duel?'':'فريق ')+T(k).name;
+  const sel=k=>{
+    if(duel){const s=el('select',{'aria-label':'اختر الطالب'});S.students.forEach(n=>{const o=el('option',{value:n},n);if(n===S.duel[k])o.selected=true;s.append(o)});
+      s.onchange=()=>{const v=s.value,o=k==='a'?'b':'a';if(v===S.duel[o])S.duel[o]=S.duel[k];S.duel[k]=v;save();renderStage()};return s}
+    if(S.teams.length<3)return el('span',{},lbl(k));const s=el('select',{'aria-label':'اختر الفريق'});S.teams.forEach((t,i)=>{const o=el('option',{value:String(i)},'فريق '+t.name);if(i===S.tug[k])o.selected=true;s.append(o)});
+    s.onchange=()=>{const v=+s.value,o=k==='a'?'b':'a';if(v===S.tug[o])S.tug[o]=S.tug[k];S.tug[k]=v;save();renderStage()};return s};
+  const give=(k,n)=>{if(duel){const w=S.duel[k];S.sScore[w]=(S.sScore[w]||0)+n;popKey='s'+w}else{const i=S.tug[k];S.teams[i].score+=n;popKey='t'+i}save();renderBoard()};
+  const dot=k=>el('span',{class:'dot',style:'background:'+T(k).color});
+  const head=()=>el('div',{class:'tug-sides'},el('div',{class:'tug-team'},dot('a'),sel('a')),el('span',{class:'tug-vs'},'VS'),el('div',{class:'tug-team b'},sel('b'),dot('b')));
+  const mark=(box,k)=>box.querySelectorAll('.tug-team').forEach((x,i)=>x.classList.toggle('on',k!=null&&(i===0)===(k==='a')));
+  const reroll=()=>duel?el('button',{onclick:()=>{draw();sfx.coin();renderStage()}},'🎲 طالبان آخران'):null;
+  return {duel,T,lbl,give,draw,head,mark,reroll}}
+const needQ=(st,name)=>{if(Q().qa.length>=4)return false;st.append(el('p',{},'تحتاج '+name+' 4 أسئلة على الأقل في درس اليوم.'));nextQ=()=>{};return true};
+
+/* 9. solo: the million ladder. 10 questions, each right answer = one rung and one point, first wrong answer ends the run.
+   Three helps, once each: remove two answers, ask a classmate, change the question. */
+GAMES.push({id:'mil',name:'سلّم المليون',mount(st){
+  if(needQ(st,'سلّم المليون'))return;
+  if(S.mode==='individual'&&!S.cur){nextStudent();save();renderTurn()}
+  const who=whoNow(),PR=['100','200','500','1,000','5,000','10,000','50,000','100,000','500,000','1,000,000'];
+  let lv=0,done=false,tm,life={f:1,p:1,s:1},g=null;
+  const ladder=el('ol',{class:'mil-ladder'});
+  PR.forEach((p,i)=>ladder.prepend(el('li',{'data-i':String(i)},el('span',{class:'mil-n'},String(i+1)),el('b',{},p))));
+  const card=el('div',{class:'qcard'});
+  st.append(el('div',{class:'chhead'},el('span',{class:'hint'},'المتسابق'),el('span',{class:'chname'},who)),el('div',{class:'mil'},card,ladder));
+  const lad=()=>[...ladder.children].forEach(li=>{const i=+li.dataset.i;li.classList.toggle('done',i<lv);li.classList.toggle('now',i===lv&&!done)});
+  card.append(el('div',{class:'qtext'},'سلّم المليون'),
+    el('p',{class:'hint'},PR.length+' أسئلة. كل إجابة صحيحة ترفعك درجة وتعطيك نقطة، والوصول للقمة +3 نقاط إضافية. معك 3 وسائل مساعدة، كل واحدة مرة: حذف إجابتين، اسأل زميلاً، تغيير السؤال. أول خطأ ينهي اللعبة.'),
+    el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>{sfx.whoosh();ask()}},'ابدأ'),S.mode==='individual'?el('button',{class:'big',onclick:()=>{nextStudent();save();renderTurn();renderBoard();renderStage()}},'طالب آخر'):null));
+  lad();
+  function helps(){const H=(k,t,f)=>{const b=el('button',{class:'mil-help',onclick:()=>{if(!life[k]||done||!g||g.dataset.done)return;life[k]=0;sfx.coin();f()}},t);b.disabled=!life[k];return b};
+    const r=el('div',{class:'row mil-helps'},
+      H('f','✂️ حذف إجابتين',()=>{const w=shuffle([...g.children].filter(b=>!b.disabled&&b.lastChild.textContent!==g.dataset.a)).slice(0,2);w.forEach(b=>{b.disabled=true;b.classList.add('gone')});r.replaceWith(helps())}),
+      H('p','🙋 اسأل زميلاً',()=>{toast('يسأل زميلاً واحداً، ثم اضغط الإجابة التي يختارها');r.replaceWith(helps())}),
+      H('s','🔄 تغيير السؤال',()=>{clearTimeout(tm);ask()}));return r}
+  function ask(){if(done)return;lad();const pool=Q().qa,[q,a,h]=pool[nextQA()];
+    g=optGrid(pool,a,h,(ok,b)=>{if(done)return;
+      if(ok){g.dataset.done='1';[...g.children].forEach(x=>x.disabled=true);b.classList.add('right');scoreHere();sfx.correct();burstAt(b,30);lv++;lad();
+        if(lv>=PR.length){done=true;tm=setTimeout(()=>finish(true),900)}else tm=setTimeout(ask,1300)}
+      else{done=true;lad();tm=setTimeout(()=>finish(false),1600)}});
+    g.dataset.a=a;
+    card.replaceChildren(el('span',{class:'hint'},'السؤال '+(lv+1)+' من '+PR.length+' · على '+PR[lv]),el('div',{class:'qtext'},q),g,helps());
+    stopCurrent=()=>clearTimeout(tm)}
+  function finish(top){if(top){bonusHere(3);sfx.fanfare();confetti(260)}else{sfx.wrong();if(!lv)bossSay([pickLine(['هاهاها! سهلة جداً!','لا أحد يهزم '+BN()+'!'])])}
+    card.replaceChildren(el('div',{class:'qtext'},top?'وصلت إلى المليون!':'توقفت عند '+(lv?PR[lv-1]:'صفر')),
+      el('div',{class:'ans'},lv+' '+(lv===1?'إجابة صحيحة':'إجابات صحيحة')+(top?' و+3 نقاط':'')),
+      el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>{advance();renderStage()}},S.mode==='individual'?'المتسابق التالي':'الدور التالي')))}
+  nextQ=()=>{};
+}});
+
+/* 10. solo: hidden word. A key word from the lesson sits under 12 tiles. Each right answer opens one tile (the student says which).
+   The student may guess at any moment: more tiles still closed = more points (3/2/1), the clue drops it to 1. */
+GAMES.push({id:'hid',name:'الكلمة المخفية',mount(st){
+  if(needQ(st,'الكلمة المخفية'))return;
+  const pool=Q().qa,cand=pool.filter(x=>pwOk(x[1]));
+  if(!cand.length){st.append(el('p',{},'لا توجد في هذا الدرس كلمات قصيرة تصلح للإخفاء. اختر درساً آخر.'));nextQ=()=>{};return}
+  if(S.mode==='individual'&&!S.cur){nextStudent();save();renderTurn()}
+  const [tq,ta]=cand[Math.floor(Math.random()*cand.length)],word=pwClean(ta),NT=12;
+  let credits=0,opened=0,clue=false,done=false,tm;
+  const tiles=el('div',{class:'hid-tiles'}),box=el('div',{class:'hid-box'},el('div',{class:'hid-word'},word),tiles);
+  const cols=['var(--k-pink)','var(--k-blue)','var(--k-teal)','var(--k-purple)','var(--k-coral)','var(--k-sun)'];
+  for(let i=0;i<NT;i++){const t=el('button',{class:'hid-tile','aria-label':'مربع '+(i+1),style:'background:'+cols[(i+Math.floor(i/4))%cols.length]},String(i+1));
+    t.onclick=()=>{if(done||!credits||t.classList.contains('open'))return;t.classList.add('open');credits--;opened++;sfx.coin();upd();if(!credits)tm=setTimeout(ask,500)};tiles.append(t)}
+  const pts=()=>clue?1:NT-opened>=8?3:NT-opened>=4?2:1;
+  const ptsEl=el('span',{class:'chscore'},'');
+  const card=el('div',{class:'qcard'}),clueEl=el('p',{class:'hid-clue'},'');
+  const bG=el('button',{class:'good big',onclick:()=>end(true)},'✓ خمّن الكلمة صح'),bC=el('button',{class:'big',onclick:()=>{if(done||clue)return;clue=true;bC.disabled=true;clueEl.textContent='تلميح: '+tq;sfx.whoosh();upd()}},'💡 تلميح'),bX=el('button',{class:'bad',onclick:()=>end(false)},'اكشف الكلمة');
+  st.append(el('div',{class:'chhead'},el('span',{class:'hint'},'المخمّن'),el('span',{class:'chname'},whoNow()),ptsEl),box,clueEl,el('div',{class:'row'},bG,bC,bX),card);
+  function upd(){ptsEl.textContent=pts()+' PTS';tiles.classList.toggle('can',credits>0)}
+  function ask(){if(done)return;let i,n=0;do{i=nextQA();n++}while(pwClean(pool[i][1])===word&&n<6);const [q,a,h]=pool[i];
+    const g=optGrid(pool,a,h,(ok,b)=>{if(done)return;
+      if(ok){g.dataset.done='1';[...g.children].forEach(x=>x.disabled=true);b.classList.add('right');sfx.correct();burstAt(b,24);
+        if(opened>=NT){tm=setTimeout(ask,1200);return}credits++;upd();card.prepend(el('div',{class:'tug-turn',style:'background:var(--k-green);color:#13260F'},'أحسنت! اختر مربعاً لنكشفه'))}
+      else{sfx.wrong();flash('stagebox','shake');tm=setTimeout(ask,1900)}});
+    card.replaceChildren(el('span',{class:'hint'},'أجب صح لتكشف مربعاً · خمّن الكلمة في أي وقت'),el('div',{class:'qtext'},q),g);
+    stopCurrent=()=>clearTimeout(tm)}
+  function end(ok){if(done)return;done=true;clearTimeout(tm);tiles.querySelectorAll('.hid-tile').forEach(t=>t.classList.add('open'));tiles.classList.remove('can');[bG,bC,bX].forEach(b=>b.disabled=true);
+    const p=pts();if(ok){bonusHere(p);sfx.fanfare();confetti(200)}else{sfx.buzzer();bossSay([pickLine(['هاهاها! لم يعرفها أحد!','كلماتي صعبة يا أبطال!'])])}
+    card.replaceChildren(el('div',{class:'qtext'},ok?'صح! الكلمة: '+word:'الكلمة كانت: '+word),ok?el('div',{class:'ans'},'+'+p+(p===1?' نقطة':' نقاط')):null,
+      el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>{advance();renderStage()}},S.mode==='individual'?'الطالب التالي':'الدور التالي')))}
+  upd();ask();
+  nextQ=()=>{};
+}});
+
+/* 11. 1v1 tic-tac-toe: the side whose turn it is picks a square, then answers its question. Right = the square is theirs,
+   wrong = it stays empty and the turn passes. Three in a row = +3, full board = +1 each. */
+GAMES.push({id:'xo',name:'إكس أو',mount(st){
+  if(needQ(st,'إكس أو'))return;
+  const P=pairCtx();if(P.err){st.append(el('p',{},P.err));nextQ=()=>{};return}
+  const cells=Array(9).fill(null),MK={a:'X',b:'O'};let side='a',over=false,busy=false,tm;
+  const sides=P.head(),board=el('div',{class:'xo-board'}),qbox=el('div',{class:'qcard xo-q'});
+  const btns=cells.map((_,i)=>{const b=el('button',{class:'xo-cell','aria-label':'مربع '+(i+1)},el('span',{class:'xo-n'},String(i+1)));b.onclick=()=>pickCell(i);board.append(b);return b});
+  st.append(el('div',{class:'xo'},sides,el('div',{class:'xo-main'},board,qbox)));
+  const LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  function turnUI(){P.mark(sides,side);board.classList.remove('locked');busy=false;const first=cells.every(c=>!c);
+    qbox.replaceChildren(el('div',{class:'tug-turn',style:'background:'+P.T(side).color},'الدور على '+P.lbl(side)+' · '+MK[side]),
+      el('p',{class:'hint'},'اختر مربعاً ثم أجب عن سؤاله. الإجابة الصحيحة تأخذ المربع، والخاطئة تتركه فارغاً وينتقل الدور. ثلاثة في خط = فوز.'),
+      first&&P.duel?el('div',{class:'row'},P.reroll()):null)}
+  function pickCell(i){if(over||busy||cells[i])return;busy=true;board.classList.add('locked');btns[i].classList.add('sel');sfx.click();
+    const pool=Q().qa,[q,a,h]=pool[nextQA()],k=side;
+    const g=optGrid(pool,a,h,(ok,b)=>{if(over||g.dataset.ok)return;
+      if(ok){g.dataset.ok='1';[...g.children].forEach(x=>x.disabled=true);b.classList.add('right');cells[i]=k;btns[i].classList.remove('sel');btns[i].classList.add('own');btns[i].style.background=P.T(k).color;btns[i].replaceChildren(el('b',{},MK[k]));
+        sfx.correct();burstAt(btns[i],30);addGoal(1);
+        const ln=LINES.find(L=>L.every(j=>cells[j]===k));
+        if(ln){ln.forEach(j=>btns[j].classList.add('winline'));return end(k)}
+        if(cells.every(Boolean))return end(null);
+        tm=setTimeout(next,1200)}
+      else{btns[i].classList.remove('sel');sfx.wrong();flash('stagebox','shake');tm=setTimeout(next,1900)}});
+    qbox.replaceChildren(el('div',{class:'tug-turn',style:'background:'+P.T(k).color},P.lbl(k)+' · المربع '+(i+1)),el('div',{class:'qtext'},q),g);
+    stopCurrent=()=>clearTimeout(tm)}
+  function next(){side=side==='a'?'b':'a';turnUI()}
+  function end(w){over=true;P.mark(sides,null);let msg,sub;
+    if(w){P.give(w,3);msg='فاز '+P.lbl(w)+'!';sub='+3 نقاط'}else{P.give('a',1);P.give('b',1);msg='تعادل!';sub='+1 نقطة لكل طرف'}
+    setTimeout(()=>{sfx.fanfare();confetti(w?220:100);qbox.replaceChildren(el('div',{class:'qtext'},msg),el('div',{class:'ans'},sub),
+      el('div',{class:'row'},P.duel?el('button',{onclick:()=>{P.draw();renderStage()}},'🎲 طالبان جديدان'):null,el('button',{class:'primary big',onclick:()=>renderStage()},'جولة جديدة')))},800)}
+  turnUI();
+  nextQ=()=>{};
+}});
+
+/* 12. 1v1 fastest hand: one question for both. Tap the name of whoever raised a hand first, then tap the answer they said.
+   Wrong = the other side gets the chance. First to S.fastWin points wins (+3). */
+GAMES.push({id:'fast',name:'الأسرع',mount(st){
+  if(needQ(st,'الأسرع'))return;
+  const P=pairCtx();if(P.err){st.append(el('p',{},P.err));nextQ=()=>{};return}
+  if(!S.fastWin)S.fastWin=5;
+  const N=S.fastWin,sc={a:0,b:0};let over=false,tm,who=null,tried={},cur=null,started=false;
+  const sides=P.head(),qbox=el('div',{class:'qcard'});
+  const mk=k=>{const s=el('span',{class:'fast-sc'},'0 / '+N);const b=el('button',{class:'fast-btn',style:'background:'+P.T(k).color},el('span',{class:'fast-name'},P.lbl(k)),s);b.onclick=()=>buzz(k);b.sc=s;return b};
+  const B={a:mk('a'),b:mk('b')};
+  st.append(el('div',{class:'fast'},sides,el('div',{class:'fast-btns'},B.a,B.b),qbox));
+  const winSel=el('select',{'aria-label':'نقاط الفوز',style:'font:inherit;border:3px solid var(--edge);background:var(--surface);color:var(--ink);padding:2px 6px'});[3,5,7].forEach(n=>{const o=el('option',{value:String(n)},n+' نقاط للفوز');if(n===N)o.selected=true;winSel.append(o)});
+  winSel.onchange=()=>{S.fastWin=+winSel.value;save();renderStage()};
+  qbox.append(el('div',{class:'qtext'},'الأسرع'),el('p',{class:'hint'},'سؤال واحد للطرفين. اضغط اسم أول من يرفع يده، ثم اضغط الإجابة التي يقولها. إذا أخطأ تنتقل الفرصة للطرف الآخر.'),
+    el('div',{class:'row'},winSel,P.reroll(),el('button',{class:'primary big',onclick:()=>{started=true;sfx.whoosh();ask()}},'ابدأ')));
+  const state=()=>{['a','b'].forEach(k=>{B[k].classList.toggle('on',who===k);B[k].disabled=over||!started||(who!=null)||!!tried[k]});P.mark(sides,who)};
+  state();
+  function ask(){if(over)return;who=null;tried={};const pool=Q().qa,[q,a,h]=pool[nextQA()];cur={a};
+    const L=['أ','ب','ج','د'],g=el('div',{class:'opts'});
+    choices(pool,a,h).forEach((o,j)=>{const b=el('button',{class:'opt',disabled:''},el('span',{class:'l'},L[j]),el('span',{},o));b.onclick=()=>pick(b,o,g);g.append(b)});
+    cur.g=g;cur.st=el('div',{class:'fast-st'},'من الأسرع؟ اضغط اسم أول من يرفع يده');
+    qbox.replaceChildren(cur.st,el('div',{class:'qtext'},q),g,el('div',{class:'row'},el('button',{onclick:()=>reveal()},'لا أحد يعرف، اكشف الإجابة')));
+    state();stopCurrent=()=>clearTimeout(tm)}
+  function open(){[...cur.g.children].forEach(b=>{if(!b.classList.contains('wrong'))b.disabled=false})}
+  function buzz(k){if(over||!cur||who||tried[k])return;who=k;sfx.coin();cur.st.textContent='يجيب: '+P.lbl(k);cur.st.style.background=P.T(k).color;open();state()}
+  function pick(b,o,g){if(over||!who||g.dataset.done)return;
+    if(o===cur.a){g.dataset.done='1';[...g.children].forEach(x=>x.disabled=true);b.classList.add('right');const k=who;sc[k]++;B[k].sc.textContent=sc[k]+' / '+N;sfx.correct();burstAt(B[k],40);addGoal(1);
+      if(sc[k]>=N)return end(k);tm=setTimeout(ask,1400)}
+    else{b.classList.add('wrong');b.disabled=true;sfx.wrong();flash('stagebox','shake');tried[who]=true;const o2=who==='a'?'b':'a';
+      [...g.children].forEach(x=>x.disabled=true);
+      if(tried[o2])return reveal();
+      who=o2;cur.st.textContent='فرصة لـ'+P.lbl(o2);cur.st.style.background=P.T(o2).color;tm=setTimeout(()=>{open();state()},500);state()}}
+  function reveal(){if(!cur||cur.g.dataset.done)return;cur.g.dataset.done='1';[...cur.g.children].forEach(x=>{x.disabled=true;if(x.lastChild.textContent===cur.a)x.classList.add('right')});who=null;tried={a:1,b:1};state();tm=setTimeout(ask,2200)}
+  function end(k){over=true;who=null;state();P.give(k,3);
+    setTimeout(()=>{sfx.fanfare();confetti(220);qbox.replaceChildren(el('div',{class:'qtext'},'فاز '+P.lbl(k)+'!'),el('div',{class:'ans'},sc.a+' : '+sc.b+' · +3 نقاط'),
+      el('div',{class:'row'},P.duel?el('button',{onclick:()=>{P.draw();renderStage()}},'🎲 طالبان جديدان'):null,el('button',{class:'primary big',onclick:()=>renderStage()},'جولة جديدة')))},700)}
+  nextQ=()=>{};
+}});
+
+/* 13. team auction: every team bets coins before the question is shown. The top bid answers:
+   right = the bid is added to its coins and +1 team point, wrong = the bid is lost. After R rounds the richest team gets +3. */
+GAMES.push({id:'auc',name:'مزاد الأسئلة',mount(st){
+  if(needQ(st,'مزاد الأسئلة'))return;
+  if(S.teams.length<2){st.append(el('p',{},'يحتاج فريقين على الأقل. غيّر عدد الفرق من الإعدادات.'));nextQ=()=>{};return}
+  if(!S.aucRounds)S.aucRounds=6;
+  const R=S.aucRounds,coins=S.teams.map(()=>10),bid=S.teams.map(()=>0);let round=1,phase='bid',winner=-1,tm;
+  const table=el('div',{class:'auc-table'}),head=el('div',{class:'auc-head'}),card=el('div',{class:'qcard'});
+  st.append(el('div',{class:'auc'},head,table,card));
+  function draw(){head.textContent='الجولة '+round+' من '+R;table.replaceChildren();
+    S.teams.forEach((t,i)=>{const val=el('b',{class:'auc-bid'},String(bid[i]));
+      const step=d=>{const b=el('button',{class:'auc-step','aria-label':(d>0?'زيادة':'إنقاص')+' رهان فريق '+t.name,onclick:()=>{if(phase!=='bid')return;bid[i]=Math.max(0,Math.min(coins[i],bid[i]+d));sfx.click();draw()}},d>0?'+':'−');b.disabled=phase!=='bid'||(d>0?bid[i]>=coins[i]:bid[i]<=0);return b};
+      const row=el('div',{class:'auc-row'+(i===winner?' on':'')},el('span',{class:'dot',style:'background:'+t.color}),el('span',{class:'auc-name'},'فريق '+t.name),
+        el('span',{class:'auc-coins'},'🪙 '+coins[i]),el('span',{class:'auc-ctl'},step(-1),val,step(1)));
+      table.append(row)});}
+  function bidUI(){phase='bid';winner=-1;draw();
+    const rs=el('select',{'aria-label':'عدد الجولات',style:'font:inherit;border:3px solid var(--edge);background:var(--surface);color:var(--ink);padding:2px 6px'});[4,6,8,10].forEach(n=>{const o=el('option',{value:String(n)},n+' جولات');if(n===R)o.selected=true;rs.append(o)});
+    rs.onchange=()=>{S.aucRounds=+rs.value;save();renderStage()};
+    card.replaceChildren(el('div',{class:'qtext'},'من يراهن أكثر؟'),
+      el('p',{class:'hint'},'كل فريق يبدأ بـ10 عملات ويراهن قبل أن يرى السؤال. أعلى رهان يجيب: الصحيحة تضيف الرهان لعملاته ونقطة للفريق، والخاطئة تخسره. بعد '+R+' جولات صاحب أكثر عملات يفوز بـ3 نقاط.'),
+      el('div',{class:'row'},round===1?rs:null,el('button',{class:'primary big',onclick:reveal},'اكشف السؤال')))}
+  function reveal(){const top=Math.max(...bid);if(top<=0){toast('ارفع رهان فريق واحد على الأقل');return}
+    const tied=bid.map((b,i)=>b===top?i:-1).filter(i=>i>=0);winner=tied[Math.floor(Math.random()*tied.length)];
+    if(tied.length>1)toast('تعادل في الرهان، القرعة اختارت فريق '+S.teams[winner].name);
+    phase='q';draw();sfx.whoosh();const w=winner,b=bid[w],pool=Q().qa,[q,a,h]=pool[nextQA()];
+    const g=optGrid(pool,a,h,(ok,btn)=>{if(phase!=='q')return;phase='done';
+      if(ok){g.dataset.done='1';[...g.children].forEach(x=>x.disabled=true);btn.classList.add('right');coins[w]+=b;S.teams[w].score++;popKey='t'+w;save();renderBoard();addGoal(1);sfx.correct();burstAt(btn,30)}
+      else{coins[w]=Math.max(0,coins[w]-b);sfx.wrong();flash('stagebox','shake')}
+      draw();card.append(el('div',{class:ok?'ans':'auc-lose'},ok?'+'+b+' عملات لفريق '+S.teams[w].name:'خسر فريق '+S.teams[w].name+' '+b+' عملات'),
+        el('div',{class:'row'},el('button',{class:'primary big',onclick:nextRound},round>=R?'النتيجة النهائية':'الجولة التالية')))});
+    card.replaceChildren(el('div',{class:'tug-turn',style:'background:'+S.teams[w].color},'فريق '+S.teams[w].name+' يجيب · الرهان '+b),el('div',{class:'qtext'},q),g)}
+  function nextRound(){if(round>=R)return final();round++;bid.fill(0);bidUI()}
+  function final(){phase='end';winner=-1;const top=Math.max(...coins),ws=coins.map((c,i)=>c===top?i:-1).filter(i=>i>=0);
+    ws.forEach(i=>{S.teams[i].score+=3});popKey='t'+ws[0];save();renderBoard();addGoal(1);draw();
+    table.querySelectorAll('.auc-row').forEach((r,i)=>r.classList.toggle('on',ws.includes(i)));
+    sfx.fanfare();confetti(240);
+    card.replaceChildren(el('div',{class:'qtext'},(ws.length>1?'تعادل: ':'فاز ')+ws.map(i=>'فريق '+S.teams[i].name).join(' و')+'!'),el('div',{class:'ans'},top+' عملة · +3 نقاط'),
+      el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>renderStage()},'مزاد جديد')))}
+  bidUI();
+  stopCurrent=()=>clearTimeout(tm);nextQ=()=>{};
+}});
+
+/* 14. raid: the whole class against the boss. Shared boss HP, the class has 3 hearts.
+   The turn moves between teams (or students) with each question: right = a hit and a point, wrong = the class loses a heart. */
+GAMES.push({id:'raid',get name(){return 'هزيمة '+BN()},mount(st){
+  if(needQ(st,'هزيمة المعضل'))return;
+  if(!S.raidHp)S.raidHp=10;
+  const HP=S.raidHp,HE=3;let hp=HP,hearts=HE,over=false,tm;
+  const cv=el('canvas',{class:'raid-boss'});drawBoss(cv);
+  const bar=el('i'),hpTxt=el('span',{class:'raid-hptxt'},''),hpBox=el('div',{class:'raid-hp'},bar,hpTxt),heartsEl=el('div',{class:'raid-hearts','aria-label':'قلوب الفصل'});
+  const card=el('div',{class:'qcard'});
+  st.append(el('div',{class:'raid'},el('div',{class:'raid-top'},cv,el('div',{class:'raid-bars'},el('div',{class:'raid-lbl'},BN()),hpBox,el('div',{class:'raid-lbl'},'الفصل'),heartsEl)),card));
+  function upd(){bar.style.width=(hp/HP*100)+'%';hpTxt.textContent='HP '+hp+'/'+HP;heartsEl.replaceChildren(...Array.from({length:HE},(_,i)=>el('span',{class:i<hearts?'':'lost'},'♥')))}
+  const hs=el('select',{'aria-label':'طاقة المعضل',style:'font:inherit;border:3px solid var(--edge);background:var(--surface);color:var(--ink);padding:2px 6px'});[6,10,15,20].forEach(n=>{const o=el('option',{value:String(n)},'طاقته '+n);if(n===HP)o.selected=true;hs.append(o)});
+  hs.onchange=()=>{S.raidHp=+hs.value;save();renderStage()};
+  card.append(el('div',{class:'qtext'},'الفصل كله ضد '+BN()+'!'),
+    el('p',{class:'hint'},'كل إجابة صحيحة ضربة له ونقطة لصاحب الدور، وكل خطأ يفقد الفصل قلباً. معكم '+HE+' قلوب، والدور ينتقل مع كل سؤال.'),
+    el('div',{class:'row'},hs,el('button',{class:'primary big',onclick:()=>{sfx.whoosh();bossSay(['تعالوا كلكم... لن تهزموني!']);ask()}},'ابدأ المعركة')));
+  upd();
+  function ask(){if(over)return;const pool=Q().qa,[q,a,h]=pool[nextQA()];
+    const g=optGrid(pool,a,h,(ok,b)=>{if(over||g.dataset.ok)return;
+      if(ok){g.dataset.ok='1';[...g.children].forEach(x=>x.disabled=true);b.classList.add('right');scoreHere();hp--;upd();sfx.correct();burstAt(cv,40);cv.classList.remove('hit');void cv.offsetWidth;cv.classList.add('hit');
+        if(hp<=0)return win();advance();tm=setTimeout(ask,1300)}
+      else{hearts--;upd();sfx.wrong();flash('stagebox','shake');bossSay([pickLine(['هاهاها! ضربة لي!','خطأ! طاقتكم تنفد...','أنا '+BN()+'، لا أُهزم بسهولة!'])]);
+        if(hearts<=0){tm=setTimeout(lose,1500);return}advance();tm=setTimeout(ask,2000)}});
+    card.replaceChildren(el('div',{class:'tug-turn',style:'background:var(--k-purple)'},'الدور على '+whoNow()),el('div',{class:'qtext'},q),g);
+    stopCurrent=()=>clearTimeout(tm)}
+  function win(){over=true;if(S.mode==='groups'){S.teams.forEach(t=>t.score+=2);save();renderBoard()}addGoal(1);
+    bossSay(['مستحيل! هزمتموني كلكم معاً...']);
+    setTimeout(()=>{sfx.fanfare();confetti(300);card.replaceChildren(el('div',{class:'qtext'},'هزمتم '+BN()+'!'),el('div',{class:'ans'},S.mode==='groups'?'+2 نقاط لكل فريق':'انتصار الفصل'),
+      el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>renderStage()},'معركة جديدة')))},700)}
+  function lose(){over=true;sfx.buzzer();card.replaceChildren(el('div',{class:'qtext'},'انتصر '+BN()+' هذه المرة'),el('p',{class:'hint'},'بقيت له '+hp+' من '+HP+'. جربوا مرة ثانية!'),
+      el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>renderStage()},'حاولوا مرة أخرى')))}
+  nextQ=()=>{};
+}});
+
 function visGames(){const h=S.hiddenGames||[];const v=GAMES.filter(g=>!h.includes(g.id));return v.length?v:GAMES}
-const GCATS=[{id:'solo',name:'فردي',icon:'👤',games:['tf','pw','ch30'],mode:'individual'},{id:'duel',name:'1 ضد 1',icon:'⚔️',games:['tug'],mode:'individual'},{id:'team',name:'فريق',icon:'👥',games:null,mode:'groups'}];
+const GCATS=[{id:'solo',name:'فردي',icon:'👤',games:['tf','pw','ch30','mil','hid'],mode:'individual'},{id:'duel',name:'1 ضد 1',icon:'⚔️',games:['tug','xo','fast'],mode:'individual'},{id:'team',name:'فريق',icon:'👥',games:null,mode:'groups'}];
 function catGames(c){const v=visGames();const f=c.games?v.filter(g=>c.games.includes(g.id)):v;return f.length?f:v}
 function renderTabs(){
   const T=$('tabs');T.replaceChildren();
@@ -1957,7 +2280,7 @@ function renderTabs(){
   const vis=catGames(cat);if(!vis.some(g=>g.id===S.game))S.game=vis[0].id;
   vis.forEach(g=>T.append(el('button',{role:'tab','aria-selected':String(S.game===g.id),onclick:()=>{S.game=g.id;save();renderTabs();renderStage()}},g.name)));
 }
-function renderStage(){stopCurrent();stopCurrent=()=>{};const st=$('stage');st.replaceChildren();(visGames().find(g=>g.id===S.game)||visGames()[0]).mount(st)}
+function renderStage(){stopCurrent();stopCurrent=()=>{};const st=$('stage');st.replaceChildren();document.body.classList.toggle('pairg',['tug','xo','fast'].includes(S.game));(visGames().find(g=>g.id===S.game)||visGames()[0]).mount(st)}
 function renderModes(){document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===S.mode)))}
 function renderMute(){$('mute').textContent=S.mute?'🔇':'🔊';$('mute').setAttribute('aria-label',S.mute?'تشغيل الصوت':'كتم الصوت')}
 $('mute').onclick=()=>{S.mute=!S.mute;save();renderMute();sfx.click()};
