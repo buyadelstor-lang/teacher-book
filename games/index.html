@@ -1279,7 +1279,7 @@ const TEAM_NAMES=['الصقور','النجوم','الأبطال','المبدعو
 const DEF={
   mode:'groups', game:'tf',
   students:['أحمد','سارة','يوسف','ليان','عمر','جنى','خالد','مريم','فيصل','رنا','سلمان','هند'],
-  teamCount:3, teams:[], sScore:{}, turn:0, cur:null, bag:[],
+  teamCount:4, teams:[], sScore:{}, turn:0, cur:null, bag:[],
   goal:{pts:0,target:30,reward:'5 دقائق نشاط حر في آخر الحصة'},
   qa:[['7 × 8 = ؟','56'],['ما أكبر كوكب في المجموعة الشمسية؟','المشتري'],['ما جمع كلمة "كتاب"؟','كُتُب'],['كم ضلعاً للشكل السداسي؟','6'],['ما الغاز الذي نحتاجه للتنفس؟','الأكسجين'],['ما ضد كلمة "سريع"؟','بطيء'],['144 ÷ 12 = ؟','12'],['ماذا يحدث للماء عند 100 درجة مئوية؟','يغلي ويتحول إلى بخار'],['كم يوماً في السنة الكبيسة؟','366'],['ما الفعل في جملة: كتب الطالبُ الدرسَ؟','كتب']],
   tf:[['الشمس نجم',true],['العنكبوت من الحشرات',false],['0.5 تساوي النصف',true],['يتجمد الماء عند 10 درجات مئوية',false],['الحوت من الثدييات',true],['مجموع زوايا المثلث 360 درجة',false]],
@@ -1288,6 +1288,8 @@ const DEF={
 let S;
 try{S=JSON.parse(localStorage.getItem('class-games-v1'))}catch(e){}
 if(!S||!S.students){S=JSON.parse(JSON.stringify(DEF));splitTeams()}
+/* one-time move to 4 equal teams (teacher's request); later changes in settings are kept */
+if(!S.fourTeams){S.fourTeams=true;if(S.teamCount!==4){S.teamCount=4;splitTeams()}}
 if(S.lesson==null)S.lesson='0';
 if(S.tfSec==null)S.tfSec=15;if(S.chSec==null)S.chSec=30;if(!S.bossName)S.bossName='المعضلين';
 const BN=()=>S.bossName;
