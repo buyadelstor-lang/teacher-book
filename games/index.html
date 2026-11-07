@@ -475,6 +475,16 @@ body.bigq .pw-slot,body.bigq .pw-tile{width:84px;height:92px;font-size:3rem}
 .pw-clock{font-size:1.3rem}
 .pw-adj{padding:2px 8px;font-family:var(--pixel);font-size:.75rem;box-shadow:2px 2px 0 var(--bg);border-color:var(--bg);direction:ltr}
 .pw-tog{padding:4px 12px;font-size:.95rem}
+.gcats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.gcats button{font-size:1.15rem;padding:9px 10px;background:var(--surface)}
+.gcats button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.gcats button[data-cat="solo"][aria-selected="true"]{background:var(--k-pink);color:#fff}
+.gcats button[data-cat="duel"][aria-selected="true"]{background:var(--k-coral);color:#2A0E05}
+.gcats button[data-cat="team"][aria-selected="true"]{background:var(--k-blue);color:#fff}
+body.bigq .gcats{display:none}
+body.fsmode .gcats{margin-bottom:6px}body.fsmode .gcats button{padding:5px 8px;font-size:1rem}
+.tug-turn{display:inline-block;align-self:center;font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,2.4vw,1.7rem);color:#fff;padding:4px 18px;border:3px solid var(--edge);box-shadow:4px 4px 0 var(--edge);text-shadow:2px 2px 0 rgba(0,0,0,.35)}
+.tug-team.on{outline:3px dashed var(--ink);outline-offset:4px}
 </style>
 </head><body>
 
@@ -1665,12 +1675,22 @@ GAMES.push({id:'ch30',get name(){return 'تحدي '+S.chSec+' ثانية'},mount
 /* 6. tug of war: same question for two teams, first correct answer pulls the rope one step; reach the end to win */
 GAMES.push({id:'tug',name:'شد الحبل',mount(st){
   if(Q().qa.length<4){st.append(el('p',{},'يحتاج شد الحبل 4 أسئلة على الأقل في درس اليوم.'));nextQ=()=>{};return}
-  if(S.teams.length<2){st.append(el('p',{},'يحتاج فريقين على الأقل. غيّر عدد الفرق من الإعدادات.'));nextQ=()=>{};return}
+  const duel=S.gcat==='duel';
+  if(duel&&S.students.length<2){st.append(el('p',{},'يحتاج طالبين على الأقل. أضف الأسماء من الإعدادات.'));nextQ=()=>{};return}
+  if(!duel&&S.teams.length<2){st.append(el('p',{},'يحتاج فريقين على الأقل. غيّر عدد الفرق من الإعدادات.'));nextQ=()=>{};return}
   if(!S.tug)S.tug={a:0,b:1,steps:4};
   if(!S.teams[S.tug.a])S.tug.a=0;if(!S.teams[S.tug.b]||S.tug.b===S.tug.a)S.tug.b=S.tug.a===0?1:0;
+  /* 1v1: two different students, drawn from a bag so nobody plays twice before everyone has played */
+  const drawDuel=()=>{S.duelBag=(S.duelBag||[]).filter(x=>S.students.includes(x));if(S.duelBag.length<2)S.duelBag=shuffle(S.students.filter(x=>!S.duelBag.includes(x))).concat(S.duelBag);
+    S.duel={a:S.duelBag.pop(),b:S.duelBag.pop()};save()};
+  if(duel&&(!S.duel||!S.students.includes(S.duel.a)||!S.students.includes(S.duel.b)||S.duel.a===S.duel.b))drawDuel();
   const N=S.tug.steps;let pos=0,over=false,busy=false,tm;
-  const T=k=>S.teams[S.tug[k]];
-  const teamSel=k=>{if(S.teams.length<3)return el('span',{},'فريق '+T(k).name);const sel=el('select',{'aria-label':'اختر الفريق'});S.teams.forEach((t,i)=>{const o=el('option',{value:String(i)},'فريق '+t.name);if(i===S.tug[k])o.selected=true;sel.append(o)});
+  const T=k=>duel?{name:S.duel[k],color:k==='a'?'#FF7A59':'#4C8DF6'}:S.teams[S.tug[k]];
+  const lbl=k=>(duel?'':'فريق ')+T(k).name;
+  const teamSel=k=>{
+    if(duel){const sel=el('select',{'aria-label':'اختر الطالب'});S.students.forEach(n=>{const o=el('option',{value:n},n);if(n===S.duel[k])o.selected=true;sel.append(o)});
+      sel.onchange=()=>{const v=sel.value,o=k==='a'?'b':'a';if(v===S.duel[o])S.duel[o]=S.duel[k];S.duel[k]=v;save();renderStage()};return sel}
+    if(S.teams.length<3)return el('span',{},lbl(k));const sel=el('select',{'aria-label':'اختر الفريق'});S.teams.forEach((t,i)=>{const o=el('option',{value:String(i)},'فريق '+t.name);if(i===S.tug[k])o.selected=true;sel.append(o)});
     sel.onchange=()=>{const v=+sel.value,o=k==='a'?'b':'a';if(v===S.tug[o])S.tug[o]=S.tug[k];S.tug[k]=v;save();renderStage()};return sel};
   const dot=k=>el('span',{class:'dot',style:'background:'+T(k).color});
   /* RTL: team A sits on the right and pulls right; team B on the left */
@@ -1681,26 +1701,29 @@ GAMES.push({id:'tug',name:'شد الحبل',mount(st){
   const qbox=el('div',{class:'qcard'});
   const stepsSel=el('select',{'aria-label':'خطوات الفوز',style:'font:inherit;border:3px solid var(--edge);background:var(--surface);color:var(--ink);padding:2px 6px'});[3,4,5,6,8].forEach(n=>{const o=el('option',{value:String(n)},n+' سحبات للفوز');if(n===N)o.selected=true;stepsSel.append(o)});
   stepsSel.onchange=()=>{S.tug.steps=+stepsSel.value;save();renderStage()};
-  qbox.append(el('div',{class:'qtext'},'شد الحبل!'),el('p',{class:'hint'},'سؤال واحد للفريقين. أول فريق يجيب صح يسحب الحبل خطوة نحوه، والفريق الذي يخطئ ينتظر السؤال التالي. أول من يصل لنهاية الحبل يفوز.'),
-    el('div',{class:'row'},stepsSel,el('button',{class:'primary big',onclick:ask},'ابدأ الشد')));
+  qbox.append(el('div',{class:'qtext'},duel?'شد الحبل: 1 ضد 1':'شد الحبل!'),el('p',{class:'hint'},duel?'سؤال لكل طالب بالتناوب: الإجابة الصحيحة تسحب الحبل خطوة نحوه، والخاطئة لا تسحب شيئاً. أول من يصل لنهاية الحبل يفوز.':'سؤال لكل فريق بالتناوب: الإجابة الصحيحة تسحب الحبل خطوة نحو الفريق، والخاطئة لا تسحب شيئاً. أول من يصل لنهاية الحبل يفوز.'),
+    el('div',{class:'row'},stepsSel,duel?el('button',{onclick:()=>{drawDuel();sfx.coin();renderStage()}},'🎲 طالبان آخران'):null,el('button',{class:'primary big',onclick:ask},'ابدأ الشد')));
   st.append(el('div',{class:'tug'},sides,rope,qbox));
   /* pos>0 = toward team A (right side) */
   function draw(){const px=pos/N*0.38*rope.clientWidth;line.style.transform='translateX('+px+'px)';flag.style.transform='translateX('+px+'px)'}
-  function ask(){if(over)return;busy=false;const pool=Q().qa,[q,a,h]=pool[nextQA()];
-    const cols={};
-    ['a','b'].forEach(k=>{const col=el('div',{class:'tug-col'},el('h3',{},dot(k),'فريق '+T(k).name));
-      const g=optGrid(pool,a,h,(ok,b)=>{if(busy||over)return;
-        if(ok){busy=true;b.classList.add('right');col.classList.add('won');Object.values(cols).forEach(c=>c.querySelectorAll('.opt').forEach(x=>x.disabled=true));pull(k)}
-        else{col.classList.add('locked');sfx.wrong();if(Object.values(cols).every(c=>c.classList.contains('locked'))){busy=true;sfx.buzzer();Object.values(cols).forEach(c=>{c.classList.remove('locked');[...c.querySelectorAll('.opt')].forEach(x=>{x.disabled=true;if(x.lastChild.textContent===a)x.classList.add('right')})});tm=setTimeout(ask,1800)}}},true);
-      col.append(g);cols[k]=col});
-    qbox.replaceChildren(el('span',{class:'hint'},(h?'حرف «'+h+'» · ':'')+'السحبة القادمة'),el('div',{class:'qtext'},q),el('div',{class:'tug-cols'},cols.a,cols.b));
+  /* turns alternate: a question for side A, the next one for side B; a right answer pulls the rope one step toward the side that answered */
+  let side='a';
+  function ask(){if(over)return;busy=false;const k=side,pool=Q().qa,[q,a,h]=pool[nextQA()];
+    sides.querySelectorAll('.tug-team').forEach((x,i)=>x.classList.toggle('on',(i===0)===(k==='a')));
+    const g=optGrid(pool,a,h,(ok,b)=>{if(busy||over)return;busy=true;
+      if(ok){b.classList.add('right');pull(k)}
+      else{sfx.wrong();flash('stagebox','shake');tm=setTimeout(next,1900)}});
+    qbox.replaceChildren(el('div',{class:'tug-turn',style:'background:'+T(k).color},'الدور على '+lbl(k)),el('span',{class:'hint'},(h?'حرف «'+h+'» · ':'')+'إجابة صحيحة = سحبة نحوك'),el('div',{class:'qtext'},q),g);
     stopCurrent=()=>clearTimeout(tm)}
+  function next(){side=side==='a'?'b':'a';ask()}
   function pull(k){pos+=k==='a'?1:-1;sfx.whoosh();note(180,0,.18,'square',.09,90);draw();flash('stagebox','flash-good');
-    const tIdx=S.tug[k];
-    if(Math.abs(pos)>=N){over=true;const t=S.teams[tIdx];t.score+=3;popKey='t'+tIdx;save();addGoal(1);renderBoard();
-      setTimeout(()=>{sfx.fanfare();confetti(220);qbox.replaceChildren(el('div',{class:'qtext'},'فاز فريق '+t.name+'!'),el('div',{class:'ans'},'+3 نقاط للفريق'),
-        el('div',{class:'row'},el('button',{class:'primary big',onclick:()=>renderStage()},'جولة جديدة')))},500);return}
-    tm=setTimeout(ask,1300)}
+    if(Math.abs(pos)>=N){over=true;let msg;
+      if(duel){const w=S.duel[k];S.sScore[w]=(S.sScore[w]||0)+3;popKey='s'+w;msg='فاز '+w+'!'}
+      else{const tIdx=S.tug[k],t=S.teams[tIdx];t.score+=3;popKey='t'+tIdx;msg='فاز فريق '+t.name+'!'}
+      save();addGoal(1);renderBoard();
+      setTimeout(()=>{sfx.fanfare();confetti(220);qbox.replaceChildren(el('div',{class:'qtext'},msg),el('div',{class:'ans'},duel?'+3 نقاط للطالب':'+3 نقاط للفريق'),
+        el('div',{class:'row'},duel?el('button',{onclick:()=>{drawDuel();renderStage()}},'🎲 طالبان جديدان'):null,el('button',{class:'primary big',onclick:()=>renderStage()},duel?'جولة بنفس الطالبين':'جولة جديدة')))},500);return}
+    tm=setTimeout(next,1300)}
   draw();
   nextQ=()=>{};
 }});
@@ -1923,9 +1946,15 @@ GAMES.push({id:'cup',name:'البطولة',mount(st){
 
 let stopCurrent=()=>{};
 function visGames(){const h=S.hiddenGames||[];const v=GAMES.filter(g=>!h.includes(g.id));return v.length?v:GAMES}
+const GCATS=[{id:'solo',name:'فردي',icon:'👤',games:['tf','pw','ch30'],mode:'individual'},{id:'duel',name:'1 ضد 1',icon:'⚔️',games:['tug'],mode:'individual'},{id:'team',name:'فريق',icon:'👥',games:null,mode:'groups'}];
+function catGames(c){const v=visGames();const f=c.games?v.filter(g=>c.games.includes(g.id)):v;return f.length?f:v}
 function renderTabs(){
   const T=$('tabs');T.replaceChildren();
-  const vis=visGames();if(!vis.some(g=>g.id===S.game))S.game=vis[0].id;
+  let cat=GCATS.find(c=>c.id===S.gcat);if(!cat){cat=GCATS[2];S.gcat='team'}
+  const cb=el('div',{class:'gcats',role:'tablist','aria-label':'نوع اللعب'});
+  GCATS.forEach(c=>cb.append(el('button',{role:'tab','data-cat':c.id,'aria-selected':String(c.id===cat.id),onclick:()=>{if(S.gcat===c.id)return;S.gcat=c.id;if(S.mode!=='class'||c.id!=='team'){S.mode=c.mode}if(c.mode==='individual'&&!S.cur)nextStudent();save();renderModes();renderTurn();renderBoard();renderTabs();renderStage();sfx.coin()}},el('span',{'aria-hidden':'true'},c.icon),' '+c.name)));
+  T.parentNode.insertBefore(cb,T);const old=T.parentNode.querySelectorAll('.gcats');old.forEach(x=>{if(x!==cb)x.remove()});
+  const vis=catGames(cat);if(!vis.some(g=>g.id===S.game))S.game=vis[0].id;
   vis.forEach(g=>T.append(el('button',{role:'tab','aria-selected':String(S.game===g.id),onclick:()=>{S.game=g.id;save();renderTabs();renderStage()}},g.name)));
 }
 function renderStage(){stopCurrent();stopCurrent=()=>{};const st=$('stage');st.replaceChildren();(visGames().find(g=>g.id===S.game)||visGames()[0]).mount(st)}
