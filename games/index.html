@@ -1603,12 +1603,17 @@ GAMES.push({id:'tf',name:'صح أم خطأ',mount(st){
 /* 4. random picker */
 GAMES.push({id:'pick',name:'من يجيب؟',mount(st){
   const out=el('div',{class:'pick'},'؟');const sub=el('p',{class:'hint'},'');
-  const pickFrom=(list,label,done)=>{if(!list.length){out.textContent='لا يوجد أسماء';return}let n=0;const total=18;out.classList.add('spin');out.classList.remove('won');
-    (function f(){out.textContent=label(list[Math.floor(Math.random()*list.length)]);sfx.tick();n++;if(n<total)setTimeout(f,40+n*n*1.2);else{out.classList.remove('spin');const r=list[Math.floor(Math.random()*list.length)];out.textContent=label(r);out.classList.add('won');sfx.fanfare();burstAt(out,90);done&&done(r)}})()};
+  const left=()=>{const k=(S.pickBag||[]).length;bagInfo.textContent=k?'باقي '+k+' من '+S.students.length+' لم يُختاروا بعد في هذه الدورة':'اختير الجميع، الضغطة القادمة تبدأ دورة جديدة'};
+  const bagInfo=el('p',{class:'hint'},'');
+  const pickFrom=(list,label,_x,fixed,done)=>{if(!list.length){out.textContent='لا يوجد أسماء';return}let n=0;const total=18;out.classList.add('spin');out.classList.remove('won');
+    (function f(){out.textContent=label(list[Math.floor(Math.random()*list.length)]);sfx.tick();n++;if(n<total)setTimeout(f,40+n*n*1.2);else{out.classList.remove('spin');const r=fixed;out.textContent=label(r);out.classList.add('won');sfx.fanfare();burstAt(out,90);done&&done(r)}})()};
   st.append(out,sub,el('div',{class:'row'},
-    el('button',{class:'primary big',onclick:()=>{const b=shuffle(S.students);pickFrom(b,x=>x,r=>{S.cur=r;sub.textContent=teamOf(r)?'من فريق '+teamOf(r):'';save();if(S.mode==='individual'){renderTurn();renderBoard()}})}},'اختر طالباً'),
-    el('button',{class:'big',onclick:()=>{pickFrom(S.teams.map((_,i)=>i),i=>'فريق '+S.teams[i].name,r=>{sub.textContent='';if(S.mode==='groups'){S.turn=r;save();renderTurn();renderBoard()}})}},'اختر فريقاً')),
-    el('p',{class:'hint'},'مفيد بدل «أنا أنا يا أستاذ»: الاختيار عشوائي وعادل.'));
+    el('button',{class:'primary big',onclick:()=>{if(!S.students.length){out.textContent='لا يوجد أسماء';return}
+      S.pickBag=(S.pickBag||[]).filter(x=>S.students.includes(x));if(!S.pickBag.length){S.pickBag=shuffle(S.students);if(S.pickDone)toast('اختير كل الطلاب، نبدأ دورة جديدة')}S.pickDone=true;
+      const r0=S.pickBag.pop();save();pickFrom(S.students,x=>x,()=>{},r0,r=>{S.cur=r;left();sub.textContent=teamOf(r)?'من فريق '+teamOf(r):'';save();if(S.mode==='individual'){renderTurn();renderBoard()}})}},'اختر طالباً'),
+    el('button',{class:'big',onclick:()=>{S.teamBag=(S.teamBag||[]).filter(i=>i<S.teams.length);if(!S.teamBag.length)S.teamBag=shuffle(S.teams.map((_,i)=>i));const t0=S.teamBag.pop();save();pickFrom(S.teams.map((_,i)=>i),i=>'فريق '+S.teams[i].name,()=>{},t0,r=>{sub.textContent='';if(S.mode==='groups'){S.turn=r;save();renderTurn();renderBoard()}})}},'اختر فريقاً')),
+    bagInfo,el('p',{class:'hint'},'مفيد بدل «أنا أنا يا أستاذ»: الاختيار عشوائي ولا يتكرر اسم حتى يُختار الجميع.'));
+  if(S.pickBag&&S.pickBag.length)left();
   nextQ=()=>{};
 }});
 
@@ -1864,7 +1869,7 @@ GAMES.push({id:'cup',name:'البطولة',mount(st){
     box.replaceChildren(el('div',{class:'qtext'},'القرعة...'));const out=el('div',{class:'pick spin'},'؟');box.append(out);
     (function f(){out.textContent=tn(Math.floor(Math.random()*4));sfx.tick();n++;if(n<16)setTimeout(f,60+n*8);else{
       S.cup={order,m:[{w:null,sa:null,sb:null},{w:null,sa:null,sb:null},{w:null,sa:null,sb:null}],cur:null};save();sfx.fanfare();confetti(80);renderStage()}})()}
-  function pickPlayers(ti){const mem=S.teams[ti].members.slice();if(!mem.length)return Array.from({length:PER},(_,k)=>'لاعب '+(k+1));let out=[];while(out.length<PER)out=out.concat(shuffle(mem));return out.slice(0,PER)}
+  function pickPlayers(ti){const mem=[...new Set(S.teams[ti].members)];if(!mem.length)return Array.from({length:PER},(_,k)=>'لاعب '+(k+1));C.played=C.played||[];const fresh=shuffle(mem.filter(m=>!C.played.includes(m))),used=shuffle(mem.filter(m=>C.played.includes(m)));let out=fresh.concat(used);while(out.length<PER)out=out.concat(shuffle(mem));out=out.slice(0,PER);out.forEach(m=>{if(!C.played.includes(m))C.played.push(m)});return out}
   function board(){const cu=C.cur,[a,b]=pair(cu.i);
     const side=(ti,si)=>{const sc=cu.scores[si],tot=sc.reduce((x,y)=>x+(y||0),0);
       return el('div',{class:'mside'+(cu.side===si&&!cu.tb?' on':'')},el('h3',{},el('span',{class:'dot',style:'background:'+S.teams[ti].color}),tn(ti)),
@@ -1979,7 +1984,7 @@ $('open-set').onclick=()=>{
   show(Math.min(curPane,panes.length-1));
   function apply(){
     const lines=t=>t.value.split('\n').map(x=>x.trim()).filter(Boolean);
-    const newStu=[...new Set(lines(stu))];
+    const rawStu=lines(stu),newStu=[...new Set(rawStu)];const dup=rawStu.length-newStu.length;
     const pair=l=>{const i=l.indexOf('|');return i<0?[l,'']:[l.slice(0,i).trim(),l.slice(i+1).trim()]};
     const newQa=lines(qa).map(pair);
     const newTf=lines(tf).map(pair).map(([s,v])=>[s,!/خطأ|خطا|false|x|✗/i.test(v)]);
@@ -1989,7 +1994,7 @@ $('open-set').onclick=()=>{
     S.students=newStu;S.qa=newQa;S.tf=newTf;S.goal.target=Math.max(1,+gt.value||30);{const h=Math.max(0,Math.min(S.goal.target,Math.round(+hc.value)));S.goal.pts=isNaN(h)?Math.min(S.goal.pts,S.goal.target):S.goal.target-h}S.goal.reward=gr.value.trim()||'مكافأة';S.qSec=Math.max(5,+qs.value||20);S.tfSec=Math.max(5,+ts.value||15);S.chSec=Math.max(10,+cs.value||30);S.bossName=bn.value.trim()||'المعضلين';{const it=lines(sw).map(pair).map(([l,e])=>[l,e===''?'':/^-?\d+$/.test(e)?+e:/gold/i.test(e)?'gold':/boss/i.test(e)?'boss':'']).filter(x=>x[0]);S.surprise=it.length>=2?it:null}S.bossLv=Math.max(0,(Math.round(+lv.value)||1)-1);drawBoss($('boss-cv'));drawBoss($('dface'));
     if(changedStu||n!==S.teamCount){S.teamCount=n;splitTeams();S.bag=[];if(!S.students.includes(S.cur))S.cur=null;if(S.mode==='individual')nextStudent()}
     {const h=gameChecks.filter(c=>!c.checked).map(c=>c.dataset.id);if(h.length>=GAMES.length){toast('اترك لعبة واحدة ظاهرة على الأقل');return}S.hiddenGames=h}
-    S.sample=false;save();o.hidden=true;renderAll();toast('حُفظت الإعدادات');
+    S.sample=false;save();o.hidden=true;renderAll();toast(dup?'حُفظت الإعدادات، وحُذف '+dup+' اسم مكرر':'حُفظت الإعدادات');
   }
   o.append(box);o.hidden=false;
 };
