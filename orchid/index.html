@@ -173,6 +173,20 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
 .vopt:active{transform:translateY(4px)}
 .burst{position:absolute;pointer-events:none;font-size:34px;color:var(--sun);animation:fly .9s ease-out forwards;z-index:30}
 @keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(200deg);opacity:0}}
+/* closet */
+#closet{background:linear-gradient(160deg,#FFEFF7,#EAF4FF)}
+.closet{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.3fr;align-items:center;gap:3vw;padding:1vh 1vw}
+@media (orientation:portrait){.closet{grid-template-columns:1fr;grid-template-rows:auto 1fr}}
+#cCat{width:clamp(170px,34vmin,330px);justify-self:center}
+.wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.6vw,16px);align-content:center}
+.wi{aspect-ratio:1;border:none;border-radius:22px;background:var(--card);font-size:clamp(34px,6vmin,58px);box-shadow:0 5px 0 rgba(0,0,0,.08);position:relative;cursor:pointer;display:grid;place-items:center;font-family:var(--ui);color:var(--ink)}
+.wi.on{outline:5px solid var(--leaf);outline-offset:-2px}
+.wi.lock{background:#E6EEF5;cursor:default}
+.wi.lock .e{filter:grayscale(1);opacity:.35}
+.wi .need{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:clamp(13px,1.8vw,17px);font-weight:800;color:var(--muted)}
+.wi .cdot{font-size:.9em}
+.ndot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--coral);margin-left:4px}
+#rWear{border:none;cursor:pointer;font-family:var(--ui);animation:bob 1.6s ease-in-out infinite}
 /* mini games */
 #games{background:linear-gradient(#FFE9F3,#E9F8FF)}
 #gList{grid-template-columns:repeat(3,1fr)}
@@ -219,8 +233,9 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
   <path d="M56 55 L64 55 L60 60 Z" fill="#FF6B81"/>
   <path d="M60 60 Q55 67 50 63 M60 60 Q65 67 70 63" fill="none" stroke="#22314A" stroke-width="2.4" stroke-linecap="round"/>
   <path d="M28 54 L12 50 M28 60 L12 62 M92 54 L108 50 M92 60 L108 62" stroke="#22314A" stroke-width="2" stroke-linecap="round"/>
-  <path d="M36 78 Q60 90 84 78 L84 84 Q60 96 36 84 Z" fill="#8B5CF6"/>
-  <circle cx="60" cy="88" r="6" fill="#FFC83D"/>
+  <path id="scarf" d="M36 78 Q60 90 84 78 L84 84 Q60 96 36 84 Z" fill="#8B5CF6"/>
+  <circle id="bell" cx="60" cy="88" r="6" fill="#FFC83D"/>
+  <g id="wear"></g>
 </symbol></defs></svg>
 
 <!-- HOME -->
@@ -293,6 +308,7 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
   <div class="three" id="rStars"></div>
   <div class="msg" id="rMsg">Great job, Orchid!</div>
   <div style="display:flex;align-items:center;gap:20px"><div class="cat happy" id="rCat"><svg><use href="#cat"/></svg></div><div class="newst" id="rSt">🍎</div></div>
+  <button class="pill" id="rWear" hidden>👗 New for Lulu! <span id="rWearE"></span></button>
   <button class="big green" id="rGo">Continue ▶</button>
 </section>
 
@@ -300,7 +316,7 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
 <section class="scene" id="worlds" hidden>
   <div class="bar">
     <button class="rbtn" data-go="home" aria-label="Home">⌂</button>
-    <button class="pill albumOpen" style="border:none;cursor:pointer;font-family:var(--ui)">📒 Stickers</button>
+    <span style="display:flex;gap:10px"><button class="pill albumOpen" style="border:none;cursor:pointer;font-family:var(--ui)">📒 Stickers</button><button class="pill" id="closetBtn" style="border:none;cursor:pointer;font-family:var(--ui)">👗 Lulu<span class="ndot" id="cDot" hidden></span></button></span>
     <span class="pill"><span class="st">★</span><span id="wTotal">0</span></span>
   </div>
   <div class="isles" id="isles"></div>
@@ -331,6 +347,12 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
   <div class="bar"><button class="rbtn" id="gmBack" aria-label="Back">‹</button><div class="dots" id="gmDots"></div><button class="rbtn" id="gmAgain" aria-label="Listen again">🔊</button></div>
   <div class="ask" id="gmAsk"></div>
   <div class="gmArea" id="gmArea"></div>
+</section>
+
+<!-- CLOSET -->
+<section class="scene" id="closet" hidden>
+  <div class="bar"><button class="rbtn" data-go="worlds" aria-label="Back">‹</button><span class="pill">👗 Dress Lulu</span><span class="pill"><span class="st">★</span><span id="cTotal">0</span></span></div>
+  <div class="closet"><button class="cat catbtn lulu bob" id="cCat" aria-label="Lulu"><svg><use href="#cat"/></svg></button><div class="wgrid" id="wGrid"></div></div>
 </section>
 
 <!-- ALBUM -->
@@ -431,7 +453,7 @@ const isleOpen=k=>k===0||!!S.all||!!S.wi[k-1];
 const isleLetters=k=>ISL[k].ls.split('');
 const unlocked=i=>{const ls=isleLetters(ci);if(S.all)return true;if(i===0)return true;if(i<ls.length)return !!S.stars[ls[i-1]];return ls.every(L=>S.stars[L]);};
 // ---------- scenes ----------
-function show(id){document.querySelectorAll('.scene').forEach(s=>s.hidden=s.id!==id);$('buddy').hidden=!['learn','trace','bub','words','vlearn','vgame','gm'].includes(id);if(id==='games')drawGames();if(id==='worlds')drawWorlds();hideSay();idle(id==='learn'?'learnmore':id==='trace'?'traceme':null);if(id==='map')drawMap();if(id==='album')drawAlbum();}
+function show(id){document.querySelectorAll('.scene').forEach(s=>s.hidden=s.id!==id);$('buddy').hidden=!['learn','trace','bub','words','vlearn','vgame','gm'].includes(id);if(id==='games')drawGames();if(id==='closet')drawCloset();if(id==='worlds')drawWorlds();hideSay();idle(id==='learn'?'learnmore':id==='trace'?'traceme':null);if(id==='map')drawMap();if(id==='album')drawAlbum();}
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{seqId++;stopCur();show(b.dataset.go);}));
 let firstPlay=true;
 $('play').addEventListener('click',()=>{unlock();preload(['hello','letsgo','great','awesome','yes','tryagain','oops2','oops3','cheer1','cheer2','cheer3','youdidit','sticker','isledone','newwords','tappic','letsplay'],true);setTimeout(()=>preload([...AUDIO_KEYS]),1500);show('worlds');if(firstPlay){firstPlay=false;play(['hello']);}else play('letsgo');});
@@ -570,6 +592,7 @@ function reward(st,emo,isNew,kind){afterReward=kind==='vocab'||kind==='daily'?'w
   $('rStars').innerHTML=[0,1,2].map(i=>'<span class="'+(i<st?'':'off')+'" style="animation-delay:'+(i*.25)+'s">★</span>').join('');
   $('rMsg').textContent=kind==='island'?'You finished '+ISL[ci].name+'!':kind==='vocab'?'You finished '+V[vk].name+'!':kind==='daily'?'Daily challenge done!':'Great job, Orchid!';
   $('rSt').textContent=emo;$('rSt').hidden=!isNew;
+  const wg=wardGot(),wn=WARD.filter(w=>w.cost<=total()&&w.cost>(S.wlast||0));$('rWear').hidden=!wn.length;if(wn.length){$('rWearE').innerHTML=wn.map(w=>w.e).join(' ');}S.wlast=total();save();
   show('reward');confetti();
   const r=$('rCat');r.classList.remove('happy');void r.offsetWidth;r.classList.add('happy');
   play(kind==='daily'?['dailydone'].concat(isNew?['sticker']:[]):kind==='island'&&ci===0?['islanddone','youdidit']:kind==='island'||kind==='vocab'?['isledone','youdidit'].concat(isNew&&kind==='vocab'?['sticker']:[]):['great','youdidit'].concat(isNew?['sticker']:[]));
@@ -585,7 +608,7 @@ const V={"me": {"name": "All About Me", "e": "🙋‍♀️", "items": [{"w": "h
 const MEQ=[{"k": "q_name", "t": "What is your name?", "a": "myname"}, {"k": "q_how", "t": "How are you, Orchid?", "a": "fine"}, {"k": "q_gift", "t": "Here is a present for you!", "a": "thankyou"}, {"k": "q_morning", "t": "Good morning, Orchid!", "a": "goodmorning"}, {"k": "q_bye", "t": "Bye bye, Orchid! See you later!", "a": "goodbye"}, {"k": "q_night", "t": "It is time to sleep. Good night!", "a": "goodnight"}, {"k": "q_hello", "t": "Hello, Orchid!", "a": "hello"}];
 MEQ.forEach(q=>SAY[q.k]=q.t);
 let vk='family',vi=0,vSeen,vRounds,vr,vm,vBusy=false;
-function drawWorlds(){$('wTotal').textContent=total();const g=$('isles');g.innerHTML='';
+function drawWorlds(){$('wTotal').textContent=total();$('cDot').hidden=wardGot()<=(S.wseen||0);const g=$('isles');g.innerHTML='';
   const add=(e,n,st,max,fn)=>{const k=Math.min(3,Math.round(st/max*3));const b=document.createElement('button');b.className='isle';b.innerHTML='<div class="ie">'+e+'</div><div class="in">'+n+'</div><div class="is">'+'★'.repeat(k)+'☆'.repeat(3-k)+'</div>';b.onclick=fn;g.appendChild(b);};
   const dd=S.dlyDate===new Date().toDateString();add('🎁','Daily Challenge'+(dd?'<small style="display:block;font-size:.7em;opacity:.7">✓ Done today</small>':''),dd?3:0,3,()=>gStart('daily'));
   ISL.forEach((I,k)=>{const ls=isleLetters(k),got=ls.reduce((a,L)=>a+(S.stars[L]||0),0)+(S.wi[k]||0),open=isleOpen(k);add(open?I.e:'🔒',I.name+'<small style="display:block;font-family:var(--en);font-size:.8em;opacity:.7">'+ls.join(' ')+'</small>',got,(ls.length+1)*3,()=>openIsle(k));});
@@ -754,6 +777,39 @@ function dailyNext(){if(gr>=gQ.length)return gDone(starsFor(gm));gBusy=false;dot
     else{gNo(b);play(['tryagain',snd?'PS_'+q.L:'Q_'+q.L]);}}));
   gPlay(snd?['whichsound','PS_'+q.L]:['Q_'+q.L],snd?['PS_'+q.L]:['Q_'+q.L]);}
 const GM={snd:sndStart,pop:popStart,mem:memStart,say:sayStart,miss:missStart,daily:dailyStart};
+
+// ---------- Lulu's closet ----------
+const WARD=[
+ {id:'purple',slot:'scarf',cost:0,c:'#8B5CF6',bell:'#FFC83D'},
+ {id:'bow',slot:'hat',cost:2,e:'🎀',svg:'<g transform="translate(86 20)"><path d="M0 0 L-14 -9 L-14 9 Z M0 0 L14 -9 L14 9 Z" fill="#FF5C8A"/><circle r="4.5" fill="#E0306A"/></g>'},
+ {id:'red',slot:'scarf',cost:5,c:'#E53935',bell:'#FFC83D'},
+ {id:'crown',slot:'hat',cost:8,e:'👑',svg:'<path d="M40 22 L42 4 L51 14 L60 1 L69 14 L78 4 L80 22 Z" fill="#FFC83D" stroke="#E5A100" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="16" r="3.2" fill="#FF5C8A"/><circle cx="48" cy="18" r="2.2" fill="#4FC3E8"/><circle cx="72" cy="18" r="2.2" fill="#4FC3E8"/>'},
+ {id:'glasses',slot:'face',cost:12,e:'🕶️',svg:'<g fill="#22314A"><ellipse cx="44" cy="45" rx="12.5" ry="10"/><ellipse cx="76" cy="45" rx="12.5" ry="10"/></g><path d="M56 42 Q60 39 64 42" stroke="#22314A" stroke-width="3" fill="none"/><path d="M37 41 L42 38 M69 41 L74 38" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>'},
+ {id:'party',slot:'hat',cost:16,e:'🎉',svg:'<path d="M46 20 L60 1 L74 20 Z" fill="#4FC3E8"/><path d="M50 15 L70 15 M54 9 L66 9" stroke="#fff" stroke-width="3"/><circle cx="60" cy="4" r="4.5" fill="#FF7A6B"/>'},
+ {id:'blue',slot:'scarf',cost:20,c:'#1E88E5',bell:'#FFC83D'},
+ {id:'flower',slot:'hat',cost:25,e:'🌸',svg:'<g transform="translate(33 22)"><g fill="#FF8FB8"><circle cx="0" cy="-7" r="5.5"/><circle cx="6.7" cy="-2.2" r="5.5"/><circle cx="4.1" cy="5.7" r="5.5"/><circle cx="-4.1" cy="5.7" r="5.5"/><circle cx="-6.7" cy="-2.2" r="5.5"/></g><circle r="4" fill="#FFC83D"/></g>'},
+ {id:'hearts',slot:'face',cost:30,e:'💕',svg:'<g fill="#FF4F8B"><path d="M44 54 C28 43 35 33 44 39 C53 33 60 43 44 54 Z"/><path d="M76 54 C60 43 67 33 76 39 C85 33 92 43 76 54 Z"/></g><path d="M56 43 Q60 40 64 43" stroke="#FF4F8B" stroke-width="3" fill="none"/>'},
+ {id:'green',slot:'scarf',cost:36,c:'#43A047',bell:'#FFC83D'},
+ {id:'chef',slot:'hat',cost:42,e:'👨‍🍳',svg:'<path d="M44 22 L44 14 C34 12 36 0 46 3 C48 -2 72 -2 74 3 C84 0 86 12 76 14 L76 22 Z" fill="#fff" stroke="#D5DEE8" stroke-width="2"/><path d="M44 18 L76 18" stroke="#D5DEE8" stroke-width="2"/>'},
+ {id:'pink',slot:'scarf',cost:48,c:'#F06292',bell:'#fff'},
+ {id:'gold',slot:'scarf',cost:56,c:'#FFB300',bell:'#fff'},
+ {id:'star',slot:'face',cost:65,e:'⭐',svg:'<g fill="#FFC83D" stroke="#E5A100" stroke-width="1.5" stroke-linejoin="round"><path d="M44 35 L47 42 L54 42.5 L48.5 47 L50.5 54 L44 50 L37.5 54 L39.5 47 L34 42.5 L41 42 Z"/><path d="M76 35 L79 42 L86 42.5 L80.5 47 L82.5 54 L76 50 L69.5 54 L71.5 47 L66 42.5 L73 42 Z"/></g>'}
+];
+WARD.forEach(w=>{if(w.slot==='scarf')w.e='<span class="cdot" style="background:'+w.c+'"></span>';});
+const wardGot=()=>WARD.filter(w=>w.cost<=total()).length;
+S.wear=S.wear||{hat:'',face:'',scarf:'purple'};if(S.wlast===undefined)S.wlast=total();
+function applyWear(){const W=id=>WARD.find(w=>w.id===id);const sc=W(S.wear.scarf)||WARD[0];
+  document.getElementById('scarf').setAttribute('fill',sc.c);document.getElementById('bell').setAttribute('fill',sc.bell);
+  document.getElementById('wear').innerHTML=['face','hat'].map(k=>S.wear[k]&&W(S.wear[k])?W(S.wear[k]).svg:'').join('');}
+function drawCloset(){S.wseen=wardGot();save();$('cTotal').textContent=total();const g=$('wGrid');g.innerHTML='';const T=total();
+  WARD.forEach(w=>{const b=document.createElement('button');const open=w.cost<=T,on=S.wear[w.slot]===w.id;b.className='wi'+(open?'':' lock')+(on?' on':'');
+    b.innerHTML='<span class="e">'+w.e+'</span>'+(open?'':'<span class="need">🔒 ★'+w.cost+'</span>');b.setAttribute('aria-label',w.id);
+    b.onclick=()=>{if(!open){play('locked');luluSad();return;}
+      if(w.slot==='scarf')S.wear.scarf=w.id;else S.wear[w.slot]=on?'':w.id;save();applyWear();drawCloset();const c=$('cCat');hearts(c);c.classList.remove('happy');void c.offsetWidth;c.classList.add('happy');play(pick(['cheer1','cheer2','tap4','awesome']));};
+    g.appendChild(b);});}
+$('closetBtn').onclick=()=>{seqId++;stopCur();show('closet');};
+$('rWear').onclick=()=>{seqId++;stopCur();show('closet');};
+applyWear();
 })();
 </script>
 
