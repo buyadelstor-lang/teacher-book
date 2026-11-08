@@ -138,11 +138,12 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
 
 /* worlds */
 #worlds{background:linear-gradient(#BFE9FF,#E9F8FF)}
-.isles{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2.4vw,24px);padding:2vh 1vw;align-content:center}
-@media (orientation:portrait){.isles{grid-template-columns:repeat(2,1fr)}}
+.isles{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2.4vw,24px);padding:2vh 1vw;align-content:center}
+@media (orientation:portrait){.isles{grid-template-columns:repeat(3,1fr)}}
+.cdot{display:inline-block;width:1em;height:1em;border-radius:50%;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 0 0 4px rgba(0,0,0,.08);vertical-align:middle}
 .isle{border:none;border-radius:32px;background:var(--card);box-shadow:0 8px 0 rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:2vh 8px;cursor:pointer;font-family:var(--ui);color:var(--ink);min-height:0}
 .isle:active{transform:translateY(4px);box-shadow:0 3px 0 rgba(0,0,0,.08)}
-.isle .ie{font-size:clamp(54px,9vmin,96px);line-height:1.1}
+.isle .ie{font-size:clamp(44px,7.5vmin,80px);line-height:1.1}
 .isle .in{font-weight:800;font-size:clamp(20px,2.8vw,30px);line-height:1.1;text-align:center}
 .isle .is{color:var(--sun);font-size:clamp(18px,2.4vw,26px);letter-spacing:2px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
 .isle:nth-child(6n+1){background:#FFF1D0}.isle:nth-child(6n+2){background:#FFE3EA}.isle:nth-child(6n+3){background:#E3F8EC}.isle:nth-child(6n+4){background:#EDE6FF}.isle:nth-child(6n+5){background:#FFF6D9}.isle:nth-child(6n+6){background:#E0F3FF}
@@ -207,6 +208,7 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
     <b>ركن الوالدين</b>
     <div id="pstats" style="font-size:15px;color:var(--muted)"></div>
     <button class="big" style="font-size:20px;background:var(--coral);box-shadow:0 5px 0 #c9574a" id="reset">مسح التقدم والبدء من جديد</button>
+    <button class="big" style="font-size:20px" id="unlockAll">فتح كل الجزر</button>
     <button class="big green" style="font-size:20px" id="pclose">إغلاق</button>
   </div></div>
 </section>
@@ -219,7 +221,7 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
     <span class="pill"><span class="st">★</span><span id="total">0</span></span>
   </div>
   <div class="world" id="world">
-    <div class="islandname">Apple Island</div>
+    <div class="islandname" id="isleName">Apple Island</div>
     <svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path id="trail" fill="none" stroke="#fff" stroke-width=".9" stroke-dasharray="1 16" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:7px"/></svg>
     <button id="mapCat" class="cat catbtn lulu" aria-label="Lulu"><svg><use href="#cat"/></svg></button>
   </div>
@@ -300,7 +302,7 @@ button:focus-visible{outline:4px solid var(--berry);outline-offset:3px}
 <div id="buddy" hidden><button class="cat lulu" id="bCat" aria-label="Lulu"><svg><use href="#cat"/></svg></button><div class="bubble-say" id="bSay" hidden></div></div>
 
 <script>
-const AUDIO_KEYS=new Set(["F_A", "F_B", "F_C", "F_D", "L_A", "L_B", "L_C", "L_D", "Q_A", "Q_B", "Q_C", "Q_D", "Q_TV", "Q_aunt", "Q_baby", "Q_bag", "Q_bed", "Q_bird", "Q_book", "Q_brother", "Q_bus", "Q_camel", "Q_cat", "Q_chair", "Q_clock", "Q_cow", "Q_crayon", "Q_cup", "Q_dog", "Q_door", "Q_duck", "Q_father", "Q_fish", "Q_grandfather", "Q_grandmother", "Q_horse", "Q_light", "Q_lion", "Q_mother", "Q_pen", "Q_pencil", "Q_ruler", "Q_school", "Q_scissors", "Q_sheep", "Q_sister", "Q_sofa", "Q_spoon", "Q_teacher", "Q_uncle", "Q_window", "S_cat", "S_dog", "V_TV", "V_aunt", "V_baby", "V_bag", "V_bed", "V_bird", "V_book", "V_brother", "V_bus", "V_camel", "V_cat", "V_chair", "V_clock", "V_cow", "V_crayon", "V_cup", "V_dog", "V_door", "V_duck", "V_father", "V_fine", "V_fish", "V_goodbye", "V_goodmorning", "V_goodnight", "V_grandfather", "V_grandmother", "V_hello", "V_horse", "V_light", "V_lion", "V_mother", "V_myname", "V_pen", "V_pencil", "V_ruler", "V_school", "V_scissors", "V_sheep", "V_sister", "V_sofa", "V_spoon", "V_teacher", "V_thankyou", "V_uncle", "V_window", "W_apple", "W_ball", "W_cat", "W_dog", "X_TV", "X_aunt", "X_baby", "X_bag", "X_bed", "X_bird", "X_book", "X_brother", "X_bus", "X_camel", "X_cat", "X_chair", "X_clock", "X_cow", "X_crayon", "X_cup", "X_dog", "X_door", "X_duck", "X_father", "X_fish", "X_grandfather", "X_grandmother", "X_horse", "X_light", "X_lion", "X_mother", "X_pen", "X_pencil", "X_ruler", "X_school", "X_scissors", "X_sheep", "X_sister", "X_sofa", "X_spoon", "X_teacher", "X_uncle", "X_window", "awesome", "cheer1", "cheer2", "cheer3", "great", "hello", "islanddone", "isledone", "learnmore", "letsgo", "letsplay", "listentap", "locked", "makeword", "match", "newwords", "next", "nexttry", "oops2", "oops3", "pop", "q_bye", "q_gift", "q_hello", "q_how", "q_morning", "q_name", "q_night", "readq", "startswith", "sticker", "talkq", "tap1", "tap2", "tap3", "tap4", "tap5", "tap6", "tapisland", "tappic", "trace", "tracehalf", "traceme", "traceok", "tryagain", "yes", "youdidit"]);const AUDIO_DIR='audio/';
+const AUDIO_KEYS=new Set(["F_A", "F_B", "F_C", "F_D", "F_E", "F_F", "F_G", "F_H", "F_I", "F_J", "F_K", "F_L", "F_M", "F_N", "F_O", "F_P", "F_Q", "F_R", "F_S", "F_T", "F_U", "F_V", "F_W", "F_X", "F_Y", "F_Z", "L_A", "L_B", "L_C", "L_D", "L_E", "L_F", "L_G", "L_H", "L_I", "L_J", "L_K", "L_L", "L_M", "L_N", "L_O", "L_P", "L_Q", "L_R", "L_S", "L_T", "L_U", "L_V", "L_W", "L_X", "L_Y", "L_Z", "Q_A", "Q_B", "Q_C", "Q_D", "Q_E", "Q_F", "Q_G", "Q_H", "Q_I", "Q_J", "Q_K", "Q_L", "Q_M", "Q_N", "Q_O", "Q_P", "Q_Q", "Q_R", "Q_S", "Q_T", "Q_TV", "Q_U", "Q_V", "Q_W", "Q_X", "Q_Y", "Q_Z", "Q_aunt", "Q_baby", "Q_bag", "Q_bed", "Q_bird", "Q_black", "Q_blue", "Q_book", "Q_brother", "Q_brown", "Q_bus", "Q_camel", "Q_cat", "Q_chair", "Q_clock", "Q_cow", "Q_crayon", "Q_cup", "Q_dog", "Q_door", "Q_duck", "Q_father", "Q_fish", "Q_grandfather", "Q_grandmother", "Q_green", "Q_horse", "Q_light", "Q_lion", "Q_mother", "Q_orange", "Q_pen", "Q_pencil", "Q_pink", "Q_purple", "Q_red", "Q_ruler", "Q_school", "Q_scissors", "Q_sheep", "Q_sister", "Q_sofa", "Q_spoon", "Q_teacher", "Q_uncle", "Q_white", "Q_window", "Q_yellow", "S_box", "S_cat", "S_dog", "S_egg", "S_hat", "S_kite", "S_lion", "S_moon", "S_pen", "S_sun", "S_van", "S_zebra", "V_TV", "V_aunt", "V_baby", "V_bag", "V_bed", "V_bird", "V_black", "V_blue", "V_book", "V_brother", "V_brown", "V_bus", "V_camel", "V_cat", "V_chair", "V_clock", "V_cow", "V_crayon", "V_cup", "V_dog", "V_door", "V_duck", "V_father", "V_fine", "V_fish", "V_goodbye", "V_goodmorning", "V_goodnight", "V_grandfather", "V_grandmother", "V_green", "V_hello", "V_horse", "V_light", "V_lion", "V_mother", "V_myname", "V_orange", "V_pen", "V_pencil", "V_pink", "V_purple", "V_red", "V_ruler", "V_school", "V_scissors", "V_sheep", "V_sister", "V_sofa", "V_spoon", "V_teacher", "V_thankyou", "V_uncle", "V_white", "V_window", "V_yellow", "W_apple", "W_ball", "W_box", "W_cat", "W_dog", "W_egg", "W_fish", "W_goat", "W_hat", "W_insect", "W_juice", "W_kite", "W_lion", "W_moon", "W_nest", "W_orange", "W_pen", "W_queen", "W_rabbit", "W_sun", "W_tree", "W_umbrella", "W_van", "W_watch", "W_yo-yo", "W_zebra", "X_TV", "X_aunt", "X_baby", "X_bag", "X_bed", "X_bird", "X_black", "X_blue", "X_book", "X_brother", "X_brown", "X_bus", "X_camel", "X_cat", "X_chair", "X_clock", "X_cow", "X_crayon", "X_cup", "X_dog", "X_door", "X_duck", "X_father", "X_fish", "X_grandfather", "X_grandmother", "X_green", "X_horse", "X_light", "X_lion", "X_mother", "X_orange", "X_pen", "X_pencil", "X_pink", "X_purple", "X_red", "X_ruler", "X_school", "X_scissors", "X_sheep", "X_sister", "X_sofa", "X_spoon", "X_teacher", "X_uncle", "X_white", "X_window", "X_yellow", "awesome", "cheer1", "cheer2", "cheer3", "great", "hello", "islanddone", "isledone", "learnmore", "letsgo", "letsplay", "listentap", "locked", "makeword", "match", "newwords", "next", "nexttry", "oops2", "oops3", "pop", "q_bye", "q_gift", "q_hello", "q_how", "q_morning", "q_name", "q_night", "readq", "startswith", "sticker", "talkq", "tap1", "tap2", "tap3", "tap4", "tap5", "tap6", "tapisland", "tappic", "trace", "tracehalf", "traceme", "traceok", "tryagain", "yes", "youdidit"]);const AUDIO_DIR='audio/';
 (function(){
 const $=id=>document.getElementById(id);
 // ---------- audio ----------
@@ -343,23 +345,51 @@ let idleT=null;
 function idle(key){clearTimeout(idleT);if(!key)return;const start=Date.now();idleT=setTimeout(()=>{play(key);luluHappy();},9000);}
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.lulu'))clearTimeout(idleT);},true);
 // ---------- data ----------
-const LET=[{L:'A',w:'apple',e:'🍎'},{L:'B',w:'ball',e:'⚽'},{L:'C',w:'cat',e:'🐱'},{L:'D',w:'dog',e:'🐶'}];
-const NODES=[{x:14,y:78},{x:36,y:56},{x:60,y:74},{x:80,y:50},{x:58,y:26}];
-const FAR=[{x:86,y:14,t:'E F G H'},{x:12,y:22,t:'I J K L'}];
+const LET=[{"L": "A", "w": "apple", "e": "🍎"}, {"L": "B", "w": "ball", "e": "⚽"}, {"L": "C", "w": "cat", "e": "🐱"}, {"L": "D", "w": "dog", "e": "🐶"}, {"L": "E", "w": "egg", "e": "🥚"}, {"L": "F", "w": "fish", "e": "🐟"}, {"L": "G", "w": "goat", "e": "🐐"}, {"L": "H", "w": "hat", "e": "🎩"}, {"L": "I", "w": "insect", "e": "🐞"}, {"L": "J", "w": "juice", "e": "🧃"}, {"L": "K", "w": "kite", "e": "🪁"}, {"L": "L", "w": "lion", "e": "🦁"}, {"L": "M", "w": "moon", "e": "🌙"}, {"L": "N", "w": "nest", "e": "🪺"}, {"L": "O", "w": "orange", "e": "🍊"}, {"L": "P", "w": "pen", "e": "🖊️"}, {"L": "Q", "w": "queen", "e": "👸"}, {"L": "R", "w": "rabbit", "e": "🐰"}, {"L": "S", "w": "sun", "e": "☀️"}, {"L": "T", "w": "tree", "e": "🌳"}, {"L": "U", "w": "umbrella", "e": "☂️"}, {"L": "V", "w": "van", "e": "🚐"}, {"L": "W", "w": "watch", "e": "⌚"}, {"L": "X", "w": "box", "e": "📦"}, {"L": "Y", "w": "yo-yo", "e": "🪀"}, {"L": "Z", "w": "zebra", "e": "🦓"}];
+const ISL=[{"name": "Apple Island", "e": "🍎", "ls": "ABCD", "mk": ["cat", "dog"], "t": "🏆"}, {"name": "Egg Island", "e": "🥚", "ls": "EFGH", "mk": ["hat", "egg"], "t": "🥇"}, {"name": "Kite Island", "e": "🪁", "ls": "IJKL", "mk": ["kite", "lion"], "t": "🎖️"}, {"name": "Moon Island", "e": "🌙", "ls": "MNOPQ", "mk": ["moon", "pen"], "t": "🏅"}, {"name": "Sun Island", "e": "☀️", "ls": "RSTUV", "mk": ["sun", "van"], "t": "👑"}, {"name": "Zebra Island", "e": "🦓", "ls": "WXYZ", "mk": ["box", "zebra"], "t": "💎"}];
+const MAKE_EMO={"cat": "🐱", "dog": "🐶", "hat": "🎩", "egg": "🥚", "kite": "🪁", "lion": "🦁", "moon": "🌙", "pen": "🖊️", "sun": "☀️", "van": "🚐", "box": "📦", "zebra": "🦓"};
+const LIX=L=>LET.findIndex(x=>x.L===L);
+let ci=0;
+const LAYOUT={5:[{x:14,y:78},{x:36,y:56},{x:60,y:74},{x:80,y:50},{x:58,y:26}],6:[{x:10,y:80},{x:28,y:58},{x:48,y:78},{x:68,y:62},{x:86,y:40},{x:60,y:22}]};
 // strokes in a 100x100 box
 const STROKES={
  A:[[['L',50,8,18,92]],[['L',50,8,82,92]],[['L',31,62,69,62]]],
  B:[[['L',28,8,28,92]],[['C',28,8,78,8,78,50,28,50]],[['C',28,50,86,50,86,92,28,92]]],
  C:[[['C',78,24,62,2,20,4,20,50],['C',20,50,20,96,62,98,78,76]]],
- D:[[['L',28,8,28,92]],[['C',28,8,96,8,96,92,28,92]]]
+ D:[[['L',28,8,28,92]],[['C',28,8,96,8,96,92,28,92]]],
+ E:[[['L',30,8,30,92]],[['L',30,8,74,8]],[['L',30,50,66,50]],[['L',30,92,74,92]]],
+ F:[[['L',30,8,30,92]],[['L',30,8,74,8]],[['L',30,50,66,50]]],
+ G:[[['C',78,24,62,2,20,4,20,50],['C',20,50,20,96,64,98,80,76]],[['L',56,56,80,56],['L',80,56,80,82]]],
+ H:[[['L',28,8,28,92]],[['L',72,8,72,92]],[['L',28,50,72,50]]],
+ I:[[['L',50,8,50,92]],[['L',30,8,70,8]],[['L',30,92,70,92]]],
+ J:[[['L',64,8,64,68],['C',64,68,64,98,28,98,26,72]],[['L',44,8,84,8]]],
+ K:[[['L',30,8,30,92]],[['L',74,8,30,58]],[['L',44,46,76,92]]],
+ L:[[['L',30,8,30,92],['L',30,92,74,92]]],
+ M:[[['L',20,92,20,8]],[['L',20,8,50,62],['L',50,62,80,8]],[['L',80,8,80,92]]],
+ N:[[['L',26,92,26,8]],[['L',26,8,74,92]],[['L',74,92,74,8]]],
+ O:[[['C',50,8,22,8,18,30,18,50],['C',18,50,18,72,26,92,50,92],['C',50,92,74,92,82,72,82,50],['C',82,50,82,28,74,8,50,8]]],
+ P:[[['L',30,8,30,92]],[['C',30,8,82,8,82,54,30,54]]],
+ Q:[[['C',50,8,22,8,18,30,18,50],['C',18,50,18,72,26,92,50,92],['C',50,92,74,92,82,72,82,50],['C',82,50,82,28,74,8,50,8]],[['L',56,66,84,94]]],
+ R:[[['L',30,8,30,92]],[['C',30,8,80,8,80,52,30,52]],[['L',46,52,78,92]]],
+ S:[[['C',76,20,64,4,26,6,24,28],['C',24,28,22,50,76,46,76,70],['C',76,70,76,96,30,96,22,80]]],
+ T:[[['L',20,8,80,8]],[['L',50,8,50,92]]],
+ U:[[['L',24,8,24,62],['C',24,62,24,98,76,98,76,62],['L',76,62,76,8]]],
+ V:[[['L',20,8,50,92]],[['L',80,8,50,92]]],
+ W:[[['L',14,8,32,92],['L',32,92,50,30],['L',50,30,68,92],['L',68,92,86,8]]],
+ X:[[['L',22,8,78,92]],[['L',78,8,22,92]]],
+ Y:[[['L',22,8,50,50]],[['L',78,8,50,50]],[['L',50,50,50,92]]],
+ Z:[[['L',22,8,78,8],['L',78,8,22,92],['L',22,92,78,92]]]
 };
 const COLORS=['#FF7A6B','#8B5CF6','#4FC3E8'];
 // ---------- state ----------
 let S={stars:{},stickers:[],words:0};
 try{const s=JSON.parse(localStorage.getItem('orchid-v1')||'null');if(s&&s.stars)S=s;}catch(e){}
+S.wi=S.wi||{};if(S.words&&!S.wi[0])S.wi[0]=S.words;delete S.words;if((S.isl||{}).animals&&!S.stickers.includes('🐾'))S.stickers.push('🐾');
 function save(){try{localStorage.setItem('orchid-v1',JSON.stringify(S));}catch(e){}}
-const total=()=>Object.values(S.stars).reduce((a,b)=>a+b,0)+(S.words||0)+Object.values(S.isl||{}).reduce((a,b)=>a+b,0);
-const unlocked=i=>i===0||(i<4?!!S.stars[LET[i-1].L]:!!S.stars.D);
+const total=()=>Object.values(S.stars).reduce((a,b)=>a+b,0)+Object.values(S.wi||{}).reduce((a,b)=>a+b,0)+Object.values(S.isl||{}).reduce((a,b)=>a+b,0);
+const isleOpen=k=>k===0||!!S.all||!!S.wi[k-1];
+const isleLetters=k=>ISL[k].ls.split('');
+const unlocked=i=>{const ls=isleLetters(ci);if(S.all)return true;if(i===0)return true;if(i<ls.length)return !!S.stars[ls[i-1]];return ls.every(L=>S.stars[L]);};
 // ---------- scenes ----------
 function show(id){document.querySelectorAll('.scene').forEach(s=>s.hidden=s.id!==id);$('buddy').hidden=!['learn','trace','bub','words','vlearn','vgame'].includes(id);if(id==='worlds')drawWorlds();hideSay();idle(id==='learn'?'learnmore':id==='trace'?'traceme':null);if(id==='map')drawMap();if(id==='album')drawAlbum();}
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{seqId++;stopCur();show(b.dataset.go);}));
@@ -367,37 +397,38 @@ let firstPlay=true;
 $('play').addEventListener('click',()=>{unlock();preload(['hello','letsgo','great','awesome','yes','tryagain','oops2','oops3','cheer1','cheer2','cheer3','youdidit','sticker','isledone','newwords','tappic','letsplay'],true);setTimeout(()=>preload([...AUDIO_KEYS]),1500);show('worlds');if(firstPlay){firstPlay=false;play(['hello']);}else play('letsgo');});
 // parent corner: hold 2s
 let ht=null;const gear=$('gear');
-const hs=()=>{ht=setTimeout(()=>{$('pstats').innerHTML='النجوم: '+total()+' · الجزر: '+Object.keys(V).filter(k=>(S.isl||{})[k]).map(k=>V[k].name+' ('+S.isl[k]+'★)').join(' ، ')+' · الحروف المنجزة: '+LET.filter(l=>S.stars[l.L]).map(l=>l.L+' ('+S.stars[l.L]+'★)').join(' ، ')||'لا شيء بعد';$('parent').hidden=false;},1500);};
+const hs=()=>{ht=setTimeout(()=>{$('pstats').innerHTML='النجوم: '+total()+' · الجزر: '+Object.keys(V).filter(k=>(S.isl||{})[k]).map(k=>V[k].name+' ('+S.isl[k]+'★)').join(' ، ')+' · الحروف المنجزة: '+LET.filter(l=>S.stars[l.L]).map(l=>l.L+' ('+S.stars[l.L]+'★)').join(' ، ')||'لا شيء بعد';$('unlockAll').textContent=S.all?'قفل الجزر بالترتيب':'فتح كل الجزر';$('parent').hidden=false;},1500);};
 const he=()=>clearTimeout(ht);
 gear.addEventListener('pointerdown',hs);gear.addEventListener('pointerup',he);gear.addEventListener('pointerleave',he);
 $('pclose').onclick=()=>$('parent').hidden=true;
-$('reset').onclick=()=>{S={stars:{},stickers:[],words:0};save();$('parent').hidden=true;};
+$('reset').onclick=()=>{S={stars:{},stickers:[],wi:{}};save();$('parent').hidden=true;};
+$('unlockAll').onclick=()=>{S.all=!S.all;save();$('unlockAll').textContent=S.all?'قفل الجزر بالترتيب':'فتح كل الجزر';};
 // ---------- map ----------
 function drawMap(){
-  $('total').textContent=total();
-  const w=$('world');w.querySelectorAll('.node,.far').forEach(n=>n.remove());
+  $('total').textContent=total();$('isleName').textContent=ISL[ci].name;
+  const w=$('world');w.querySelectorAll('.node').forEach(n=>n.remove());
+  const ls=isleLetters(ci),NODES=LAYOUT[ls.length+1];
   $('trail').setAttribute('d','M'+NODES.map(n=>n.x+' '+n.y).join(' L'));
-  FAR.forEach(f=>{const d=document.createElement('div');d.className='far';d.style.left=f.x+'%';d.style.top=f.y+'%';d.innerHTML='<div class="blob">🔒</div><div style="font-size:13px;color:#fff;font-weight:800">'+f.t+'</div>';w.appendChild(d);});
   let nowI=-1;
   NODES.forEach((p,i)=>{
-    const isWord=i===4,done=isWord?S.words>0:!!S.stars[LET[i].L],open=unlocked(i);
+    const isWord=i===ls.length,L=ls[i],done=isWord?!!S.wi[ci]:!!S.stars[L],open=unlocked(i);
     if(open&&!done&&nowI<0)nowI=i;
     const b=document.createElement('button');b.className='node '+(done?'done':open?'now':'lock');
-    if(open&&!done)b.className='node now';
     b.style.left=p.x+'%';b.style.top=p.y+'%';
-    const st=isWord?S.words:(S.stars[LET[i].L]||0);
-    b.innerHTML='<div class="blob">'+(open?(isWord?'🏆':LET[i].L):'🔒')+'</div><div class="stars">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</div>';
-    b.setAttribute('aria-label',isWord?'Words':LET[i].L);
-    b.onclick=()=>{if(!open){play('locked');return;} if(isWord)startWords();else startLetter(i);};
+    const st=isWord?(S.wi[ci]||0):(S.stars[L]||0);
+    b.innerHTML='<div class="blob">'+(open?(isWord?ISL[ci].t:L):'🔒')+'</div><div class="stars">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</div>';
+    b.setAttribute('aria-label',isWord?'Words':L);
+    b.onclick=()=>{if(!open){play('locked');return;} if(isWord)startWords();else startLetter(LIX(L));};
     w.appendChild(b);
   });
-  const c=NODES[nowI<0?4:nowI];const mc=$('mapCat');mc.style.left=(c.x+(c.x>70?-11:11))+'%';mc.style.top=(c.y+14)+'%';
+  const c=NODES[nowI<0?NODES.length-1:nowI];const mc=$('mapCat');mc.style.left=(c.x+(c.x>70?-11:11))+'%';mc.style.top=Math.min(c.y+14,98)+'%';
 }
+function openIsle(k){if(!isleOpen(k)){play('locked');luluSad();return;}ci=k;show('map');play('letsgo');}
 // ---------- letter flow ----------
 let li=0,mistakes=0;
-function startLetter(i){li=i;mistakes=0;const d=LET[i];preload(['L_'+d.L,'F_'+d.L,'W_'+d.w,'Q_'+d.L,'listentap','trace','traceok','tracehalf','traceme','learnmore'].concat(LET.map(x=>'Q_'+x.L),LET.map(x=>'L_'+x.L)),true);
+function startLetter(i){li=i;mistakes=0;const d=LET[i];preload(['L_'+d.L,'F_'+d.L,'W_'+d.w,'Q_'+d.L,'listentap','trace','traceok','tracehalf','traceme','learnmore'].concat(isleLetters(ci).map(x=>'Q_'+x),isleLetters(ci).map(x=>'L_'+x)),true);
   $('lLet').innerHTML=d.L+'<small>'+d.L.toLowerCase()+'</small>';
-  $('lPic').innerHTML='<div class="emo">'+d.e+'</div><div class="word"><b>'+d.w[0]+'</b>'+d.w.slice(1)+'</div>';
+  const hi=Math.max(0,d.w.indexOf(d.L.toLowerCase()));$('lPic').innerHTML='<div class="emo">'+d.e+'</div><div class="word">'+d.w.slice(0,hi)+'<b>'+d.w[hi]+'</b>'+d.w.slice(hi+1)+'</div>';
   show('learn');play(['L_'+d.L,'F_'+d.L,'listentap']);}
 $('lLet').onclick=()=>{const L=LET[li].L;play(['L_'+L,'L_'+L]);bounce($('lLet'));};
 $('lPic').onclick=()=>{play('W_'+LET[li].w);bounce($('lPic'));};
@@ -439,7 +470,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function nextBubble(){
   if(br>=ROUNDS){finishLetter();return;}
   dots($('bDots'),ROUNDS,br);
-  const pool=LET.slice(0,Math.max(li+1,3)).map(x=>x.L);
+  const pool=(li<2?LET.slice(0,3):LET.slice(Math.max(0,li-4),li+1)).map(x=>x.L);
   bTarget=(br%2===0||pool.length<2)?LET[li].L:pool[Math.floor(Math.random()*pool.length)];
   bLower=br>=3;
   const others=shuffle(pool.filter(x=>x!==bTarget)).slice(0,2);
@@ -461,19 +492,20 @@ function pickB(b,o){
 function starsFor(m){return m<=1?3:m<=3?2:1;}
 function finishLetter(){const L=LET[li].L,st=starsFor(mistakes);S.stars[L]=Math.max(S.stars[L]||0,st);
   const isNew=!S.stickers.includes(LET[li].e);if(isNew)S.stickers.push(LET[li].e);save();
-  reward(st,LET[li].e,isNew,li===3?'D_done':'');}
+  reward(st,LET[li].e,isNew,'');}
 // ---------- words ----------
-const WQ=[{w:'apple',e:'🍎',type:'start'},{w:'dog',e:'🐶',type:'start'},{w:'ball',e:'⚽',type:'start'},{w:'cat',e:'🐱',type:'make'},{w:'dog',e:'🐶',type:'make'}];
+let WQ=[];
 let wi,wm,wFill,wBusy=false;
-function startWords(){preload(['makeword','startswith','S_cat','S_dog','W_apple','W_ball','W_cat','W_dog','F_A','F_B','F_C','F_D'],true);wi=0;wm=0;show('words');play('makeword').then(nextWord);}
+function startWords(){const ls=isleLetters(ci);WQ=shuffle(ls.filter(L=>L!=='X').map(L=>LET[LIX(L)])).slice(0,3).map(x=>({w:x.w,e:x.e,L:x.L,type:'start'})).concat(ISL[ci].mk.map(w=>({w,e:MAKE_EMO[w],type:'make'})));
+  preload(['makeword','startswith'].concat(WQ.map(q=>'W_'+q.w),WQ.map(q=>q.type==='make'?'S_'+q.w:'F_'+q.L)),true);wi=0;wm=0;show('words');play('makeword').then(nextWord);}
 function nextWord(){
   wBusy=false;
-  if(wi>=WQ.length){const st=starsFor(wm);S.words=Math.max(S.words||0,st);const isNew=!S.stickers.includes('🏆');if(isNew)S.stickers.push('🏆');save();reward(st,'🏆',isNew,'island');return;}
+  if(wi>=WQ.length){const st=starsFor(wm),t=ISL[ci].t;S.wi[ci]=Math.max(S.wi[ci]||0,st);const isNew=!S.stickers.includes(t);if(isNew)S.stickers.push(t);save();reward(st,t,isNew,'island');return;}
   dots($('wDots'),WQ.length,wi);const q=WQ[wi];$('wPic').textContent=q.e;$('wSlots').innerHTML='';$('wTiles').innerHTML='';
   if(q.type==='start'){
     $('wAsk').textContent='Which letter does it start with?';
-    const ans=q.w[0].toUpperCase();
-    shuffle(['A','B','C','D']).forEach(L=>{const t=document.createElement('button');t.className='tile';t.textContent=L;t.onclick=()=>{
+    const ans=q.L;
+    shuffle(isleLetters(ci).slice()).forEach(L=>{const t=document.createElement('button');t.className='tile';t.textContent=L;t.onclick=()=>{
       if(wBusy)return;
       if(L===ans){wBusy=true;const r=t.getBoundingClientRect();sparkle(document.body,r.left+r.width/2,r.top+r.height/2,true);wi++;luluHappy();play([pick(['yes','cheer1','cheer3']),'F_'+ans]).then(nextWord);}
       else{wm++;t.animate([{transform:'translateX(-10px)'},{transform:'translateX(10px)'},{transform:'none'}],{duration:350});luluSad();play(pick(['tryagain','oops2','oops3']));}};$('wTiles').appendChild(t);});
@@ -496,11 +528,11 @@ $('wPic').onclick=()=>{const q=WQ[wi];if(q)play('W_'+q.w);};
 let afterReward='map';
 function reward(st,emo,isNew,kind){afterReward=kind==='vocab'?'worlds':'map';
   $('rStars').innerHTML=[0,1,2].map(i=>'<span class="'+(i<st?'':'off')+'" style="animation-delay:'+(i*.25)+'s">★</span>').join('');
-  $('rMsg').textContent=kind==='island'?'You finished Apple Island!':kind==='vocab'?'You finished '+V[vk].name+'!':'Great job, Orchid!';
+  $('rMsg').textContent=kind==='island'?'You finished '+ISL[ci].name+'!':kind==='vocab'?'You finished '+V[vk].name+'!':'Great job, Orchid!';
   $('rSt').textContent=emo;$('rSt').hidden=!isNew;
   show('reward');confetti();
   const r=$('rCat');r.classList.remove('happy');void r.offsetWidth;r.classList.add('happy');
-  play(kind==='island'||kind==='vocab'?['isledone','youdidit'].concat(isNew&&kind==='vocab'?['sticker']:[]):['great','youdidit'].concat(isNew?['sticker']:[]));
+  play(kind==='island'&&ci===0?['islanddone','youdidit']:kind==='island'||kind==='vocab'?['isledone','youdidit'].concat(isNew&&kind==='vocab'?['sticker']:[]):['great','youdidit'].concat(isNew?['sticker']:[]));
 }
 $('rGo').onclick=()=>show(afterReward);
 function confetti(){const cols=['#FF7A6B','#5BC98A','#8B5CF6','#FFC83D','#4FC3E8'];for(let i=0;i<50;i++){const c=document.createElement('i');c.className='conf';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%5];c.style.animationDuration=(1.6+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*.6)+'s';$('reward').appendChild(c);setTimeout(()=>c.remove(),4000);}}
@@ -509,14 +541,13 @@ function sparkle(host,x,y,abs){for(let i=0;i<12;i++){const s=document.createElem
   s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*6.28,d=70+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),950);}}
 
 // ---------- vocabulary islands ----------
-const V={"me": {"name": "All About Me", "e": "🙋‍♀️", "items": [{"w": "hello", "e": "👋", "s": "Hello!"}, {"w": "goodbye", "e": "🙋‍♀️", "s": "Goodbye!"}, {"w": "goodmorning", "e": "☀️", "s": "Good morning!"}, {"w": "goodnight", "e": "🌙", "s": "Good night!"}, {"w": "thankyou", "e": "💐", "s": "Thank you!"}, {"w": "myname", "e": "👧", "s": "My name is Orchid."}, {"w": "fine", "e": "😊", "s": "I am fine, thank you."}]}, "family": {"name": "My Family", "e": "👨‍👩‍👧", "items": [{"w": "father", "e": "👨", "s": "This is my father."}, {"w": "mother", "e": "👩", "s": "This is my mother."}, {"w": "brother", "e": "👦", "s": "This is my brother."}, {"w": "sister", "e": "👧", "s": "This is my sister."}, {"w": "grandfather", "e": "👴", "s": "This is my grandfather."}, {"w": "grandmother", "e": "👵", "s": "This is my grandmother."}, {"w": "baby", "e": "👶", "s": "This is the baby."}, {"w": "uncle", "e": "🧔", "s": "This is my uncle."}, {"w": "aunt", "e": "👩‍🦱", "s": "This is my aunt."}]}, "animals": {"name": "Animals", "e": "🦁", "items": [{"w": "cat", "e": "🐱", "s": "The cat says meow!"}, {"w": "dog", "e": "🐶", "s": "The dog says woof woof!"}, {"w": "cow", "e": "🐮", "s": "The cow says moo!"}, {"w": "sheep", "e": "🐑", "s": "The sheep says baa!"}, {"w": "duck", "e": "🦆", "s": "The duck says quack quack!"}, {"w": "horse", "e": "🐴", "s": "The horse says neigh!"}, {"w": "bird", "e": "🐦", "s": "The bird says tweet tweet!"}, {"w": "fish", "e": "🐟", "s": "The fish can swim!"}, {"w": "camel", "e": "🐪", "s": "The camel is very tall!"}, {"w": "lion", "e": "🦁", "s": "The lion says roar!"}]}, "home": {"name": "My Home", "e": "🏡", "items": [{"w": "bed", "e": "🛏️", "s": "I sleep in my bed."}, {"w": "door", "e": "🚪", "s": "Open the door."}, {"w": "chair", "e": "🪑", "s": "Sit on the chair."}, {"w": "cup", "e": "☕", "s": "I drink from a cup."}, {"w": "spoon", "e": "🥄", "s": "I eat with a spoon."}, {"w": "window", "e": "🪟", "s": "Look out the window."}, {"w": "light", "e": "💡", "s": "Turn on the light."}, {"w": "TV", "e": "📺", "s": "I watch TV."}, {"w": "clock", "e": "🕰️", "s": "What time is it?"}, {"w": "sofa", "e": "🛋️", "s": "Sit on the sofa."}]}, "school": {"name": "My School", "e": "🎒", "items": [{"w": "school", "e": "🏫", "s": "This is my school."}, {"w": "teacher", "e": "👩‍🏫", "s": "This is my teacher."}, {"w": "book", "e": "📕", "s": "I read a book."}, {"w": "pencil", "e": "✏️", "s": "I write with a pencil."}, {"w": "bag", "e": "🎒", "s": "This is my school bag."}, {"w": "crayon", "e": "🖍️", "s": "I color with a crayon."}, {"w": "ruler", "e": "📏", "s": "This is a ruler."}, {"w": "scissors", "e": "✂️", "s": "I cut with scissors."}, {"w": "pen", "e": "🖊️", "s": "This is a pen."}, {"w": "bus", "e": "🚌", "s": "I go to school by bus."}]}};
+const V={"me": {"name": "All About Me", "e": "🙋‍♀️", "items": [{"w": "hello", "e": "👋", "s": "Hello!"}, {"w": "goodbye", "e": "🙋‍♀️", "s": "Goodbye!"}, {"w": "goodmorning", "e": "☀️", "s": "Good morning!"}, {"w": "goodnight", "e": "🌙", "s": "Good night!"}, {"w": "thankyou", "e": "💐", "s": "Thank you!"}, {"w": "myname", "e": "👧", "s": "My name is Orchid."}, {"w": "fine", "e": "😊", "s": "I am fine, thank you."}]}, "family": {"name": "My Family", "e": "👨‍👩‍👧", "items": [{"w": "father", "e": "👨", "s": "This is my father."}, {"w": "mother", "e": "👩", "s": "This is my mother."}, {"w": "brother", "e": "👦", "s": "This is my brother."}, {"w": "sister", "e": "👧", "s": "This is my sister."}, {"w": "grandfather", "e": "👴", "s": "This is my grandfather."}, {"w": "grandmother", "e": "👵", "s": "This is my grandmother."}, {"w": "baby", "e": "👶", "s": "This is the baby."}, {"w": "uncle", "e": "🧔", "s": "This is my uncle."}, {"w": "aunt", "e": "👩‍🦱", "s": "This is my aunt."}]}, "animals": {"name": "Animals", "e": "🐾", "items": [{"w": "cat", "e": "🐱", "s": "The cat says meow!"}, {"w": "dog", "e": "🐶", "s": "The dog says woof woof!"}, {"w": "cow", "e": "🐮", "s": "The cow says moo!"}, {"w": "sheep", "e": "🐑", "s": "The sheep says baa!"}, {"w": "duck", "e": "🦆", "s": "The duck says quack quack!"}, {"w": "horse", "e": "🐴", "s": "The horse says neigh!"}, {"w": "bird", "e": "🐦", "s": "The bird says tweet tweet!"}, {"w": "fish", "e": "🐟", "s": "The fish can swim!"}, {"w": "camel", "e": "🐪", "s": "The camel is very tall!"}, {"w": "lion", "e": "🦁", "s": "The lion says roar!"}]}, "home": {"name": "My Home", "e": "🏡", "items": [{"w": "bed", "e": "🛏️", "s": "I sleep in my bed."}, {"w": "door", "e": "🚪", "s": "Open the door."}, {"w": "chair", "e": "🪑", "s": "Sit on the chair."}, {"w": "cup", "e": "☕", "s": "I drink from a cup."}, {"w": "spoon", "e": "🥄", "s": "I eat with a spoon."}, {"w": "window", "e": "🪟", "s": "Look out the window."}, {"w": "light", "e": "💡", "s": "Turn on the light."}, {"w": "TV", "e": "📺", "s": "I watch TV."}, {"w": "clock", "e": "🕰️", "s": "What time is it?"}, {"w": "sofa", "e": "🛋️", "s": "Sit on the sofa."}]}, "school": {"name": "My School", "e": "🎒", "items": [{"w": "school", "e": "🏫", "s": "This is my school."}, {"w": "teacher", "e": "👩‍🏫", "s": "This is my teacher."}, {"w": "book", "e": "📕", "s": "I read a book."}, {"w": "pencil", "e": "✏️", "s": "I write with a pencil."}, {"w": "bag", "e": "🎒", "s": "This is my school bag."}, {"w": "crayon", "e": "🖍️", "s": "I color with a crayon."}, {"w": "ruler", "e": "📏", "s": "This is a ruler."}, {"w": "scissors", "e": "✂️", "s": "I cut with scissors."}, {"w": "pen", "e": "🖊️", "s": "This is a pen."}, {"w": "bus", "e": "🚌", "s": "I go to school by bus."}]}, "colors": {"name": "Colors", "e": "🎨", "items": [{"w": "red", "e": "<span class=\"cdot\" style=\"background:#E53935\"></span>", "s": "The apple is red."}, {"w": "blue", "e": "<span class=\"cdot\" style=\"background:#1E88E5\"></span>", "s": "The sky is blue."}, {"w": "green", "e": "<span class=\"cdot\" style=\"background:#43A047\"></span>", "s": "The tree is green."}, {"w": "yellow", "e": "<span class=\"cdot\" style=\"background:#FDD835\"></span>", "s": "The sun is yellow."}, {"w": "orange", "e": "<span class=\"cdot\" style=\"background:#FB8C00\"></span>", "s": "The orange is orange."}, {"w": "purple", "e": "<span class=\"cdot\" style=\"background:#8E24AA\"></span>", "s": "Grapes are purple."}, {"w": "pink", "e": "<span class=\"cdot\" style=\"background:#F06292\"></span>", "s": "The flower is pink."}, {"w": "brown", "e": "<span class=\"cdot\" style=\"background:#795548\"></span>", "s": "The bear is brown."}, {"w": "black", "e": "<span class=\"cdot\" style=\"background:#212121\"></span>", "s": "The cat is black."}, {"w": "white", "e": "<span class=\"cdot\" style=\"background:#FFFFFF\"></span>", "s": "The cloud is white."}]}};
 const MEQ=[{"k": "q_name", "t": "What is your name?", "a": "myname"}, {"k": "q_how", "t": "How are you, Orchid?", "a": "fine"}, {"k": "q_gift", "t": "Here is a present for you!", "a": "thankyou"}, {"k": "q_morning", "t": "Good morning, Orchid!", "a": "goodmorning"}, {"k": "q_bye", "t": "Bye bye, Orchid! See you later!", "a": "goodbye"}, {"k": "q_night", "t": "It is time to sleep. Good night!", "a": "goodnight"}, {"k": "q_hello", "t": "Hello, Orchid!", "a": "hello"}];
 MEQ.forEach(q=>SAY[q.k]=q.t);
 let vk='family',vi=0,vSeen,vRounds,vr,vm,vBusy=false;
 function drawWorlds(){$('wTotal').textContent=total();const g=$('isles');g.innerHTML='';
-  const ls=LET.reduce((a,l)=>a+(S.stars[l.L]||0),0)+(S.words||0);
   const add=(e,n,st,max,fn)=>{const k=Math.min(3,Math.round(st/max*3));const b=document.createElement('button');b.className='isle';b.innerHTML='<div class="ie">'+e+'</div><div class="in">'+n+'</div><div class="is">'+'★'.repeat(k)+'☆'.repeat(3-k)+'</div>';b.onclick=fn;g.appendChild(b);};
-  add('🍎','Letters A B C D',ls,15,()=>{show('map');play('letsgo');});
+  ISL.forEach((I,k)=>{const ls=isleLetters(k),got=ls.reduce((a,L)=>a+(S.stars[L]||0),0)+(S.wi[k]||0),open=isleOpen(k);add(open?I.e:'🔒',I.name+'<small style="display:block;font-family:var(--en);font-size:.8em;opacity:.7">'+ls.join(' ')+'</small>',got,(ls.length+1)*3,()=>openIsle(k));});
   Object.entries(V).forEach(([k,v])=>add(v.e,v.name,(S.isl||{})[k]||0,3,()=>startIsle(k)));}
 function startIsle(k){vk=k;preload(V[k].items.flatMap(it=>k==='me'?['V_'+it.w]:['V_'+it.w,'X_'+it.w,'Q_'+it.w]).concat(k==='me'?MEQ.map(q=>q.k).concat(['talkq']):['readq']),true);vi=0;vSeen=new Set();$('vTitle').textContent=V[k].name;$('vPlay').hidden=true;show('vlearn');drawCard();play(['newwords','tappic']);}
 function drawCard(){const it=V[vk].items[vi];vSeen.add(vi);
@@ -538,9 +569,9 @@ function nextV(){vBusy=false;
   if(vr>=vRounds.length){const st=starsFor(vm);S.isl=S.isl||{};S.isl[vk]=Math.max(S.isl[vk]||0,st);const e=V[vk].e,isNew=!S.stickers.includes(e);if(isNew)S.stickers.push(e);save();reward(st,e,isNew,'vocab');return;}
   dots($('gDots'),vRounds.length,vr);const R=vRounds[vr],box=$('gOpts');box.innerHTML='';$('gE').textContent='';
   if(R.t==='find'){$('gAsk').innerHTML='Where is <b>'+R.it.w+'</b>?';
-    opts(R.it,3).forEach(o=>{const b=document.createElement('button');b.className='vopt vpic';b.textContent=o.e;b.setAttribute('aria-label',o.w);b.onclick=()=>answer(b,o===R.it,['V_'+o.w]);box.appendChild(b);});
+    opts(R.it,3).forEach(o=>{const b=document.createElement('button');b.className='vopt vpic';b.innerHTML=o.e;b.setAttribute('aria-label',o.w);b.onclick=()=>answer(b,o===R.it,['V_'+o.w]);box.appendChild(b);});
     R.again=['Q_'+R.it.w];}
-  else if(R.t==='read'){$('gAsk').textContent='Which word is it?';$('gE').textContent=R.it.e;
+  else if(R.t==='read'){$('gAsk').textContent='Which word is it?';$('gE').innerHTML=R.it.e;
     opts(R.it,3).forEach(o=>{const b=document.createElement('button');b.className='vopt txt';b.textContent=o.w;b.onclick=()=>answer(b,o===R.it,['V_'+R.it.w,'X_'+R.it.w]);box.appendChild(b);});
     R.again=['readq'];}
   else{const q=R.q,ans=V.me.items.find(x=>x.w===q.a);$('gAsk').textContent=q.t;
@@ -556,9 +587,8 @@ function answer(b,ok,after){if(vBusy)return;
     play([pick(['yes','cheer1','cheer2','cheer3','great','awesome'])].concat(after)).then(()=>setTimeout(nextV,250));}
   else{vm++;b.classList.remove('no');void b.offsetWidth;b.classList.add('no');luluSad();play(pick(['tryagain','oops2','oops3']));}}
 // ---------- album ----------
-function drawAlbum(){const all=['🍎','⚽','🐱','🐶','🏆'].concat(Object.values(V).map(v=>v.e));const g=$('aGrid');g.innerHTML='';
-  all.forEach((e,i)=>{const d=document.createElement('div');const have=S.stickers.includes(e);d.className='stk'+(have?'':' empty');d.innerHTML=have?e+'<span>'+(i<4?LET[i].L:i===4?'Words':Object.values(V)[i-5].name)+'</span>':'?';g.appendChild(d);});
-  for(let k=0;k<6;k++){const d=document.createElement('div');d.className='stk empty';d.textContent='🔒';g.appendChild(d);}}
+function drawAlbum(){const all=LET.map(x=>[x.e,x.L]).concat(ISL.map(I=>[I.t,I.name]),Object.values(V).map(v=>[v.e,v.name]));const g=$('aGrid');g.innerHTML='';
+  all.forEach(([e,n])=>{const d=document.createElement('div');const have=S.stickers.includes(e);d.className='stk'+(have?'':' empty');d.innerHTML=have?e+'<span style="font-size:16px;text-align:center">'+n+'</span>':'?';g.appendChild(d);});}
 document.querySelectorAll('.albumOpen').forEach(b=>b.onclick=()=>show('album'));
 })();
 </script>
