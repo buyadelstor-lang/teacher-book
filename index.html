@@ -370,6 +370,45 @@ body[data-tab="report"]{--sec:var(--k-teal)}
   .report,.report *{visibility:visible}
   .report{position:absolute;inset:0 auto auto 0;width:100%;box-shadow:none;border-width:2px}
 }
+@keyframes repflip{0%{transform:perspective(600px) rotateY(90deg) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+@keyframes reppop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15);opacity:1}100%{transform:none;opacity:1}}
+@keyframes repup{0%{transform:translateY(14px);opacity:0}100%{transform:none;opacity:1}}
+.report.anim .rep-head .avcard{animation:repflip .9s cubic-bezier(.2,1.3,.4,1) both}
+.report.anim .rep-badge{animation:reppop .45s cubic-bezier(.2,1.6,.4,1) both}
+.report.anim .rep-tile{animation:repup .5s ease-out both}
+@media (prefers-reduced-motion:reduce){.report.anim *{animation:none!important}}
+@media print{.report.anim *{animation:none!important}}
+.rep-chart{width:100%;height:auto;display:block}
+.rep-legend{display:flex;gap:14px;font-size:.82rem;color:var(--muted);font-weight:600}
+.rep-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+/* total points and class rank */
+.rep-bignums{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;align-items:center;flex:1}
+.rep-bignums b{font-family:var(--display);font-size:2.6rem;line-height:1.1;display:block}
+.rep-bignums span{font-weight:700;color:var(--muted);font-size:.85rem}
+/* the report prints on one A4 page: the app around it is removed, and everything is tightened */
+@media print{
+  @page{size:A4;margin:10mm}
+  body[data-tab="report"] header.board,body[data-tab="report"] main .phead,body[data-tab="report"] .toast,body[data-tab="report"] #modalRoot{display:none}
+  body[data-tab="report"] main .wrap{padding:0;max-width:none}
+  body[data-tab="report"] .report{position:static;width:auto;gap:8px;padding:10px 14px;border-radius:14px}
+  .report .rep-head{gap:2px}
+  .report .fut-lg{width:124px}
+  .report .fut-lg .fut{padding-top:20px}
+  .report .rep-head .fut .av{width:68px;height:68px}
+  .report .rep-bignums b{font-size:2rem}
+  .report .fut-lg .fut-name{font-size:.85rem}
+  .report .rep-name{font-size:1.35rem}
+  .report .rep-badge{font-size:.72rem;padding:1px 8px}
+  .report .rep-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .report .rep-tile{padding:4px 6px}
+  .report .rep-tile b{font-size:1.25rem}
+  .report .rep-tile span{font-size:.8rem}
+  .report .rep-cols{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .report .rep-box{padding:6px 8px;gap:2px}
+  .report .rep-box h3{font-size:.85rem}
+  .report .side-list li{padding:1px 0;font-size:.74rem;line-height:1.35}
+  .report .rep-foot{padding-top:6px;font-size:.8rem}
+}
 /* empty + misc */
 .empty{border:2.5px dashed var(--edge);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--surface)}
 .empty h3{font-size:1.3rem}
@@ -1421,17 +1460,41 @@ function studentReport(sid){
     hw,hwDue:hw.filter(h=>!h.due||h.due<=today),hwDone:hw.filter(h=>h.done&&h.done[sid]),
     earned:alog.reduce((s,l)=>s+Math.max(0,Number(l.pts)||0),0),
     spent:buys.reduce((s,l)=>s+(Number(l.cost)||0),0)+avBuys.reduce((s,l)=>s+(Number(l.cost)||0),0),
-    grade:gradeTotal(sid,"all"),
-    events:[...alog.map(l=>({date:l.date,t:l.t||0,text:l.name,pts:Number(l.pts)||0})),
-      ...vio.map(v=>({date:v.date,t:v.t||0,text:"مخالفة القانون "+v.rid,pts:-ptsOf(v.rid)})),
-      ...buys.map(l=>({date:l.date,t:0,text:"استبدال: "+l.item,pts:-(Number(l.cost)||0)})),
-      ...avBuys.map(l=>({date:l.date,t:l.t||0,text:"أفتار: "+((avById(l.aid)||{}).name||""),pts:-(Number(l.cost)||0)}))]
-      .sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.t-a.t).slice(0,20)};
+    grade:gradeTotal(sid,"all")};
+}
+/* the last eight school weeks (starting Sunday): points earned and days present or absent */
+const weekStart=k=>{const d=parseKey(k);d.setDate(d.getDate()-d.getDay());return dkey(d)};
+function reportWeeks(sid){
+  const st=state.store,start=parseKey(weekStart(dkey(new Date()))),weeks=[];
+  for(let i=7;i>=0;i--){const w=new Date(start);w.setDate(start.getDate()-i*7);weeks.push({k:dkey(w),pts:0,p:0,a:0})}
+  const byK=Object.fromEntries(weeks.map(w=>[w.k,w]));
+  [st.alog||[],...Object.values(st.archive||{}).map(r=>r.alog||[])].flat().forEach(l=>{if(l.sid!==sid||!(l.pts>0))return;const w=byK[weekStart(l.date)];if(w)w.pts+=l.pts});
+  for(const k in state.attendance.days){const s=state.attendance.days[k][sid],w=byK[weekStart(k)];if(!w||!s)continue;if(s==="a")w.a++;else if(s==="p"||s==="l")w.p++}
+  return weeks;
+}
+/* one bar per week, rounded at the top only, value above, date below; single series so no legend */
+function weekBars(weeks,parts){
+  const W=320,H=150,top=18,base=H-22,left=6,slot=(W-left*2)/weeks.length,bw=Math.min(24,slot-8);
+  const max=Math.max(1,...weeks.map(w=>parts.reduce((s,p)=>s+w[p.key],0)));
+  const bar=(x,y,w,h,r)=>{r=Math.min(r,h);return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`};
+  let out=`<line x1="${left}" x2="${W-left}" y1="${base}" y2="${base}" style="stroke:var(--line);stroke-width:1"/>`;
+  weeks.forEach((w,i)=>{
+    const x=left+i*slot+(slot-bw)/2,total=parts.reduce((s,p)=>s+w[p.key],0);let y=base;
+    const segs=parts.filter(p=>w[p.key]>0);
+    segs.forEach((p,j)=>{const hgt=Math.max(2,w[p.key]/max*(base-top));y-=hgt;const last=j===segs.length-1;
+      out+=last?`<path d="${bar(x,y,bw,hgt-(j?2:0),4)}" style="fill:${p.color}"/>`:`<rect x="${x}" y="${y}" width="${bw}" height="${hgt-(j?2:0)}" style="fill:${p.color}"/>`});
+    const d=parseKey(w.k);
+    out+=`<g><title>أسبوع ${d.getDate()}/${d.getMonth()+1}: ${parts.map(p=>p.label+" "+w[p.key]).join("، ")}</title><rect x="${left+i*slot}" y="${top-14}" width="${slot}" height="${base-top+14}" fill="transparent"/></g>`;
+    if(total)out+=`<text x="${x+bw/2}" y="${y-4}" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--ink)">${total}</text>`;
+    out+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="9" style="fill:var(--muted)">${d.getDate()}/${d.getMonth()+1}</text>`;
+  });
+  return `<svg class="rep-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${parts.map(p=>p.label).join(" و")} أسبوعياً">${out}</svg>`;
 }
 function vReport(){
   const stu=sortedStudents();
   if(!stu.length)return `<section class="panel"><div class="phead"><div><h2>ملف الإنجاز</h2></div></div>${emptyStudents()}</section>`;
   const sid=stuById(ui.repSid)?ui.repSid:stu[0].id,s=stuById(sid),r=studentReport(sid),cur=curAvatar(sid);
+  const classRank=1+stu.filter(x=>x.id!==sid&&studentReport(x.id).earned>r.earned).length;
   const days=r.att.p+r.att.a+r.att.l+r.att.e,attPct=days?Math.round((r.att.p+r.att.l)/days*100):0;
   const badges=[];
   if(days>0&&r.att.a===0)badges.push("🏅 حضور كامل");
@@ -1452,12 +1515,22 @@ function vReport(){
   return `<section class="panel">
   <div class="phead"><div><h2>ملف الإنجاز</h2><p>تقرير مفصل عن الطالب يجمع كل الجولات: حضوره وتسميعه ومشاركاته وواجباته ونقاطه.</p></div>
     <div class="row"><select id="repStu" aria-label="اختر الطالب">${stu.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${esc(x.name)}</option>`).join("")}</select><button class="btn primary" data-act="print">طباعة</button></div></div>
-  <div class="report">
+  <div class="report anim">
     <div class="rep-head">${cur?futCard(cur,shortName(s.name),"lg"):`<div class="rep-noav" aria-hidden="true">${esc((s.name||"؟").trim().charAt(0))}</div>`}
       <h2 class="rep-name">${esc(s.name)}</h2>
       <div class="muted">${[state.settings.className,state.settings.school,s.num?"رقم "+s.num:""].filter(Boolean).map(esc).join(" · ")}</div>
-      ${badges.length?`<div class="rep-badges">${badges.map(b=>`<span class="rep-badge">${b}</span>`).join("")}</div>`:""}</div>
-    <div class="rep-grid">${tiles.map(([v,l,sub])=>`<div class="rep-tile"><b class="num">${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`).join("")}</div>
+      ${badges.length?`<div class="rep-badges">${badges.map((b,i)=>`<span class="rep-badge" style="animation-delay:${(.9+i*.35).toFixed(2)}s">${b}</span>`).join("")}</div>`:""}</div>
+    <div class="rep-grid">${tiles.map(([v,l,sub],i)=>{const m=String(v).match(/^(\d+(?:\.\d+)?)(.*)$/);return `<div class="rep-tile" style="animation-delay:${(.25+i*.06).toFixed(2)}s"><b class="num"${m?` data-count="${m[1]}" data-suf="${esc(m[2])}"`:""}>${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`}).join("")}</div>
+    ${(()=>{
+      const wk=reportWeeks(sid),hasPts=wk.some(w=>w.pts),hasAtt=wk.some(w=>w.p||w.a);
+      const all=stu.map(x=>{const q=studentReport(x.id),d=q.att.p+q.att.a+q.att.l+q.att.e;return {id:x.id,earned:q.earned,rec:q.rec,part:q.part,att:d?(q.att.p+q.att.l)/d:0}});
+      const me=all.find(o=>o.id===sid),rank=k=>1+all.filter(o=>o[k]>me[k]).length,medal=n=>n===1?"🥇 ":n===2?"🥈 ":n===3?"🥉 ":"";
+      const rk=[["earned","النقاط المكتسبة"],["rec","التسميع"],["part","المشاركات"],["att","نسبة الحضور"]];
+      return `<div class="rep-cols">
+        <div class="rep-box"><h3>النقاط المكتسبة أسبوعياً</h3>${hasPts?weekBars(wk,[{key:"pts",label:"النقاط",color:"var(--k-teal)"}]):`<p class="muted small" style="margin:0">لا توجد نقاط في آخر ثمانية أسابيع.</p>`}</div>
+        <div class="rep-box"><h3>الحضور أسبوعياً</h3>${hasAtt?`<div class="rep-legend"><span><i style="background:var(--ok)"></i>حاضر</span><span><i style="background:var(--bad)"></i>غائب</span></div>${weekBars(wk,[{key:"p",label:"حاضر",color:"var(--ok)"},{key:"a",label:"غائب",color:"var(--bad)"}])}`:`<p class="muted small" style="margin:0">لا يوجد تحضير في آخر ثمانية أسابيع.</p>`}</div>
+        <div class="rep-box"><h3>ترتيبه بين زملائه</h3><ul class="side-list">${rk.map(([k,n])=>{const r=rank(k);return `<li><span>${n}</span><b class="num">${medal(r)}${r} من ${all.length}</b></li>`}).join("")}</ul></div>
+      </div>`})()}
     <div class="rep-cols">
       <div class="rep-box"><h3>الحضور</h3>${list([`<li><span>حاضر</span><b class="num">${r.att.p}</b></li>`,`<li><span>غائب</span><b class="num">${r.att.a}</b></li>`,`<li><span>متأخر</span><b class="num">${r.att.l}</b></li>`,`<li><span>مستأذن</span><b class="num">${r.att.e}</b></li>`,`<li><span>نسبة الحضور</span><b class="num">${attPct}%</b></li>`],"")}</div>
       <div class="rep-box"><h3>نقاط التحفيز</h3>${list(Object.entries(r.awards).sort((a,b)=>b[1].n-a[1].n).map(([n,a])=>`<li><span>${esc(n)}</span><span class="num">${a.n} مرة · <b>${a.pts>0?"+":""}${a.pts}</b></span></li>`),"لم يحصل على نقاط بعد.")}
@@ -1466,12 +1539,27 @@ function vReport(){
       <div class="rep-box"><h3>الاختبارات</h3>${list(ex.items.map(e=>`<li><span>${esc(e.name)}</span><b class="num">${sc[e.id]!=null?esc(sc[e.id])+(Number(e.max)>0?" / "+esc(e.max):""):"—"}</b></li>`),"لا توجد اختبارات.")}</div>
       <div class="rep-box"><h3>المخالفات والخصومات</h3>${list([...Object.entries(vioBy).map(([n,c])=>`<li><span>القانون ${esc(n)}: ${esc((ruleOf(Number(n))||{}).text||"")}</span><b class="num">${c} مرة</b></li>`),
         ...Object.entries(r.deds).filter(([n])=>!/^مخالفة القانون/.test(n)).map(([n,a])=>`<li><span>${esc(n)}</span><b class="num">${a.n} مرة · −${a.pts}</b></li>`)],"لا توجد مخالفات ولا خصومات.")}</div>
-      <div class="rep-box"><h3>آخر الأحداث</h3>${list(r.events.map(e=>`<li><span>${esc(e.text)} <span class="muted small num">${esc(e.date)}</span></span><b class="num" style="color:${e.pts<0?"var(--bad)":"var(--ok)"}">${e.pts>0?"+":""}${e.pts}</b></li>`),"لا توجد أحداث بعد.")}</div>
+      <div class="rep-box"><h3>مجموع النقاط والترتيب</h3><div class="rep-bignums"><div><b class="num" data-count="${r.earned}" data-suf="">${r.earned}</b><span>مجموع نقاطه</span></div><div><b class="num">${classRank<=3?["🥇","🥈","🥉"][classRank-1]+" ":""}${classRank}</b><span>ترتيبه من ${stu.length}</span></div></div></div>
     </div>
     <div class="rep-foot"><span>تاريخ التقرير: ${esc(fmtDate(new Date()))}</span><span>توقيع المعلم: ..................</span></div>
   </div></section>`;
 }
 
+/* numbers count up from zero, a reveal sound plays, then a coin for each badge as it pops in */
+let repPrinting=false;
+window.addEventListener("beforeprint",()=>{repPrinting=true;document.querySelectorAll(".report [data-count]").forEach(el=>el.textContent=el.dataset.count+(el.dataset.suf||""))});
+window.addEventListener("afterprint",()=>{repPrinting=false});
+function animateReport(){
+  const rep=document.querySelector(".report.anim");if(!rep)return;
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  rep.querySelectorAll("[data-count]").forEach((el,i)=>{
+    const to=Number(el.dataset.count),suf=el.dataset.suf||"",dec=(el.dataset.count.split(".")[1]||"").length,t0=performance.now()+300+i*60,dur=900;el.textContent=(0).toFixed(dec)+suf;
+    const step=now=>{const p=repPrinting?1:Math.min(1,Math.max(0,(now-t0)/dur));el.textContent=(to*(1-Math.pow(1-p,3))).toFixed(dec)+suf;if(p<1)requestAnimationFrame(step)};
+    requestAnimationFrame(step);
+  });
+  setTimeout(()=>SFX.play("reveal"),150);
+  rep.querySelectorAll(".rep-badge").forEach((b,i)=>setTimeout(()=>SFX.play("coin"),900+i*350));
+}
 /* ---------- settings ---------- */
 function vSetup(){
   const s=state.settings;
@@ -1502,6 +1590,7 @@ function render(){
   if(!ui.loaded&&!students().length){v.innerHTML=`<div class="empty"><h3>جارٍ تحميل دفترك…</h3><p>نحضر طلابك ودرجاتك المحفوظة.</p></div>`;return}
   const a=document.activeElement;const keep=a&&a.id&&v.contains(a)?{id:a.id,s:a.selectionStart}:null;
   v.innerHTML=VIEWS[ui.tab]();
+  if(ui.tab==="report")animateReport();
   if(keep){const el=document.getElementById(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.s)}catch(e){}}}
 }
 function go(tab){ui.tab=tab;ui.present=false;try{history.replaceState(null,"","#"+tab)}catch(e){}render();window.scrollTo({top:0})}
