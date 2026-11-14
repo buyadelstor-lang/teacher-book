@@ -5,11 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: "crayon box" — cream page, each section owns a crayon color (tab, heading, accents); sticker cards with thick ink outline + offset shadow */
-:root{
-  --bg:#FFF8EC; --surface:#FFFFFF; --sunk:#FFF0D9; --ink:#2A2140; --muted:#6B5F80; --line:#EADFCB; --edge:#2A2140;
-  --board:#2A2140; --board-2:#3C3159; --board-ink:#FFF8EC;
-  --accent:#F5B935; --accent-ink:#4A3200; --accent-soft:#FDEBC0;
-  --ok:#2E9E5B; --ok-soft:#DDF5E5; --bad:#E5484D; --bad-soft:#FDE1E1; --warn:#C27C00; --warn-soft:#FDEFCF; --info:#3D7BE0; --info-soft:#DEE9FC;
+:root{--bg:#FFF8EC; --surface:#FFFFFF; --sunk:#FFF0D9; --ink:#2A2140; --muted:#6B5F80; --line:#EADFCB; --edge:#2A2140;--board:#2A2140; --board-2:#3C3159; --board-ink:#FFF8EC;--accent:#F5B935; --accent-ink:#4A3200; --accent-soft:#FDEBC0;--ok:#2E9E5B; --ok-soft:#DDF5E5; --bad:#E5484D; --bad-soft:#FDE1E1; --warn:#C27C00; --warn-soft:#FDEFCF; --info:#3D7BE0; --info-soft:#DEE9FC;
   --k-coral:#FF7A59; --k-blue:#4C8DF6; --k-teal:#2FB0A2; --k-pink:#EF5DA8; --k-purple:#8A6CE0; --k-sun:#F5B935; --k-green:#5DBB4F; --k-gray:#8C8399;
   --sec:var(--k-coral); --sec-ink:#1E1733;
   --display:"Baloo Bhaijaan 2","Readex Pro",Tahoma,sans-serif;
@@ -299,6 +295,81 @@ td.c,th.c{text-align:center}
 .present li::before{content:counter(r);flex:none;width:2.2em;height:2.2em;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.8em;background:var(--k-coral)}
 .present li:nth-child(6n+2)::before{background:var(--k-teal)}.present li:nth-child(6n+3)::before{background:var(--k-sun);color:#4A3200}.present li:nth-child(6n+4)::before{background:var(--k-purple)}.present li:nth-child(6n+5)::before{background:var(--k-blue)}.present li:nth-child(6n+6)::before{background:var(--k-pink)}
 
+.pledge{margin-top:18px;border:2.5px dashed var(--edge);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb,var(--k-sun) 14%,var(--surface))}
+.pledge p{margin:0;font-weight:600;font-size:1rem;line-height:1.9}
+.pledge .nm{display:flex;align-items:center;gap:10px;font-weight:700}
+.pledge .nm span{flex:1;border-bottom:2px dotted var(--edge);min-height:1.5em}
+.pledge .sg{display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:.9rem;font-weight:700}
+.pledge .sg span{flex:1;border-top:2px solid var(--edge);padding-top:6px;text-align:center}
+@media print{body *{visibility:hidden}.present,.present *{visibility:visible}.present{position:absolute;inset:0 auto auto 0;width:100%;box-shadow:none;border-width:2px}}
+.vp{display:inline-block;font-size:.8rem;font-weight:700;border-radius:99px;padding:0 9px;white-space:nowrap}
+.vp.bad{background:var(--bad-soft);color:var(--bad)}.vp.warn{background:var(--warn-soft);color:var(--warn)}
+.vday{border-top:2px dotted var(--line);padding-top:8px;display:flex;flex-direction:column;gap:2px}
+.ventry{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-bottom:1px dotted var(--line)}
+.vwho{box-shadow:none;border-style:dashed;margin:0 0 4px 3rem}
+body[data-tab="avatars"]{--sec:var(--k-purple);--sec-ink:#fff}
+.av{display:inline-block;vertical-align:middle;border-radius:6px;flex:none}
+.nm .av{margin-inline-end:6px}
+.avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.avcard{border:2.5px solid var(--edge);border-radius:var(--r);padding:12px 8px;background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;box-shadow:3px 3px 0 var(--edge)}
+.avcard .av{border-radius:10px;border:2px solid var(--edge)}
+.avcard{border:0;background:none;box-shadow:none;padding:0;gap:8px;filter:drop-shadow(3px 4px 0 rgba(0,0,0,.35))}
+.avcard.on{filter:drop-shadow(0 0 4px var(--ok)) drop-shadow(0 0 2px var(--ok))}
+.fut{position:relative;overflow:hidden;width:100%;max-width:170px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;padding:26px 10px 10px;gap:2px;clip-path:polygon(9% 0,91% 0,100% 7%,100% 87%,90% 94%,50% 100%,10% 94%,0 87%,0 7%)}
+.fut .av{border:0;border-radius:0;filter:drop-shadow(0 3px 0 rgba(0,0,0,.2));box-shadow:none}
+.fut>*{z-index:1}.fut>*:not(.fut-rt){position:relative}
+.fut::before{z-index:0}.fut::after{z-index:2}
+.fut .av.r-legend{box-shadow:none}
+.fut-lg{width:190px}.fut-md{width:120px}
+.fut-md .fut{padding:18px 6px 8px}.fut-md .fut-name{font-size:.78rem}.fut-md .fut-rt{top:8px}.fut-md .fut-rt b{font-size:1.05rem}.fut-md .fut-sub{font-size:.65rem}
+.fut-lg .fut-name{font-size:1.15rem}
+.rep-head .fut .av,.lb-hero .fut .av{border:0;border-radius:0}
+.fut-rt{position:absolute;top:10px;inset-inline-start:12px;display:flex;flex-direction:column;align-items:center;line-height:1}
+.fut-rt b{font-family:var(--display);font-size:1.5rem;font-weight:800}
+.fut-rt small{font-size:.65rem;font-weight:700}
+.fut-name{font-family:var(--display);font-weight:800;font-size:.95rem;line-height:1.2;text-align:center}
+.fut-line{width:60%;height:2px;background:currentColor;opacity:.35;margin:2px 0}
+.fut-sub{font-size:.75rem;font-weight:700;opacity:.85}
+.r-legend .fut{background:linear-gradient(160deg,#FFFFFF 0%,#F6F0DE 38%,#EADFB8 62%,#D4BB73 100%);color:#2B2416}
+.r-legend .fut::before{content:"";position:absolute;inset:0;background:linear-gradient(118deg,transparent 52%,rgba(205,165,70,.55) 53% 60%,transparent 61% 67%,rgba(205,165,70,.35) 68% 72%,transparent 73%);pointer-events:none}
+.r-big .fut{background:linear-gradient(160deg,#FFB04A 0%,#FF5FA2 48%,#A54BDB 100%);color:#fff}
+.r-game .fut{background:linear-gradient(160deg,#1B2A49 0%,#1F6F8B 55%,#21D4FD 100%);color:#fff}
+.r-star .fut{background:linear-gradient(160deg,#FFF3B5 0%,#F3D162 38%,#DDAE35 72%,#F7DF8C 100%);color:#3A2A00}
+.fut::after{content:"";position:absolute;top:-40%;bottom:-40%;left:-60%;width:40%;transform:rotate(20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:avshine 3.2s ease-in-out infinite;pointer-events:none}
+.r-star .fut::after{animation-duration:5s;opacity:.5}
+@keyframes avshine{0%{left:-60%}60%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.fut::after{animation:none;display:none}}
+.av.r-legend{box-shadow:0 0 0 2px #E6B422}
+.avcard .btn{width:100%;max-width:170px;color:var(--ink)}
+.lb-hero .av{border-radius:12px;border:3px solid #3A2600}
+body[data-tab="report"]{--sec:var(--k-teal)}
+.report{background:var(--surface);border:3px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--edge);padding:22px clamp(14px,3vw,30px);display:flex;flex-direction:column;gap:18px}
+.rep-head{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.rep-head .av{border-radius:18px;border:3px solid var(--edge)}
+.rep-noav{width:140px;height:140px;border-radius:18px;border:3px solid var(--edge);display:grid;place-items:center;font-family:var(--display);font-size:4rem;font-weight:800;background:var(--sunk)}
+.rep-name{font-size:clamp(1.6rem,4vw,2.2rem)}
+.rep-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.rep-badge{background:var(--accent-soft);border:2px solid var(--edge);border-radius:99px;padding:2px 12px;font-weight:700;font-size:.85rem}
+.rep-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.rep-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rep-tile{border:2.5px solid var(--edge);border-radius:14px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.rep-tile:nth-child(4n+1){background:color-mix(in srgb,var(--k-coral) 14%,var(--surface))}
+.rep-tile:nth-child(4n+2){background:color-mix(in srgb,var(--k-teal) 14%,var(--surface))}
+.rep-tile:nth-child(4n+3){background:color-mix(in srgb,var(--k-sun) 18%,var(--surface))}
+.rep-tile:nth-child(4n+4){background:color-mix(in srgb,var(--k-purple) 14%,var(--surface))}
+.rep-tile b{font-family:var(--display);font-size:1.8rem;line-height:1.1}
+.rep-tile span{font-weight:600}
+.rep-tile small{color:var(--muted)}
+.rep-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.rep-box{border:2px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;break-inside:avoid}
+.rep-box h3{font-size:1.05rem}
+.rep-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--muted);font-weight:600;border-top:2px dashed var(--line);padding-top:10px}
+@media print{
+  :root:not(#print-light){--bg:#fff;--surface:#fff;--sunk:#F6F1E7;--ink:#2A2140;--muted:#6B5F80;--line:#EADFCB;--edge:#2A2140;--accent-soft:#FDEBC0;--ok:#2E9E5B;--bad:#E5484D;color-scheme:light}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .report,.report *{visibility:visible}
+  .report{position:absolute;inset:0 auto auto 0;width:100%;box-shadow:none;border-width:2px}
+}
 /* empty + misc */
 .empty{border:2.5px dashed var(--edge);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--surface)}
 .empty h3{font-size:1.3rem}
@@ -341,11 +412,13 @@ td.c,th.c{text-align:center}
 (function(){
 "use strict";
 const DAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+/* the class rules as printed on the student sheet, in their order */
+const CLASS_RULES=["أستمع للمعلم ولا أقاطعه أثناء الشرح.","أرفع يدي وأنتظر دوري قبل التحدث.","أحضر أدواتي وأستعد للدرس قبل بدايته.","أنتظر دوري وأحترم حق زملائي في المشاركة.","لا أخرج من الفصل إلا بعد استئذان المعلم.","أحافظ على نظافة الصف وترتيبه في جميع الأوقات.","ألتزم بالحضور والوقت وأستفيد من وقت الحصة.","أدخل الصف بهدوء وأدب دون إزعاج زملائي.","أحترم زملائي ولا أتنمر عليهم أو أسخر منهم."];
 const SECTIONS=["settings","students","attendance","grades","homework","schedule","store","rules"];
 const TABS=[
   ["attendance","التحضير اليومي"],["activity","النشاط الفصلي"],["students","كشف الطلاب"],["grades","الاختبارات"],["follow","المتابعة اليومية"],["board","لوحة النقاط"],["homework","الواجبات"],
-  ["schedule","جدول المعلم"],["rewards","متجر الجوائز"],["rules","قوانين الفصل"],["setup","الإعدادات"]];
-const TAB_COLOR={activity:"pink",follow:"green",board:"teal",attendance:"coral",students:"blue",grades:"teal",homework:"pink",schedule:"purple",rewards:"sun",rules:"green",setup:"gray"};
+  ["schedule","جدول المعلم"],["rewards","متجر الجوائز"],["avatars","الأفتار"],["report","ملف الإنجاز"],["rules","قوانين الفصل"],["setup","الإعدادات"]];
+const TAB_COLOR={avatars:"purple",report:"teal",activity:"pink",follow:"green",board:"teal",attendance:"coral",students:"blue",grades:"teal",homework:"pink",schedule:"purple",rewards:"sun",rules:"green",setup:"gray"};
 const ST={p:"حاضر",a:"غائب",l:"متأخر",e:"مستأذن"};
 const LS_KEY="teacher-book-v1";
 
@@ -416,7 +489,7 @@ function defaults(){
     schedule:{periods:[["الأولى","7:00"],["الثانية","7:45"],["الثالثة","8:30"],["الرابعة","9:35"],["الخامسة","10:20"],["السادسة","11:05"],["السابعة","11:50"]].map(([l,t])=>({id:uid(),label:l,time:t})),cells:{}},
     store:{items:[{id:uid(),name:"اختيار المقعد ليوم كامل",cost:10},{id:uid(),name:"قائد الفصل ليوم",cost:15},{id:uid(),name:"إعفاء من واجب واحد",cost:25},{id:uid(),name:"شهادة تميّز",cost:30}],points:{},log:[],
       awards:[{id:"a1",name:"المشاركة",pts:3},{id:"a2",name:"الواجبات",pts:3},{id:"a3",name:"التسميع",pts:5},{id:"a4",name:"السلوك",pts:5},{id:"a5",name:"السؤال الذهبي",pts:8},{id:"a6",name:"تحفيز",pts:2}],alog:[],actDone:{},actPts:5,actNoRepeat:true,cur:"r1",rounds:[{id:"r1",name:"الجولة الأولى"},{id:"r2",name:"الجولة الثانية"}],archive:{}},
-    rules:{list:["أحترم معلمي وزملائي في القول والفعل","أرفع يدي قبل أن أتكلم","أحضر في الوقت المحدد ومعي أدواتي","أحافظ على نظافة الفصل وممتلكاته","أسلّم واجباتي في موعدها","أستمع جيداً عندما يتحدث غيري"].map(t=>({id:uid(),text:t}))}
+    rules:{list:CLASS_RULES.map((t,i)=>({id:uid(),text:t,num:i+1,pts:1})),log:[]}
   };
 }
 let state=defaults();
@@ -642,7 +715,7 @@ function renderHeader(){
   if(!ui.student){const rs=roundsList(),sel=document.getElementById("roundSel");
     const html=rs.map(r=>`<option value="${r.id}" ${r.id===state.store.cur?"selected":""}>${esc(r.name)}</option>`).join("");
     if(sel.innerHTML!==html)sel.innerHTML=html;sel.value=state.store.cur}
-  document.getElementById("tabs").innerHTML=ui.student?"":TABS.map(([k,l])=>`<button role="tab" data-act="tab" data-tab="${k}" aria-selected="${ui.tab===k}" style="--tc:var(--k-${TAB_COLOR[k]})${["students","homework","schedule"].includes(k)?";--tc-ink:#fff":""}">${l}</button>`).join("");
+  document.getElementById("tabs").innerHTML=ui.student?"":TABS.map(([k,l])=>`<button role="tab" data-act="tab" data-tab="${k}" aria-selected="${ui.tab===k}" style="--tc:var(--k-${TAB_COLOR[k]})${["students","homework","schedule","avatars"].includes(k)?";--tc-ink:#fff":""}">${l}</button>`).join("");
 }
 
 /* ---------- attendance ---------- */
@@ -654,7 +727,7 @@ function vAttendance(){
   const todayCls=wd<=4?periods.map(p=>({p,v:state.schedule.cells[wd+"-"+p.id]})).filter(x=>x.v):[];
   const due=state.homework.list.filter(h=>h.due===ui.date);
   const absentees=list.filter(s=>day[s.id]==="a");
-  const deds=state.grades.deductions,dl=state.grades.log[ui.date]||{},dRound=roundForDate(ui.date),pk=getPick(ui.date);
+  const deds=state.grades.deductions,manual=deds.filter(d=>!d.rule),dl=state.grades.log[ui.date]||{},dRound=roundForDate(ui.date),pk=getPick(ui.date);
   return `<section class="panel">
   <div class="phead"><div><h2>التحضير اليومي</h2><p>سجّل حضور الطلاب لكل يوم. يُحفظ كل اختيار فوراً.</p></div>
     <div class="datebar"><button class="btn sm" data-act="day" data-d="1" aria-label="اليوم السابق">→</button>
@@ -673,9 +746,9 @@ function vAttendance(){
       ${list.length?vPicker():""}
       ${list.length?`<div class="card att">${list.map((s,i)=>{const mine=dl[s.id]||[];const lost=mine.reduce((a,id)=>a+(Number((deds.find(d=>d.id===id)||{}).pts)||0),0);
         const got=dayAwards(s.id,ui.date),gotPts=got.reduce((a,l)=>a+l.pts,0);
-        return `<div class="att-row"><span class="n num">${esc(s.num||i+1)}</span><span class="nm">${esc(s.name)} <span class="bal num" title="رصيد النقاط">${points(s.id)} ★</span>${lost?` <span class="lost num">−${lost}</span>`:""}${gotPts?` <span class="gain num">${gotPts>0?"+":""}${gotPts} ★</span>`:""}${recChip(pk,s.id)}</span>
+        return `<div class="att-row"><span class="n num">${esc(s.num||i+1)}</span><span class="nm">${avImg(s.id,26)}${esc(s.name)} <span class="bal num" title="رصيد النقاط">${points(s.id)} ★</span>${lost?` <span class="lost num">−${lost}</span>`:""}${gotPts?` <span class="gain num">${gotPts>0?"+":""}${gotPts} ★</span>`:""}${recChip(pk,s.id)}</span>
         <div class="seg" role="group" aria-label="حالة ${esc(s.name)}">${Object.entries(ST).map(([k,l])=>`<button data-act="mark" data-sid="${s.id}" data-v="${k}" class="${day[s.id]===k?"on":""}" aria-pressed="${day[s.id]===k}">${l}</button>`).join("")}</div>
-        ${deds.length?`<div class="deds" role="group" aria-label="خصومات ${esc(s.name)}">${deds.map(d=>{const on=mine.includes(d.id);return `<button class="ded ${on?"on":""}" data-act="ded" data-sid="${s.id}" data-id="${d.id}" aria-pressed="${on}">${esc(d.name)} <b class="num">−${esc(d.pts)}</b></button>`}).join("")}</div>`:""}
+        ${manual.length?`<div class="deds" role="group" aria-label="خصومات ${esc(s.name)}">${manual.map(d=>{const on=mine.includes(d.id);return `<button class="ded ${on?"on":""}" data-act="ded" data-sid="${s.id}" data-id="${d.id}" aria-pressed="${on}">${esc(d.name)} <b class="num">−${esc(d.pts)}</b></button>`}).join("")}</div>`:""}
         ${awardBtns(s.id,ui.date,got)}</div>`}).join("")}</div>`:emptyStudents()}
     </div>
     <aside class="stack">
@@ -735,7 +808,7 @@ function vStudents(){
     <td class="c num">${todayPoints(s.id)}</td><td class="c">${rateByPoints(s.id)}</td>
     <td class="c num">${examText(s.id)}</td><td class="c num">${points(s.id)}</td>
     <td style="min-width:160px"><input class="flat" type="text" data-f="stu-notes" data-id="${s.id}" value="${esc(s.notes)}" placeholder="—" aria-label="ملاحظات"></td>
-    <td><button class="icon del" data-act="delstu" data-id="${s.id}" aria-label="حذف ${esc(s.name)}" title="حذف">✕</button></td></tr>`}).join("")}
+    <td style="white-space:nowrap"><button class="icon" data-act="report" data-id="${s.id}" aria-label="ملف إنجاز ${esc(s.name)}" title="ملف الإنجاز">📄</button><button class="icon del" data-act="delstu" data-id="${s.id}" aria-label="حذف ${esc(s.name)}" title="حذف">✕</button></td></tr>`}).join("")}
   </tbody></table></div>`:emptyStudents()}
   </section>`;
 }
@@ -810,7 +883,7 @@ function vFollow(){
     <form class="row" id="addGi"><input type="text" id="giName" placeholder="بند جديد، مثل: مشروع" style="flex:1 1 200px" required><input type="number" id="giMax" placeholder="من" min="1" style="width:6.5rem" required><button class="btn primary">إضافة بند</button></form>
   </div>
   <div class="card stack"><div class="row" style="justify-content:space-between"><h3>بنود الخصم</h3><span class="muted small">تظهر أزرارها بجانب كل طالب في التحضير اليومي</span></div>
-    <div class="items">${state.grades.deductions.map(d=>`<div class="item dd"><input type="text" data-f="dd-name" data-id="${d.id}" value="${esc(d.name)}" aria-label="اسم الخصم"><input type="number" min="0" step="0.5" data-f="dd-pts" data-id="${d.id}" value="${esc(d.pts)}" aria-label="درجات الخصم" title="درجات الخصم"><select data-f="dd-item" data-id="${d.id}" aria-label="يُخصم من">${itemOpts(d.itemId)}</select><button class="icon del" data-act="deldd" data-id="${d.id}" aria-label="حذف الخصم">✕</button></div>`).join("")}</div>
+    <div class="items">${state.grades.deductions.filter(d=>!d.rule).map(d=>`<div class="item dd"><input type="text" data-f="dd-name" data-id="${d.id}" value="${esc(d.name)}" aria-label="اسم الخصم"><input type="number" min="0" step="0.5" data-f="dd-pts" data-id="${d.id}" value="${esc(d.pts)}" aria-label="درجات الخصم" title="درجات الخصم"><select data-f="dd-item" data-id="${d.id}" aria-label="يُخصم من">${itemOpts(d.itemId)}</select><button class="icon del" data-act="deldd" data-id="${d.id}" aria-label="حذف الخصم">✕</button></div>`).join("")}</div>
     <form class="row" id="addDd"><input type="text" id="ddName" placeholder="خصم جديد، مثل: لم يحضر الكتاب" style="flex:1 1 200px" required><input type="number" id="ddPts" placeholder="الدرجات" min="0" step="0.5" style="width:6rem" required><select id="ddItem" aria-label="يُخصم من">${itemOpts()}</select><button class="btn primary">إضافة خصم</button></form>
   </div>
   </section>`;
@@ -998,7 +1071,7 @@ function vActivity(){
   <div class="phead"><div><h2>النشاط الفصلي</h2><p>اضغط ابدأ السحب لتتحرك الأضواء بين الطلاب الحاضرين وتقف على فائز يحصل على ${pts} نقاط. يُستبعد الغائبون والمستأذنون.</p></div></div>
   ${win?`<div class="act-win"><span class="small muted">الفائز</span><div class="act-name">${esc(win.name)}</div><div class="act-pts num">+${ui.actWinner.pts} ★ · رصيده الآن ${points(win.id)}</div></div>`:""}
   <div class="card stack">
-    <div class="act-board" id="actBoard">${A.all.map(s=>{const d=noRep&&A.done.includes(s.id);return `<div class="tile ${d?"done":""}" data-sid="${s.id}"><span>${esc(s.name)}</span><small class="num">${points(s.id)} ★${d?" · شارك":""}</small></div>`}).join("")}</div>
+    <div class="act-board" id="actBoard">${A.all.map(s=>{const d=noRep&&A.done.includes(s.id);return `<div class="tile ${d?"done":""}" data-sid="${s.id}">${avImg(s.id,40)}<span>${esc(s.name)}</span><small class="num">${points(s.id)} ★${d?" · شارك":""}</small></div>`}).join("")}</div>
     <div class="row" style="justify-content:center;padding-top:6px">${pool.length?`<button class="act-go" data-act="actgo">ابدأ السحب</button>`:`<div class="stack" style="align-items:center"><b>شارك كل الحاضرين اليوم</b><button class="btn accent" data-act="actreset">جولة جديدة</button></div>`}</div>
   </div>
   <div class="card stack"><h3>الإعدادات</h3>
@@ -1012,7 +1085,7 @@ function vActivity(){
 function boardData(){
   const n=roundNow(),rid=n?n.id:(rounds().length?rounds()[rounds().length-1].id:"all"),r=roundById(rid);
   return {title:roundName(state.store.cur)+" · "+(r?r.name:"الفصل كله")+(n?" · جارية":""),updated:Date.now(),
-    rows:students().map(s=>{const g=gradeTotal(s.id,rid);return {n:Number(s.num)||0,name:s.name,got:g.got,max:g.max,pts:points(s.id)}})};
+    rows:students().map(s=>{const g=gradeTotal(s.id,rid);return {n:Number(s.num)||0,name:s.name,got:g.got,max:g.max,pts:points(s.id),av:curAvatar(s.id)}})};
 }
 /* hosted copy: the student board lives in a Google Apps Script web app; only each student's name and points leave this browser.
    The script address and secret stay in localStorage, outside state, so they never end up in a backup file */
@@ -1025,7 +1098,7 @@ const studentLink=()=>{const id=webId(webCfg().url);return id?location.origin+lo
 const shortName=n=>String(n||"").trim().split(/\s+/).slice(0,2).join(" ");
 function webBoard(){
   const b=boardData(),full=webCfg().full===true;
-  return {title:b.title,updated:b.updated,rows:[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n).map(r=>({name:full?r.name:shortName(r.name),pts:r.pts}))};
+  return {title:b.title,updated:b.updated,rows:[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n).map(r=>({name:full?r.name:shortName(r.name),pts:r.pts,av:r.av||""}))};
 }
 let webPending=false;
 function webPush(opts){
@@ -1045,7 +1118,7 @@ function webStudent(id){
     fetch(webUrl(id),{cache:"no-store"}).then(r=>r.json()).then(b=>{
       setSync("ok","اللوحة محدّثة");
       const js=JSON.stringify(b);if(js===last)return;last=js;
-      ui.board=b&&Array.isArray(b.rows)?{title:String(b.title||""),updated:Number(b.updated)||Date.now(),rows:b.rows.map(r=>({name:String(r.name||""),pts:Number(r.pts)||0,got:0,n:0}))}:null;
+      ui.board=b&&Array.isArray(b.rows)?{title:String(b.title||""),updated:Number(b.updated)||Date.now(),rows:b.rows.map(r=>({name:String(r.name||""),pts:Number(r.pts)||0,got:0,n:0,av:String(r.av||"")}))}:null;
       render();
     }).catch(()=>setSync("err","تعذّر تحديث اللوحة، ستُعاد المحاولة"));
   };
@@ -1077,10 +1150,10 @@ function vBoard(b){
   const leaders=top>0?rows.filter(r=>r.pts===top):[],rest=rows.filter(r=>!leaders.includes(r));
   const medal=n=>n===2?"🥈":n===3?"🥉":"";
   const hero=leaders.length?`<div class="lb-hero"><div class="lb-crown" aria-hidden="true">👑</div><div class="lb-label">${leaders.length>1?"المتصدرون":"المركز الأول"}</div>
-    ${leaders.map(r=>`<button class="lb-first" data-act="bsound" data-k="1">${esc(r.name)}</button>`).join("")}<div class="lb-pts num">${top} ★</div></div>`:"";
+    ${leaders.map(r=>`${r.av?futCard(r.av,shortName(r.name),"md"):""}<button class="lb-first" data-act="bsound" data-k="1">${esc(r.name)}</button>`).join("")}<div class="lb-pts num">${top} ★</div></div>`:"";
   return `<section class="panel"><div class="phead"><div><h2>لوحة النقاط</h2><p>${esc(b.title)} · آخر تحديث ${esc(fmtTime(b.updated))}</p></div></div>${hint}
   ${hero}
-  <ol class="lb">${rest.map((r,i)=>{const k=top>0?rankOf(r):i+1;return `<li class="lb-row ${k<=3&&r.pts>0?"top":""}"><span class="lb-rank num">${(r.pts>0&&medal(k))||k}</span><button class="lb-name" data-act="bsound" data-k="${k}">${esc(r.name)}</button><span class="lb-score num">${r.pts} ★</span></li>`}).join("")}</ol></section>`;
+  <ol class="lb">${rest.map((r,i)=>{const k=top>0?rankOf(r):i+1;return `<li class="lb-row ${k<=3&&r.pts>0?"top":""}"><span class="lb-rank num">${(r.pts>0&&medal(k))||k}</span>${r.av?avatarSvg(r.av,36):""}<button class="lb-name" data-act="bsound" data-k="${k}">${esc(r.name)}</button><span class="lb-score num">${r.pts} ★</span></li>`}).join("")}</ol></section>`;
 }
 function awardBtns(sid,date,got){
   const aw=state.store.awards;if(!aw.length)return "";
@@ -1089,16 +1162,313 @@ function awardBtns(sid,date,got){
     ${got.length?`<button class="icon" data-act="undoaward" data-id="${got[got.length-1].id}" title="تراجع عن آخر نقاط" aria-label="تراجع عن آخر نقاط">↶</button>`:""}</div>`;
 }
 /* ---------- rules ---------- */
+/* rules: each rule keeps its number when reordered; a violation deducts the rule's points from the "السلوك" grade item on the day it happened */
+let openRule=null;
+const ruleOf=n=>state.rules.list.find(x=>x.num===n);
+const stuName=id=>(students().find(s=>s.id===id)||{}).name||"طالب محذوف";
+const ptsOf=n=>Number((ruleOf(n)||{}).pts)||0;
+function ruleNum(){return Math.max(0,...state.rules.list.map(r=>Number(r.num)||0))+1}
+/* one deduction per rule, kept in the grades list so the follow-up tab and the attendance chips count it like any other deduction */
+function ruleDed(r){
+  let d=state.grades.deductions.find(x=>x.rule===r.num);
+  if(!d){d={id:uid(),name:"مخالفة القانون "+r.num,pts:Number(r.pts)||0,itemId:"beh",rule:r.num};state.grades.deductions.push(d)}
+  else d.pts=Number(r.pts)||0;
+  return d;
+}
+/* repeat logic: the count of this rule for this student, and whether the student already had any violation before */
+function violationRows(){
+  const sorted=[...state.rules.log].sort((a,b)=>a.date.localeCompare(b.date)||a.t-b.t);
+  const perRule={},perStu={};
+  return sorted.map(e=>{
+    const k=e.sid+"|"+e.rid;perRule[k]=(perRule[k]||0)+1;
+    const prior=perStu[e.sid]||0;perStu[e.sid]=prior+1;
+    return {...e,count:perRule[k],prior};
+  });
+}
+function addViolations(date,sids,rid){
+  const r=ruleOf(rid);if(!r||!date||!sids.length)return 0;
+  const d=ruleDed(r),t=Date.now();
+  sids.forEach((sid,i)=>{
+    state.rules.log.push({id:uid(),date,sid,rid,t:t+i});
+    const day=state.grades.log[date]||(state.grades.log[date]={});
+    day[sid]=(day[sid]||[]).concat(d.id);
+  });
+  save("rules");save("grades");return sids.length;
+}
+function removeViolation(id){
+  const e=state.rules.log.find(x=>x.id===id);if(!e)return;
+  state.rules.log=state.rules.log.filter(x=>x.id!==id);
+  const d=state.grades.deductions.find(x=>x.rule===e.rid),day=state.grades.log[e.date];
+  if(d&&day&&day[e.sid]){
+    const arr=day[e.sid],i=arr.lastIndexOf(d.id);if(i>=0)arr.splice(i,1);
+    if(!arr.length)delete day[e.sid];
+    if(!Object.keys(day).length)delete state.grades.log[e.date];
+  }
+  save("rules");save("grades");
+}
 function vRules(){
   const r=state.rules.list;
-  if(ui.present)return `<section class="panel"><div class="phead"><div></div><button class="btn" data-act="present">العودة للتعديل</button></div>
-    <div class="present"><h2>قوانين ${esc(state.settings.className||"الفصل")}</h2><ol>${r.map(x=>`<li>${esc(x.text)}</li>`).join("")}</ol></div></section>`;
+  if(ui.present)return `<section class="panel"><div class="phead"><div></div><div class="row"><button class="btn" data-act="print">طباعة</button><button class="btn" data-act="present">العودة للتعديل</button></div></div>
+    <div class="present"><h2>قوانين الصف</h2><ol>${r.map(x=>`<li>${esc(x.text)}</li>`).join("")}</ol>
+    <div class="pledge"><div class="nm">أنا الطالب <span></span></div><p>أتعهد بالالتزام بقوانين الصف وعدم مخالفتها، وفي حال مخالفتها فإنني أتحمل المسؤولية كاملة.</p><div class="sg"><span>توقيع الطالب</span><span>توقيع ولي الأمر</span></div></div></div></section>`;
+  const rows=violationRows(),today=dkey(new Date());
+  const vlabel=v=>(v.count===1?`<span class="vp warn">أول مرة</span>`:`<span class="vp bad">مكررة ×${v.count}</span>`)+(v.prior>0?` <span class="vp warn">سبق له مخالفات</span>`:"");
+  const who=n=>{const es=rows.filter(v=>v.rid===n);if(!es.length)return `<span class="muted small">لم يخالف أحد هذا القانون بعد.</span>`;
+    const by={};es.forEach(v=>(by[v.sid]||(by[v.sid]=[])).push(v));
+    return Object.entries(by).map(([sid,l])=>`<div class="ventry"><b>${esc(stuName(sid))}</b><span class="muted small">${l.length} مرات · آخرها ${esc(l[l.length-1].date)}</span></div>`).join("")};
+  const byDay={};rows.slice().reverse().forEach(v=>(byDay[v.date]||(byDay[v.date]=[])).push(v));
   return `<section class="panel">
-  <div class="phead"><div><h2>قوانين الفصل</h2><p>أضف القوانين ورتّبها، ثم اعرضها على السبورة للطلاب.</p></div><button class="btn accent" data-act="present" ${r.length?"":"disabled"}>عرض للطلاب</button></div>
+  <div class="phead"><div><h2>قوانين الفصل</h2><p>رتّب القوانين، وسجّل مخالفات الطلاب من هنا. تُخصم نقاط المخالفة من بند السلوك في ذلك اليوم.</p></div><button class="btn accent" data-act="present" ${r.length?"":"disabled"}>عرض للطلاب</button></div>
   <div class="card stack">
-    ${r.length?`<div class="items">${r.map((x,i)=>`<div class="item rule"><span class="k num">${i+1}</span><input type="text" data-f="rule" data-id="${x.id}" value="${esc(x.text)}" aria-label="القانون ${i+1}">
-      <button class="icon" data-act="mvrule" data-id="${x.id}" data-d="-1" aria-label="نقل لأعلى" ${i===0?"disabled":""}>↑</button><button class="icon" data-act="mvrule" data-id="${x.id}" data-d="1" aria-label="نقل لأسفل" ${i===r.length-1?"disabled":""}>↓</button><button class="icon del" data-act="delrule" data-id="${x.id}" aria-label="حذف القانون">✕</button></div>`).join("")}</div>`:`<p class="muted" style="margin:0">لا توجد قوانين بعد.</p>`}
+    ${r.length?`<div class="items">${r.map((x,i)=>{const es=rows.filter(v=>v.rid===x.num),n=new Set(es.map(v=>v.sid)).size;return `<div class="item rule"><span class="k num">${x.num}</span><input type="text" data-f="rule" data-id="${x.id}" value="${esc(x.text)}" aria-label="القانون ${x.num}">
+      <label class="small muted" style="white-space:nowrap">نقاط الخصم <input type="number" min="0" step="0.5" data-f="rule-pts" data-id="${x.id}" value="${esc(x.pts)}" style="width:4.5rem" aria-label="نقاط خصم القانون ${x.num}"></label>
+      <button class="btn sm" data-act="rulevio" data-n="${x.num}" aria-expanded="${openRule===x.num}">${es.length?`${es.length} مخالفة · ${n} طلاب`:"المخالفون"}</button>
+      <span class="row" style="gap:2px;flex-wrap:nowrap"><button class="icon" data-act="mvrule" data-id="${x.id}" data-d="-1" aria-label="نقل لأعلى" ${i===0?"disabled":""}>↑</button><button class="icon" data-act="mvrule" data-id="${x.id}" data-d="1" aria-label="نقل لأسفل" ${i===r.length-1?"disabled":""}>↓</button><button class="icon del" data-act="delrule" data-id="${x.id}" aria-label="حذف القانون">✕</button></span></div>
+      ${openRule===x.num?`<div class="card vwho">${who(x.num)}</div>`:""}`}).join("")}</div>`:`<p class="muted" style="margin:0">لا توجد قوانين بعد.</p>`}
+    <div class="row"><button class="btn sm" data-act="rulesdefault">استبدال القائمة بقوانين الصف التسعة</button><span class="muted small">يحذف القائمة الحالية ويضع قوانين صفك التسعة.</span></div>
     <form class="row" id="addRule"><input type="text" id="ruleText" placeholder="قانون جديد" style="flex:1 1 260px" required><button class="btn primary">إضافة</button></form>
+  </div>
+  ${r.length&&students().length?`<div class="card stack"><h3>تسجيل مخالفة</h3>
+    <div class="row"><label class="f">اليوم<input type="date" id="vDate" value="${today}"></label><label class="f" style="flex:1 1 240px">القانون<select id="vRule">${r.map(x=>`<option value="${x.num}">القانون ${x.num}: ${esc(x.text)}</option>`).join("")}</select></label></div>
+    <div class="checks">${sortedStudents().map(s=>`<label><input type="checkbox" data-f="vstu" data-sid="${s.id}">${esc(s.name)}</label>`).join("")}</div>
+    <div class="row"><button class="btn primary" data-act="vadd">سجّل المخالفة للمحددين</button><span class="muted small">حدد الطلاب المخالفين، ثم اضغط الزر.</span></div></div>`:""}
+  <div class="card stack"><h3>سجل المخالفات</h3>
+    ${rows.length?Object.entries(byDay).map(([d,l])=>`<div class="vday"><b class="num">${esc(d)}</b>${l.map(v=>`<div class="ventry"><span>${esc(stuName(v.sid))} · القانون ${v.rid}</span><span class="row" style="gap:6px">${vlabel(v)}<span class="num" style="color:var(--bad);font-weight:700">−${ptsOf(v.rid)}</span><button class="icon del" data-act="vdel" data-id="${v.id}" aria-label="حذف المخالفة">✕</button></span></div>`).join("")}</div>`).join(""):`<p class="muted" style="margin:0">لا توجد مخالفات مسجلة.</p>`}
+  </div></section>`;
+}
+
+/* ---------- avatars ---------- */
+/* 50 pixel players drawn on a 20x20 grid: shirt colours, number, skin, hair and beard only, no crests. Bought with points, kept by the student, shown beside the name */
+const AV_PRICE={star:15,big:25,legend:40,game:20};
+const AV_TIER={star:"نجوم",big:"نجوم كبار",legend:"أساطير"};
+/* card colour follows fame: gold legends, diamond big stars, and the other stars in their shirt colours */
+const AV_RANKS=["legend","big","game","star"];
+const AV_RANK={legend:"أسطورة",big:"نجم كبير",game:"بطل لعبة",star:"نجم"};
+const AV_BG={legend:"#FFE07A",big:"#D9C8FF",game:"#CFF5FF",star:"#EEF3FA"};
+const SKIN={l:"#F2C9A0",m:"#E0AC7A",t:"#C68642",b:"#8D5524",d:"#5C3A21"};
+const HAIR={k:"#1E1B1B",d:"#3B2417",n:"#6B4423",y:"#E3C26F",g:"#B9B9B9",o:"#B5652B"};
+/* id, name, tier, shirt, trim, number (0: none), skin, hair colour, hair style, beard, pattern, goalkeeper, extras (hat, hood, shades, ears, eyes, mouth, colours) */
+const AVATARS=[
+  ["messi","ميسي","big","#75AADB","#FFFFFF",10,"l","d","short","full","stripes"],
+  ["ronaldo","كريستيانو رونالدو","big","#C8102E","#046A38",7,"m","k","slick",""],
+  ["mbappe","مبابي","big","#21304D","#FFFFFF",10,"b","k","buzz",""],
+  ["haaland","هالاند","big","#BA0C2F","#13294B",9,"l","y","bun",""],
+  ["neymar","نيمار","big","#FFDF00","#009C3B",10,"m","d","fringe","stubble"],
+  ["vinicius","فينيسيوس","star","#FFDF00","#009C3B",7,"d","k","curly",""],
+  ["yamal","لامين يامال","star","#AA151B","#F1BF00",19,"b","k","curly",""],
+  ["dawsari","سالم الدوسري","star","#006C35","#FFFFFF",10,"t","k","short","stubble"],
+  ["majed","ماجد عبدالله","legend","#006C35","#FFFFFF",9,"t","k","short","mustache"],
+  ["jaber","سامي الجابر","legend","#006C35","#FFFFFF",9,"t","k","short",""],
+  ["pele","بيليه","legend","#FFDF00","#009C3B",10,"d","k","buzz",""],
+  ["zidane","زيدان","legend","#21304D","#FFFFFF",10,"l","g","bald","stubble"],
+  ["ronaldinho","رونالدينيو","legend","#FFDF00","#009C3B",10,"b","k","long","","","",{teeth:true,band:"#FFFFFF"}],
+  ["mario","سوبر ماريو","game","#E52521","#E52521",0,"l","n","short","bigstache","overalls","",{hat:"#E52521",over:"#2B4FBF",bc:"#3B2417"}],
+  ["luigi","لويجي","game","#2EA44F","#2EA44F",0,"l","n","short","bigstache","overalls","",{hat:"#2EA44F",over:"#2B4FBF",bc:"#3B2417"}],
+  ["noob","نوب (روبلوكس)","game","#0D69AC","#0D69AC",0,"#F5CD30","k","none","","roblox","",{noears:true,mouth:"smile",tall:true}],
+  ["steve","ستيف (ماين كرافت)","game","#00A8A8","#00A8A8",0,"#B98A6A","#4A2F1E","block","","","",{noears:true,eyes:"mc"}],
+  ["jonesy","جونزي (فورت نايت)","game","#6B7B3A","#3E4A22",0,"l","n","slick","stubble","vest",""],
+  ["qahtani","ياسر القحطاني","legend","#006C35","#FFFFFF",20,"t","k","short","full"],
+  ["temyat","نواف التمياط","legend","#006C35","#FFFFFF",8,"t","k","short","stubble"],
+  ["thunayan","يوسف الثنيان","legend","#006C35","#FFFFFF",10,"t","k","short","mustache"],
+  ["link","لينك (زيلدا)","game","#2E8B57","#7A4E2D",0,"l","y","fringe","","robe","",{cap:"#2E8B57",elf:true}],
+  ["megaman","ميغا مان","game","#2E6FDB","#6EC1FF",0,"l","k","none","","","",{hood:"#2E6FDB",shade:"#2E6FDB",stripe:"#6EC1FF"}],
+  ["wario","واريو","game","#F7D51D","#F7D51D",0,"l","k","short","bigstache","overalls","",{hat:"#F7D51D",over:"#6A2C91",bc:"#1E1B1B"}],
+  ["villager","القروي (ماين كرافت)","game","#6B4423","#4E3016",0,"#BD8B72","k","none","","robe","",{noears:true,unibrow:"#4A3326",eyeColor:"#2E9E48",nose:"#A06B52"}],
+  ["gullit","رود خوليت","legend","#FF6600","#111111",10,"b","k","dreads","mustache"]
+].map(([id,name,tier,shirt,trim,num,skin,hc,hair,beard,pat,gk,x])=>({id,name,tier,shirt,trim,num,skin:SKIN[skin]||skin,hc:HAIR[hc]||hc,hair,beard:beard||"",pat:pat||"",gk:!!gk,x:x||{},cost:AV_PRICE[tier],rank:tier}));
+const avById=id=>AVATARS.find(a=>a.id===id);
+const lum=hex=>{const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255};
+const avCache={};
+function avatarSvg(id,size,nobg){
+  const a=avById(id);if(!a)return "";
+  if(!avCache[id]){
+    const g=[];for(let y=0;y<20;y++)g.push(new Array(20).fill(null));
+    const fill=(x0,x1,y0,y1,c)=>{for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(y>=0&&y<20&&x>=0&&x<20)g[y][x]=c};
+    
+    if(a.x.sprite){const pal=a.x.pal||{};a.x.sprite.forEach((row,y)=>[...row].forEach((ch,x)=>{if(pal[ch])g[y][x]=pal[ch]}))}else{
+    /* shirt, pattern, collar, gloves */
+    fill(4,15,13,13,a.shirt);fill(2,17,14,19,a.shirt);
+    if(a.pat==="stripes")for(let x=3;x<=17;x+=3)fill(x,x,13,19,a.trim);
+    if(a.pat==="checks")for(let y=13;y<=19;y++)for(let x=2;x<=17;x++)if((x+y)%2===0&&(y>13||(x>=4&&x<=15)))g[y][x]=a.trim;
+    if(a.pat==="plaid")for(let y=13;y<=19;y++)for(let x=2;x<=17;x++)if(g[y][x]===a.shirt&&(x%3===0||y%3===0))g[y][x]=a.trim;
+    if(a.pat==="overalls"){fill(5,14,15,19,a.x.over);fill(6,6,13,14,a.x.over);fill(13,13,13,14,a.x.over);g[15][6]=g[15][13]="#FFD400"}
+    if(a.pat==="vest"){fill(5,7,14,19,a.trim);fill(12,14,14,19,a.trim)}
+    if(a.pat==="jacket"){fill(8,11,14,19,a.x.inner||"#222222");fill(4,15,13,13,a.trim)}
+    if(a.pat==="robe")fill(2,17,17,17,a.trim);
+    if(a.pat==="roblox"){fill(2,3,14,19,a.skin);fill(16,17,14,19,a.skin)}
+    fill(8,11,13,13,a.trim);
+    if(a.gk){fill(2,3,18,19,"#F5F5F5");fill(16,17,18,19,"#F5F5F5")}
+    /* neck, head, ears, eyes, mouth */
+    fill(8,11,12,12,a.skin);
+    fill(6,13,3,11,a.skin);if(!a.x.noears){fill(5,5,6,8,a.skin);fill(14,14,6,8,a.skin)}
+    g[7][8]=g[7][11]="#1E1B1B";
+    if(a.x.tall)g[6][8]=g[6][11]="#1E1B1B";
+    if(a.x.eyes==="mc"){g[7][7]=g[7][12]="#FFFFFF";g[7][8]=g[7][11]="#3B5BA9";fill(9,10,8,8,"#7A4E35")}
+    const mouth=()=>{if(a.x.mouth==="smile"){fill(8,11,10,10,"#1E1B1B");g[9][7]=g[9][12]="#1E1B1B"}else if(a.x.eyes==="mc")fill(8,11,10,10,"#6A4430");else if(a.x.teeth){}else fill(9,10,10,10,"#9C4A3C")};mouth();
+    /* beard */
+    const bc=a.x.bc||a.hc;
+    if(a.beard==="full"){fill(6,13,9,11,bc);fill(5,5,8,8,bc);fill(14,14,8,8,bc);mouth()}
+    if(a.beard==="stubble"){for(let y=9;y<=11;y++)for(let x=6;x<=13;x++)if((x+y)%2===0)g[y][x]=bc;mouth()}
+    if(a.beard==="mustache")fill(8,11,9,9,bc);
+    if(a.beard==="bigstache"){fill(7,12,9,9,bc);fill(6,13,10,10,bc)}
+    /* hair */
+    const h=a.hc,top=()=>{fill(6,13,2,2,h);fill(5,14,3,3,h);fill(5,5,4,5,h);fill(14,14,4,5,h)};
+    switch(a.hair){
+      case "short":top();break;
+      case "buzz":fill(6,13,3,3,h);fill(5,5,4,4,h);fill(14,14,4,4,h);break;
+      case "slick":top();fill(6,9,4,4,h);g[2][8]=a.skin;break;
+      case "fringe":top();fill(6,10,4,5,h);break;
+      case "long":top();fill(4,5,4,12,h);fill(14,15,4,12,h);break;
+      case "curly":for(let x=6;x<=13;x++)if(x%2===0)g[1][x]=h;fill(5,14,2,3,h);fill(5,6,4,4,h);fill(13,14,4,4,h);fill(5,5,5,6,h);fill(14,14,5,6,h);break;
+      case "bun":top();fill(9,10,0,1,h);break;
+      case "block":fill(6,13,3,4,h);fill(6,6,5,5,h);fill(13,13,5,5,h);break;
+      case "dreads":top();fill(3,5,4,13,h);fill(14,16,4,13,h);for(let y=4;y<=13;y+=2)g[y][4]=g[y][15]="#4A3A2A";break;
+      case "bald":fill(7,8,4,4,"rgba(255,255,255,.35)");break;
+    }
+    if(a.x.hat){fill(5,14,1,3,a.x.hat);fill(4,15,4,4,a.x.hat);fill(9,10,2,3,"#FFFFFF")}
+    if(a.x.hood){fill(4,15,1,4,a.x.hood);fill(9,10,0,0,a.x.hood);fill(4,5,5,12,a.x.hood);fill(14,15,5,12,a.x.hood);fill(6,13,4,4,a.x.shade||"#7A5A3C")}
+    if(a.x.shades)fill(7,12,7,7,"#111111");
+    if(a.x.cap){fill(5,14,1,3,a.x.cap);fill(15,16,2,3,a.x.cap);fill(16,17,4,6,a.x.cap)}
+    if(a.x.elf)g[6][4]=g[6][15]=a.skin;
+    if(a.x.band)fill(5,14,4,4,a.x.band);
+    if(a.x.stripe)fill(9,10,1,3,a.x.stripe);
+    if(a.x.brows){fill(7,8,6,6,a.x.brows);fill(11,12,6,6,a.x.brows)}
+    if(a.x.unibrow)fill(7,12,6,6,a.x.unibrow);
+    if(a.x.eyeColor)g[7][8]=g[7][11]=a.x.eyeColor;
+    if(a.x.nose)fill(9,10,8,11,a.x.nose);
+    }
+    let out="";
+    for(let y=0;y<20;y++){let x=0;while(x<20){const c=g[y][x];if(!c){x++;continue}let w=1;while(x+w<20&&g[y][x+w]===c)w++;out+=`<rect x="${x}" y="${y}" width="${w}" height="1" fill="${c}"/>`;x+=w}}
+    /* teeth drawn finer than the grid, so the gap between them stays thin and centred */
+    if(a.x.teeth)out+=`<rect x="9" y="10" width=".85" height="1" fill="#FFFFFF"/><rect x="10.15" y="10" width=".85" height="1" fill="#FFFFFF"/>`;
+    if(a.num)out+=`<text x="10" y="18.7" font-size="4.4" font-weight="800" text-anchor="middle" font-family="Tahoma,Arial,sans-serif" fill="${lum(a.shirt)>0.62?"#1E1B1B":"#FFFFFF"}" stroke="${lum(a.shirt)>0.62?"#FFFFFF":"#1E1B1B"}" stroke-width=".7" paint-order="stroke">${a.num}</text>`;
+    avCache[id]=out;
+  }
+  return `<svg class="av r-${a.rank}" width="${size}" height="${size}" viewBox="0 0 20 20" shape-rendering="crispEdges" role="img" aria-label="${esc(a.name)}">${nobg?"":`<rect width="20" height="20" fill="${AV_BG[a.rank]}"/>`}${avCache[id]}</svg>`;
+}
+/* prices the teacher set; a purchase keeps the price it was made at, so changing a price never touches past purchases */
+const avPrices=()=>{const p=state.store.avPrices||(state.store.avPrices={});p.tiers=p.tiers||{};p.items=p.items||{};return p};
+const tierPrice=r=>{const v=avPrices().tiers[r];return v!=null?v:AV_PRICE[r]};
+const avCost=a=>{const v=avPrices().items[a.id];return v!=null?v:tierPrice(a.rank)};
+const avState=()=>state.store.avatars||(state.store.avatars={owned:{},cur:{},log:[]});
+const avOwned=sid=>avState().owned[sid]||[];
+const curAvatar=sid=>{const a=avState().cur[sid];return a&&avOwned(sid).includes(a)?a:""};
+const avImg=(sid,size)=>{const a=curAvatar(sid);return a?avatarSvg(a,size):""};
+function buyAvatar(sid,aid){
+  const a=avById(aid),st=avState();
+  const cost=a?avCost(a):0;
+  if(!a||avOwned(sid).includes(aid)||points(sid)<cost)return false;
+  state.store.points[sid]=points(sid)-cost;
+  (st.owned[sid]||(st.owned[sid]=[])).push(aid);st.cur[sid]=aid;
+  st.log.push({id:uid(),sid,aid,cost,date:dkey(new Date()),t:Date.now()});st.log=st.log.slice(-500);
+  save("store");return true;
+}
+/* undo a purchase: the avatar is taken back and its points returned */
+function refundAvatar(lid){
+  const st=avState(),l=st.log.find(x=>x.id===lid);if(!l)return;
+  st.log=st.log.filter(x=>x.id!==lid);
+  st.owned[l.sid]=avOwned(l.sid).filter(x=>x!==l.aid);
+  if(st.cur[l.sid]===l.aid)st.cur[l.sid]=st.owned[l.sid][st.owned[l.sid].length-1]||"";
+  state.store.points[l.sid]=points(l.sid)+l.cost;
+  save("store");
+}
+function futCard(aid,label,size){
+  const a=avById(aid);if(!a)return "";
+  return `<div class="avcard fut-${size} r-${a.rank}"><div class="fut"><div class="fut-rt"><b class="num">${a.num||"★"}</b></div>${avatarSvg(a.id,size==="lg"?120:72,true)}<b class="fut-name">${esc(label)}</b><span class="fut-line"></span><span class="fut-sub">${AV_RANK[a.rank]}</span></div></div>`;
+}
+function vAvatars(){
+  const stu=sortedStudents(),sid=stuById(ui.avSid)?ui.avSid:"",tier=AV_RANKS.includes(ui.avTier)?ui.avTier:"all";
+  const list=AVATARS.filter(a=>tier==="all"||a.rank===tier).sort((a,b)=>AV_RANKS.indexOf(a.rank)-AV_RANKS.indexOf(b.rank)),own=sid?avOwned(sid):[],cur=sid?curAvatar(sid):"";
+  const tabs=[["all","الكل"],["legend","أساطير"],["big","نجوم كبار"],["game","أبطال الألعاب"],["star","نجوم"]];
+  const hist=avState().log.slice(-12).reverse(),sname=sid?shortName(stuById(sid).name):"";
+  return `<section class="panel">
+  <div class="phead"><div><h2>الأفتار</h2><p>اختر الطالب، ثم اشترِ له أفتاراً بنقاطه. يظهر الأفتار بجانب اسمه في التحضير ولوحة النقاط والنشاط الفصلي.</p></div></div>
+  <div class="store-top"><label class="row" style="gap:8px;font-weight:600">الطالب<select id="avStu" aria-label="اختر الطالب"><option value="">اختر الطالب…</option>${stu.map(s=>`<option value="${s.id}" ${s.id===sid?"selected":""}>${esc(s.name)} (${points(s.id)} نقطة)</option>`).join("")}</select></label>
+    ${sid?`<span class="row" style="gap:8px">${cur?avatarSvg(cur,40):""}<span class="bal-big num">رصيده: ${points(sid)} ★</span>${cur?`<button class="btn sm" data-act="avnone">إخفاء الأفتار</button>`:""}</span>`:`<span class="muted small">اختر الطالب أولاً</span>`}</div>
+  <div class="rtabs" role="group" aria-label="تصفية الأفتار">${tabs.map(([k,n])=>`<button data-act="avtier" data-id="${k}" aria-pressed="${tier===k}">${n}</button>`).join("")}</div>
+  <details class="card stack" ${ui.avPriceOpen?"open":""}><summary style="cursor:pointer;font-weight:700">أسعار الشراء</summary>
+    <p class="small muted" style="margin:0">حدد سعر كل مستوى، أو عدّل سعر لاعب بعينه. الخانة الفارغة تأخذ سعر المستوى. تغيير السعر لا يغيّر ما اشتُري من قبل.</p>
+    <div class="row">${AV_RANKS.map(r=>`<label class="f">${AV_RANK[r]}<input type="number" min="0" step="1" data-f="avp-tier" data-k="${r}" value="${tierPrice(r)}" style="width:6rem"></label>`).join("")}</div>
+    <div class="row"><button class="btn sm ${ui.avEdit?"primary":""}" data-act="avedit">${ui.avEdit?"إنهاء تعديل أسعار اللاعبين":"تعديل سعر كل لاعب"}</button><button class="btn sm" data-act="avpreset">الأسعار الافتراضية</button></div>
+  </details>
+  <div class="avgrid">${list.map(a=>{const has=own.includes(a.id),on=cur===a.id,can=sid&&!has&&points(sid)>=avCost(a);
+    return `<div class="avcard r-${a.rank} ${on?"on":""}"><div class="fut"><div class="fut-rt"><b class="num">${avCost(a)}</b><small>نقطة</small></div>${avatarSvg(a.id,96,true)}<b class="fut-name">${esc(has?sname:a.name)}</b><span class="fut-line"></span><span class="fut-sub">${AV_RANK[a.rank]}</span></div>
+      ${ui.avEdit?`<label class="small row" style="gap:6px;justify-content:center">السعر<input type="number" min="0" step="1" data-f="avp-item" data-id="${a.id}" value="${avPrices().items[a.id]??""}" placeholder="${tierPrice(a.rank)}" style="width:5.5rem" aria-label="سعر ${esc(a.name)}"></label>`:""}
+      ${!sid?`<button class="btn sm" disabled>اختر طالباً</button>`:on?`<button class="btn sm" disabled>مستخدم ✓</button>`:has?`<button class="btn sm primary" data-act="avuse" data-id="${a.id}">استخدم</button>`:`<button class="btn sm ${can?"accent":""}" data-act="avbuy" data-id="${a.id}" ${can?"":"disabled"}>${can?"شراء":"النقاط لا تكفي"}</button>`}</div>`}).join("")}</div>
+  <div class="card stack"><h3>آخر المشتريات</h3>${hist.length?`<ul class="side-list">${hist.map(l=>{const a=avById(l.aid)||{name:"؟"};return `<li><span>${esc((stuById(l.sid)||{}).name||"طالب محذوف")} ← ${esc(a.name)}</span><span class="row" style="gap:2px;flex-wrap:nowrap"><span class="muted small num">${esc(l.date)} · −${l.cost}</span><button class="icon del" data-act="avundo" data-id="${l.id}" aria-label="إلغاء الشراء وإرجاع النقاط" title="إلغاء وإرجاع النقاط">✕</button></span></li>`}).join("")}</ul>`:`<p class="muted small" style="margin:0">لا توجد مشتريات بعد.</p>`}</div>
+  </section>`;
+}
+
+/* ---------- student report ---------- */
+/* everything a student earned or lost, across the live points round and the archived ones */
+function studentReport(sid){
+  const st=state.store,g=state.grades;
+  const rounds=[{alog:st.alog||[],log:st.log||[],glog:g.log||{}},...Object.values(st.archive||{}).map(r=>({alog:r.alog||[],log:r.log||[],glog:r.glog||{}}))];
+  const alog=rounds.flatMap(r=>r.alog).filter(l=>l.sid===sid);
+  const buys=rounds.flatMap(r=>r.log).filter(l=>l.sid===sid);
+  const cnt=aid=>alog.filter(l=>l.aid===aid).length;
+  /* recitation: the picker's "سمّع" days, or the recitation award if it was given more often by hand */
+  const picks=state.attendance.picks||{};let picked=0,fail=0;
+  for(const k in picks){const p=picks[k];if((p.done||[]).includes(sid)||(p.done2||[]).includes(sid))picked++;if((p.fail||[]).includes(sid))fail++}
+  const awards={};alog.forEach(l=>{const a=awards[l.name||"نقاط"]||(awards[l.name||"نقاط"]={n:0,pts:0});a.n++;a.pts+=Number(l.pts)||0});
+  const deds={};let lost=0;
+  rounds.forEach(r=>{for(const day in r.glog)(r.glog[day][sid]||[]).forEach(id=>{const d=g.deductions.find(x=>x.id===id);if(!d)return;
+    const a=deds[d.name]||(deds[d.name]={n:0,pts:0});a.n++;a.pts+=Number(d.pts)||0;lost+=Number(d.pts)||0})});
+  const vio=(state.rules.log||[]).filter(v=>v.sid===sid);
+  const hw=state.homework.list,today=dkey(new Date());
+  const avBuys=avState().log.filter(l=>l.sid===sid);
+  return {att:attCounts(sid),rec:Math.max(cnt("a3"),picked),fail,part:cnt("a1"),hwAward:cnt("a2"),acts:cnt("activity"),awards,deds,lost,vio,
+    hw,hwDue:hw.filter(h=>!h.due||h.due<=today),hwDone:hw.filter(h=>h.done&&h.done[sid]),
+    earned:alog.reduce((s,l)=>s+Math.max(0,Number(l.pts)||0),0),
+    spent:buys.reduce((s,l)=>s+(Number(l.cost)||0),0)+avBuys.reduce((s,l)=>s+(Number(l.cost)||0),0),
+    grade:gradeTotal(sid,"all"),
+    events:[...alog.map(l=>({date:l.date,t:l.t||0,text:l.name,pts:Number(l.pts)||0})),
+      ...vio.map(v=>({date:v.date,t:v.t||0,text:"مخالفة القانون "+v.rid,pts:-ptsOf(v.rid)})),
+      ...buys.map(l=>({date:l.date,t:0,text:"استبدال: "+l.item,pts:-(Number(l.cost)||0)})),
+      ...avBuys.map(l=>({date:l.date,t:l.t||0,text:"أفتار: "+((avById(l.aid)||{}).name||""),pts:-(Number(l.cost)||0)}))]
+      .sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.t-a.t).slice(0,20)};
+}
+function vReport(){
+  const stu=sortedStudents();
+  if(!stu.length)return `<section class="panel"><div class="phead"><div><h2>ملف الإنجاز</h2></div></div>${emptyStudents()}</section>`;
+  const sid=stuById(ui.repSid)?ui.repSid:stu[0].id,s=stuById(sid),r=studentReport(sid),cur=curAvatar(sid);
+  const days=r.att.p+r.att.a+r.att.l+r.att.e,attPct=days?Math.round((r.att.p+r.att.l)/days*100):0;
+  const badges=[];
+  if(days>0&&r.att.a===0)badges.push("🏅 حضور كامل");
+  if(r.rec>=5)badges.push("📖 نجم التسميع");
+  if(r.part>=5)badges.push("✋ مشارك نشيط");
+  if(r.hwDue.length&&r.hwDue.every(h=>h.done&&h.done[sid]))badges.push("📚 ملتزم بالواجبات");
+  if(days>0&&!r.vio.length&&!Object.keys(r.deds).length)badges.push("🌟 سلوك مثالي");
+  if(r.acts>0)badges.push("🎯 فائز في النشاط");
+  if(r.earned>=50)badges.push("💰 جامع النقاط");
+  const tiles=[[r.rec,"مرات التسميع",r.fail?`لم يسمّع ${r.fail}`:""],[r.att.p,"أيام الحضور",`غياب ${r.att.a} · تأخر ${r.att.l}`],
+    [r.part,"المشاركات",""],[`${r.hwDone.length}/${r.hw.length}`,"الواجبات المسلّمة",r.hwAward?`نقاط الواجبات ${r.hwAward} مرة`:""],
+    [r.earned,"النقاط المكتسبة",`الرصيد الحالي ${points(sid)}`],[r.grade.max?r.grade.pct+"%":"—","المتابعة اليومية",r.grade.max?rating(r.grade.pct)[0]:""],
+    [examText(sid),"الاختبارات",""],[r.vio.length,"المخالفات",r.lost?`خصم ${r.lost}`:""]];
+  const list=(rows,empty)=>rows.length?`<ul class="side-list">${rows.join("")}</ul>`:`<p class="muted small" style="margin:0">${empty}</p>`;
+  const ex=state.grades.exams,sc=ex.scores[sid]||{};
+  const vioBy={};r.vio.forEach(v=>vioBy[v.rid]=(vioBy[v.rid]||0)+1);
+  const hwRows=[...r.hw].sort((a,b)=>String(b.due||"").localeCompare(String(a.due||""))).slice(0,8);
+  return `<section class="panel">
+  <div class="phead"><div><h2>ملف الإنجاز</h2><p>تقرير مفصل عن الطالب يجمع كل الجولات: حضوره وتسميعه ومشاركاته وواجباته ونقاطه.</p></div>
+    <div class="row"><select id="repStu" aria-label="اختر الطالب">${stu.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${esc(x.name)}</option>`).join("")}</select><button class="btn primary" data-act="print">طباعة</button></div></div>
+  <div class="report">
+    <div class="rep-head">${cur?futCard(cur,shortName(s.name),"lg"):`<div class="rep-noav" aria-hidden="true">${esc((s.name||"؟").trim().charAt(0))}</div>`}
+      <h2 class="rep-name">${esc(s.name)}</h2>
+      <div class="muted">${[state.settings.className,state.settings.school,s.num?"رقم "+s.num:""].filter(Boolean).map(esc).join(" · ")}</div>
+      ${badges.length?`<div class="rep-badges">${badges.map(b=>`<span class="rep-badge">${b}</span>`).join("")}</div>`:""}</div>
+    <div class="rep-grid">${tiles.map(([v,l,sub])=>`<div class="rep-tile"><b class="num">${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`).join("")}</div>
+    <div class="rep-cols">
+      <div class="rep-box"><h3>الحضور</h3>${list([`<li><span>حاضر</span><b class="num">${r.att.p}</b></li>`,`<li><span>غائب</span><b class="num">${r.att.a}</b></li>`,`<li><span>متأخر</span><b class="num">${r.att.l}</b></li>`,`<li><span>مستأذن</span><b class="num">${r.att.e}</b></li>`,`<li><span>نسبة الحضور</span><b class="num">${attPct}%</b></li>`],"")}</div>
+      <div class="rep-box"><h3>نقاط التحفيز</h3>${list(Object.entries(r.awards).sort((a,b)=>b[1].n-a[1].n).map(([n,a])=>`<li><span>${esc(n)}</span><span class="num">${a.n} مرة · <b>${a.pts>0?"+":""}${a.pts}</b></span></li>`),"لم يحصل على نقاط بعد.")}
+        <p class="small muted" style="margin:0">المكتسب ${r.earned} · المصروف في المتجر والأفتار ${r.spent} · الرصيد ${points(sid)}</p></div>
+      <div class="rep-box"><h3>الواجبات</h3>${list(hwRows.map(h=>`<li><span>${esc(h.title)}</span><b style="color:${h.done&&h.done[sid]?"var(--ok)":"var(--bad)"}">${h.done&&h.done[sid]?"سلّم":"لم يسلّم"}</b></li>`),"لا توجد واجبات مسجلة.")}</div>
+      <div class="rep-box"><h3>الاختبارات</h3>${list(ex.items.map(e=>`<li><span>${esc(e.name)}</span><b class="num">${sc[e.id]!=null?esc(sc[e.id])+(Number(e.max)>0?" / "+esc(e.max):""):"—"}</b></li>`),"لا توجد اختبارات.")}</div>
+      <div class="rep-box"><h3>المخالفات والخصومات</h3>${list([...Object.entries(vioBy).map(([n,c])=>`<li><span>القانون ${esc(n)}: ${esc((ruleOf(Number(n))||{}).text||"")}</span><b class="num">${c} مرة</b></li>`),
+        ...Object.entries(r.deds).filter(([n])=>!/^مخالفة القانون/.test(n)).map(([n,a])=>`<li><span>${esc(n)}</span><b class="num">${a.n} مرة · −${a.pts}</b></li>`)],"لا توجد مخالفات ولا خصومات.")}</div>
+      <div class="rep-box"><h3>آخر الأحداث</h3>${list(r.events.map(e=>`<li><span>${esc(e.text)} <span class="muted small num">${esc(e.date)}</span></span><b class="num" style="color:${e.pts<0?"var(--bad)":"var(--ok)"}">${e.pts>0?"+":""}${e.pts}</b></li>`),"لا توجد أحداث بعد.")}</div>
+    </div>
+    <div class="rep-foot"><span>تاريخ التقرير: ${esc(fmtDate(new Date()))}</span><span>توقيع المعلم: ..................</span></div>
   </div></section>`;
 }
 
@@ -1124,7 +1494,7 @@ function vSetup(){
 }
 
 /* ---------- render ---------- */
-const VIEWS={activity:vActivity,follow:vFollow,board:()=>vBoard(S.mode==="db"?boardData():webBoard()),attendance:vAttendance,students:vStudents,grades:vGrades,homework:vHomework,schedule:vSchedule,rewards:vRewards,rules:vRules,setup:vSetup};
+const VIEWS={avatars:vAvatars,report:vReport,activity:vActivity,follow:vFollow,board:()=>vBoard(S.mode==="db"?boardData():webBoard()),attendance:vAttendance,students:vStudents,grades:vGrades,homework:vHomework,schedule:vSchedule,rewards:vRewards,rules:vRules,setup:vSetup};
 function render(){
   renderHeader();
   const v=document.getElementById("view");
@@ -1198,6 +1568,8 @@ const SEED_STUDENTS=null;
 function setupOnce(){
   if(setupDone)return;setupDone=true;
   if(state.grades.v!==2){state.grades=Object.assign(defaults().grades,{v:2});save("grades")}
+  if(!state.rules.log)state.rules.log=[];
+  if(state.rules.list.some(r=>!r.num||r.pts==null)){state.rules.list.forEach(r=>{if(!r.num)r.num=ruleNum();if(r.pts==null)r.pts=1});save("rules")}
   if(!students().length){
     if(SEED_STUDENTS)SEED_STUDENTS.forEach(([name,num])=>students().push({id:uid(),name,num,notes:""}));
     else for(let i=1;i<=24;i++)students().push({id:uid(),name:"الطالب "+i,num:i,notes:"",slot:true});
@@ -1224,7 +1596,8 @@ function removeIds(ids){
   for(const k in state.grades.rscores)ids.forEach(id=>delete state.grades.rscores[k][id]);
   ids.forEach(id=>delete state.grades.exams.scores[id]);
   state.homework.list.forEach(h=>ids.forEach(id=>h.done&&delete h.done[id]));
-  ["students","attendance","grades","store","homework"].forEach(save);
+  state.rules.log=state.rules.log.filter(l=>!set.has(l.sid));
+  ["students","attendance","grades","store","homework","rules"].forEach(save);
 }
 
 document.addEventListener("click",e=>{
@@ -1259,6 +1632,16 @@ document.addEventListener("click",e=>{
       if(k===1){SFX.play("win");setTimeout(()=>SFX.play("powerup"),380)}else if(k<=3)SFX.play("powerup");else SFX.play("coin");
       const el=b.closest(".lb-hero,.lb-row")||b;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");break}
     case "exportbk":exportBackup();break;
+    case "avtier":ui.avTier=id;render();break;
+    case "avedit":ui.avEdit=!ui.avEdit;ui.avPriceOpen=true;render();break;
+    case "avpreset":confirmBox("إرجاع كل أسعار الأفتار إلى الافتراضية؟","إرجاع",()=>{delete state.store.avPrices;save("store");ui.avPriceOpen=true;render()});break;
+    case "report":ui.repSid=id;go("report");break;
+    case "avbuy":{const av=avById(id),s=stuById(ui.avSid);if(!av||!s)break;
+      confirmBox(`شراء أفتار "${av.name}" لـ ${s.name} مقابل ${avCost(av)} نقطة؟`,"تأكيد الشراء",()=>{if(buyAvatar(s.id,av.id)){SFX.play("powerup");toast(`حصل ${s.name} على أفتار ${av.name}`)}else toast("النقاط لا تكفي");render()});break}
+    case "avuse":{if(ui.avSid&&avOwned(ui.avSid).includes(id)){avState().cur[ui.avSid]=id;save("store");SFX.play("blip")}render();break}
+    case "avnone":{if(ui.avSid){avState().cur[ui.avSid]="";save("store")}render();break}
+    case "avundo":{const l=avState().log.find(x=>x.id===id);if(!l)break;const av=avById(l.aid)||{name:""};
+      confirmBox(`إلغاء شراء "${av.name}" وإرجاع ${l.cost} نقطة؟`,"إلغاء الشراء",()=>{refundAvatar(id);toast("أُرجعت النقاط");render()});break}
     case "webpush":webPush({manual:true});break;
     case "webcopy":{const l=studentLink();if(!l)break;try{navigator.clipboard.writeText(l).then(()=>toast("نُسخ رابط الطلاب"),()=>toast("انسخ الرابط من الخانة"))}catch(e){toast("انسخ الرابط من الخانة")}break}
     case "actgo":runActivity();break;
@@ -1298,9 +1681,16 @@ document.addEventListener("click",e=>{
     case "delrr":state.store.rateRules=rrules().filter(x=>x.id!==id);save("store");render();break;
     case "delsi":state.store.items=state.store.items.filter(x=>x.id!==id);save("store");render();break;
     case "present":ui.present=!ui.present;render();break;
+    case "print":window.print();break;
+    case "rulesdefault":confirmBox("استبدال القائمة الحالية بقوانين الصف التسعة؟ ستُحذف القوانين التي كتبتها.","استبدال",()=>{state.rules.list=CLASS_RULES.map((t,i)=>({id:uid(),text:t,num:i+1,pts:1}));save("rules");render()});break;
     case "mvrule":{const l=state.rules.list,i=l.findIndex(x=>x.id===id),j=i+Number(b.dataset.d);if(j<0||j>=l.length)break;[l[i],l[j]]=[l[j],l[i]];save("rules");render();break}
+    case "rulevio":openRule=openRule===Number(b.dataset.n)?null:Number(b.dataset.n);render();break;
+    case "vadd":{const date=document.getElementById("vDate").value,rid=Number(document.getElementById("vRule").value),sids=[...document.querySelectorAll('input[data-f="vstu"]:checked')].map(c=>c.dataset.sid);
+      if(!date||!sids.length){toast("اختر اليوم والطلاب المخالفين أولاً");break}
+      const n=addViolations(date,sids,rid);toast(`سُجّلت المخالفة لـ ${n} طالب (−${ptsOf(rid)})`);render();break}
+    case "vdel":confirmBox("حذف هذه المخالفة وخصمها من الدرجات؟","حذف",()=>{removeViolation(id);toast("حُذفت المخالفة");render()});break;
     case "delrule":state.rules.list=state.rules.list.filter(x=>x.id!==id);save("rules");render();break;
-    case "newterm":confirmBox("بدء فصل دراسي جديد؟ سيُمسح الحضور والدرجات والواجبات والنقاط.","بدء فصل جديد",()=>{state.attendance={days:{}};state.grades.scores={};state.grades.log={};state.grades.rscores={};state.grades.rounds=[];state.grades.exams.scores={};state.homework={list:[]};state.store.points={};state.store.log=[];state.store.alog=[];state.store.actDone={};state.store.archive={};state.store.cur="r1";["attendance","grades","homework","store"].forEach(save);toast("بدأ فصل دراسي جديد");render()});break;
+    case "newterm":confirmBox("بدء فصل دراسي جديد؟ سيُمسح الحضور والدرجات والواجبات والنقاط.","بدء فصل جديد",()=>{state.attendance={days:{}};state.grades.scores={};state.grades.log={};state.grades.rscores={};state.grades.rounds=[];state.grades.exams.scores={};state.homework={list:[]};state.store.points={};state.store.log=[];state.store.alog=[];state.store.actDone={};state.store.archive={};state.store.cur="r1";state.rules.log=[];["attendance","grades","homework","store","rules"].forEach(save);toast("بدأ فصل دراسي جديد");render()});break;
     case "zeropts":confirmBox(`تصفير نقاط جميع الطلاب في "${roundName(state.store.cur)}"؟ لا يمكن التراجع، ويُنصح بتنزيل نسخة احتياطية أولاً.`,"تصفير النقاط",()=>{state.store.points={};state.store.alog=[];state.store.log=[];state.store.actDone={};ui.actWinner=null;save("store");toast("صُفّرت جميع النقاط");render()});break;
     case "wipe":confirmBox("مسح كل البيانات نهائياً، بما فيها الطلاب والجدول والقوانين؟","مسح الكل",()=>{state=defaults();state.grades.v=2;SECTIONS.forEach(save);toast("مُسحت البيانات");go("attendance")});break;
   }
@@ -1355,6 +1745,9 @@ document.addEventListener("input",e=>{
     case "si-qty":{const it=find(state.store.items);it.qty=t.value===""?"":Math.max(0,Math.floor(Number(t.value))||0);save("store");break}
     case "si-cost":find(state.store.items).cost=Math.max(1,Number(t.value)||1);save("store");break;
     case "rule":find(state.rules.list).text=t.value;save("rules");break;
+    case "avp-tier":case "avp-item":{const p=avPrices(),bag=f==="avp-tier"?p.tiers:p.items,key=f==="avp-tier"?t.dataset.k:id;
+      if(t.value==="")delete bag[key];else bag[key]=Math.max(0,Math.round(Number(t.value)||0));save("store");break}
+    case "rule-pts":{const x=find(state.rules.list);x.pts=Math.max(0,Number(t.value)||0);ruleDed(x);save("rules");save("grades");break}
     case "set":state.settings[t.dataset.k]=t.value;save("settings");renderHeader();break;
     case "web-url":setWebCfg("url",t.value.trim());break;
     case "web-secret":setWebCfg("secret",t.value);break;
@@ -1366,6 +1759,9 @@ document.addEventListener("change",e=>{
   if(t.id==="attDate"&&t.value){ui.date=t.value;render()}
   if(t.dataset&&(t.dataset.f==="si-qty"||/^(rr|web)-/.test(t.dataset.f||"")))render();
   if(t.id==="redeemStu"){ui.redeemSid=t.value;render()}
+  if(t.id==="avStu"){ui.avSid=t.value;render()}
+  if(t.id==="repStu"){ui.repSid=t.value;render()}
+  if(t.dataset&&/^avp-/.test(t.dataset.f||"")){ui.avPriceOpen=true;render()}
   if(t.id==="fixStu")ui.fixSid=t.value;
   if(t.id==="roundSel"){const to=t.value;
     if(to===state.store.cur)return;
@@ -1397,7 +1793,7 @@ document.addEventListener("submit",e=>{
     case "addAw":state.store.awards.push({id:uid(),name:val("awName"),pts:Math.max(1,Number(val("awPts"))||1)});save("store");toast("أُضيف زر "+val("awName"));render();break;
     case "addRr":rrules().push({id:uid(),op:val("rrOp"),val:Number(val("rrVal")),label:val("rrLabel"),color:val("rrColor")});save("store");render();break;
     case "addSi":state.store.items.push({id:uid(),name:val("siName"),cost:Math.max(1,Number(val("siCost"))||1),qty:val("siQty")===""?"":Math.max(1,Math.floor(Number(val("siQty")))||1)});save("store");render();break;
-    case "addRule":state.rules.list.push({id:uid(),text:val("ruleText")});save("rules");render();document.getElementById("ruleText").focus();break;
+    case "addRule":{const nr={id:uid(),text:val("ruleText"),num:ruleNum(),pts:1};state.rules.list.push(nr);ruleDed(nr);save("rules");save("grades");render();document.getElementById("ruleText").focus();break}
   }
 });
 
