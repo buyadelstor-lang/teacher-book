@@ -1302,20 +1302,22 @@ const AVATARS=[
   ["zidane","زيدان","legend","#21304D","#FFFFFF",10,"l","g","bald","stubble"],
   ["ronaldinho","رونالدينيو","legend","#FFDF00","#009C3B",10,"b","k","long","","","",{teeth:true,band:"#FFFFFF"}],
   ["mario","سوبر ماريو","game","#E52521","#E52521",0,"l","n","short","bigstache","overalls","",{hat:"#E52521",over:"#2B4FBF",bc:"#3B2417"}],
-  ["luigi","لويجي","game","#2EA44F","#2EA44F",0,"l","n","short","bigstache","overalls","",{hat:"#2EA44F",over:"#2B4FBF",bc:"#3B2417"}],
   ["noob","نوب (روبلوكس)","game","#0D69AC","#0D69AC",0,"#F5CD30","k","none","","roblox","",{noears:true,mouth:"smile",tall:true}],
   ["steve","ستيف (ماين كرافت)","game","#00A8A8","#00A8A8",0,"#B98A6A","#4A2F1E","block","","","",{noears:true,eyes:"mc"}],
   ["jonesy","جونزي (فورت نايت)","game","#6B7B3A","#3E4A22",0,"l","n","slick","stubble","vest",""],
   ["qahtani","ياسر القحطاني","legend","#006C35","#FFFFFF",20,"t","k","short","full"],
   ["temyat","نواف التمياط","legend","#006C35","#FFFFFF",8,"t","k","short","stubble"],
   ["thunayan","يوسف الثنيان","legend","#006C35","#FFFFFF",10,"t","k","short","mustache"],
-  ["link","لينك (زيلدا)","game","#2E8B57","#7A4E2D",0,"l","y","fringe","","robe","",{cap:"#2E8B57",elf:true}],
-  ["megaman","ميغا مان","game","#2E6FDB","#6EC1FF",0,"l","k","none","","","",{hood:"#2E6FDB",shade:"#2E6FDB",stripe:"#6EC1FF"}],
-  ["wario","واريو","game","#F7D51D","#F7D51D",0,"l","k","short","bigstache","overalls","",{hat:"#F7D51D",over:"#6A2C91",bc:"#1E1B1B"}],
   ["villager","القروي (ماين كرافت)","game","#6B4423","#4E3016",0,"#BD8B72","k","none","","robe","",{noears:true,unibrow:"#4A3326",eyeColor:"#2E9E48",nose:"#A06B52"}],
   ["gullit","رود خوليت","legend","#FF6600","#111111",10,"b","k","dreads","mustache"],
   ["bounou","ياسين بونو","star","#2E7D32","#111111",1,"m","k","short","full","","gk"],
-  ["owais","محمد العويس","star","#F57C00","#111111",21,"t","k","short","full","","gk"]
+  ["owais","محمد العويس","star","#F57C00","#111111",21,"t","k","short","full","","gk"],
+  ["bacon","بيكن هير (روبلوكس)","game","#3FA34D","#3FA34D",0,"l","#7A4A2A","bacon","","roblox","",{noears:true,mouth:"smile",tall:true}],
+  ["guest","قيست (روبلوكس)","game","#1B1B1B","#1B1B1B",0,"l","k","none","","roblox","",{hat:"#1B1B1B",noears:true,mouth:"smile",tall:true}],
+  ["herobrine","هيروبراين (ماين كرافت)","game","#00A8A8","#00A8A8",0,"#B98A6A","#4A2F1E","block","","","",{noears:true,eyes:"mc",eyeColor:"#FFFFFF"}],
+  ["zombie","زومبي (ماين كرافت)","game","#00A8A8","#2B3A8F",0,"#5A8F3B","#2F5A1E","block","","","",{noears:true,eyes:"wide"}],
+  ["kanno","محمد كنو","star","#006C35","#FFFFFF",23,"b","k","short","stubble"],
+  ["shalhoub","محمد الشلهوب","legend","#006C35","#FFFFFF",10,"t","k","short",""]
 ].map(([id,name,tier,shirt,trim,num,skin,hc,hair,beard,pat,gk,x])=>({id,name,tier,shirt,trim,num,skin:SKIN[skin]||skin,hc:HAIR[hc]||hc,hair,beard:beard||"",pat:pat||"",gk:!!gk,x:x||{},cost:AV_PRICE[tier],rank:tier}));
 const avById=id=>AVATARS.find(a=>a.id===id);
 const lum=hex=>{const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255};
@@ -1345,7 +1347,8 @@ function avatarSvg(id,size,nobg){
     g[7][8]=g[7][11]="#1E1B1B";
     if(a.x.tall)g[6][8]=g[6][11]="#1E1B1B";
     if(a.x.eyes==="mc"){g[7][7]=g[7][12]="#FFFFFF";g[7][8]=g[7][11]="#3B5BA9";fill(9,10,8,8,"#7A4E35")}
-    const mouth=()=>{if(a.x.mouth==="smile"){fill(8,11,10,10,"#1E1B1B");g[9][7]=g[9][12]="#1E1B1B"}else if(a.x.eyes==="mc")fill(8,11,10,10,"#6A4430");else if(a.x.teeth){}else fill(9,10,10,10,"#9C4A3C")};mouth();
+    if(a.x.eyes==="wide"){g[7][7]=g[7][8]=g[7][11]=g[7][12]="#1E1B1B";fill(9,10,8,8,"#3E6B2A")}
+    const mouth=()=>{if(a.x.mouth==="smile"){fill(8,11,10,10,"#1E1B1B");g[9][7]=g[9][12]="#1E1B1B"}else if(a.x.eyes==="mc"||a.x.eyes==="wide")fill(8,11,10,10,a.x.eyes==="wide"?"#2F4F1F":"#6A4430");else if(a.x.teeth){}else fill(9,10,10,10,"#9C4A3C")};mouth();
     /* beard */
     const bc=a.x.bc||a.hc;
     if(a.beard==="full"){fill(6,13,9,11,bc);fill(5,5,8,8,bc);fill(14,14,8,8,bc);mouth()}
@@ -1364,6 +1367,7 @@ function avatarSvg(id,size,nobg){
       case "bun":top();fill(9,10,0,1,h);break;
       case "block":fill(6,13,3,4,h);fill(6,6,5,5,h);fill(13,13,5,5,h);break;
       case "dreads":top();fill(3,5,4,13,h);fill(14,16,4,13,h);for(let y=4;y<=13;y+=2)g[y][4]=g[y][15]="#4A3A2A";break;
+      case "bacon":top();for(let y=2;y<=5;y++)for(let x=5;x<=14;x++)if(g[y][x]===h&&(x+y)%2===0)g[y][x]="#C98A5A";break;
       case "bald":fill(7,8,4,4,"rgba(255,255,255,.35)");break;
     }
     if(a.x.hat){fill(5,14,1,3,a.x.hat);fill(4,15,4,4,a.x.hat);fill(9,10,2,3,"#FFFFFF")}
