@@ -374,13 +374,42 @@ body[data-tab="report"]{--sec:var(--k-teal)}
 @keyframes reppop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15);opacity:1}100%{transform:none;opacity:1}}
 @keyframes repup{0%{transform:translateY(14px);opacity:0}100%{transform:none;opacity:1}}
 .report.anim .rep-head .avcard{animation:repflip .9s cubic-bezier(.2,1.3,.4,1) both}
-.report.anim .rep-badge{animation:reppop .45s cubic-bezier(.2,1.6,.4,1) both}
+.report.anim .medal{animation:reppop .45s cubic-bezier(.2,1.6,.4,1) both}
 .report.anim .rep-tile{animation:repup .5s ease-out both}
 @media (prefers-reduced-motion:reduce){.report.anim *{animation:none!important}}
 @media print{.report.anim *{animation:none!important}}
-.rep-chart{width:100%;height:auto;display:block}
 .rep-legend{display:flex;gap:14px;font-size:.82rem;color:var(--muted);font-weight:600}
 .rep-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+/* decorated title, medal cabinet, attendance calendar, point bars */
+.rep-title{padding:4px 26px;font-family:var(--display);font-weight:800;font-size:1.05rem;color:#3A2600;background:linear-gradient(180deg,#FFE58A,#E6B422);clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);margin:2px 0}
+.rep-title.lv1{background:linear-gradient(180deg,#F1C39A,#B8743A);color:#2B1608}
+.rep-title.lv2{background:linear-gradient(180deg,#F4F6F8,#AEB6C2);color:#1E1E2A}
+.rep-medals{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.rep-medals{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.medal{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.medal b{font-family:var(--display);font-size:.9rem;line-height:1.2}
+.medal span{font-weight:700;color:var(--muted);font-size:.78rem}
+.medal small{color:var(--muted);font-size:.72rem}
+.medal.locked svg{opacity:.55;filter:grayscale(1)}
+.medal.lv3 svg{animation:medalglow 2.2s ease-in-out infinite}
+@keyframes medalglow{50%{filter:drop-shadow(0 0 8px #F5C542)}}
+@media (prefers-reduced-motion:reduce){.medal.lv3 svg{animation:none}}
+.mbar{width:80%;height:7px;border-radius:99px;background:var(--sunk);overflow:hidden;border:1px solid var(--line)}
+.mbar i{display:block;height:100%;background:var(--k-teal);border-radius:99px}
+.rep-pct{margin-inline-start:6px;color:var(--ok)}
+.cal-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;text-align:center}
+.cal-h{font-size:.7rem;font-weight:700;color:var(--muted)}
+.cal{border-radius:6px;font-size:.75rem;font-weight:700;padding:3px 0}
+.cs-p{background:var(--ok);color:#fff}.cs-a{background:var(--bad);color:#fff}.cs-l{background:var(--warn);color:#fff}.cs-e{background:var(--info);color:#fff}
+.cs-none{background:var(--sunk);color:var(--muted)}.cs-future{background:transparent;color:var(--line);border:1px dashed var(--line)}
+.rep-legend{flex-wrap:wrap;gap:4px 12px}
+.rep-legend i.cs-none{border:1px solid var(--line)}
+.hbars{display:flex;flex-direction:column;gap:6px}
+.hb{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 2.4rem;gap:6px;align-items:center;font-size:.82rem}
+.hb-t{height:10px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.hb-t i{display:block;height:100%;border-radius:99px}
+.lb-title{font-family:var(--display);font-weight:800;font-size:.95rem;background:#3A2600;color:#FFD84D;border-radius:99px;padding:1px 14px;margin-top:4px}
+.lb-tag{font-size:.75rem;font-weight:700;color:var(--warn);background:var(--accent-soft);border-radius:99px;padding:0 8px;white-space:nowrap}
 /* total points and class rank */
 .rep-bignums{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;align-items:center;flex:1}
 .rep-bignums b{font-family:var(--display);font-size:2.6rem;line-height:1.1;display:block}
@@ -408,6 +437,14 @@ body[data-tab="report"]{--sec:var(--k-teal)}
   .report .rep-box h3{font-size:.85rem}
   .report .side-list li{padding:1px 0;font-size:.74rem;line-height:1.35}
   .report .rep-foot{padding-top:6px;font-size:.8rem}
+  .report .rep-title{font-size:.88rem;padding:2px 18px}
+  .report .rep-medals{gap:4px}
+  .report .medal svg{width:40px;height:48px;animation:none}
+  .report .medal b{font-size:.74rem}.report .medal span,.report .medal small{font-size:.64rem}
+  .report .cal{padding:0;font-size:.6rem}.report .cal-h{font-size:.58rem}
+  .report .hb{font-size:.7rem;grid-template-columns:5rem minmax(0,1fr) 2rem}
+  .report .rep-legend{font-size:.62rem}
+  .report input{display:none}
 }
 /* empty + misc */
 .empty{border:2.5px dashed var(--edge);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--surface)}
@@ -1124,7 +1161,7 @@ function vActivity(){
 function boardData(){
   const n=roundNow(),rid=n?n.id:(rounds().length?rounds()[rounds().length-1].id:"all"),r=roundById(rid);
   return {title:roundName(state.store.cur)+" · "+(r?r.name:"الفصل كله")+(n?" · جارية":""),updated:Date.now(),
-    rows:students().map(s=>{const g=gradeTotal(s.id,rid);return {n:Number(s.num)||0,name:s.name,got:g.got,max:g.max,pts:points(s.id),av:curAvatar(s.id)}})};
+    rows:students().map(s=>{const g=gradeTotal(s.id,rid);return {n:Number(s.num)||0,name:s.name,got:g.got,max:g.max,pts:points(s.id),av:curAvatar(s.id),t:(studentTitle(s.id)||{}).text||""}})};
 }
 /* hosted copy: the student board lives in a Google Apps Script web app; only each student's name and points leave this browser.
    The script address and secret stay in localStorage, outside state, so they never end up in a backup file */
@@ -1137,7 +1174,7 @@ const studentLink=()=>{const id=webId(webCfg().url);return id?location.origin+lo
 const shortName=n=>String(n||"").trim().split(/\s+/).slice(0,2).join(" ");
 function webBoard(){
   const b=boardData(),full=webCfg().full===true;
-  return {title:b.title,updated:b.updated,rows:[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n).map(r=>({name:full?r.name:shortName(r.name),pts:r.pts,av:r.av||""}))};
+  return {title:b.title,updated:b.updated,rows:[...b.rows].sort((x,y)=>y.pts-x.pts||y.got-x.got||x.n-y.n).map(r=>({name:full?r.name:shortName(r.name),pts:r.pts,av:r.av||"",t:r.t||""}))};
 }
 let webPending=false;
 function webPush(opts){
@@ -1157,7 +1194,7 @@ function webStudent(id){
     fetch(webUrl(id),{cache:"no-store"}).then(r=>r.json()).then(b=>{
       setSync("ok","اللوحة محدّثة");
       const js=JSON.stringify(b);if(js===last)return;last=js;
-      ui.board=b&&Array.isArray(b.rows)?{title:String(b.title||""),updated:Number(b.updated)||Date.now(),rows:b.rows.map(r=>({name:String(r.name||""),pts:Number(r.pts)||0,got:0,n:0,av:String(r.av||"")}))}:null;
+      ui.board=b&&Array.isArray(b.rows)?{title:String(b.title||""),updated:Number(b.updated)||Date.now(),rows:b.rows.map(r=>({name:String(r.name||""),pts:Number(r.pts)||0,got:0,n:0,av:String(r.av||""),t:String(r.t||"")}))}:null;
       render();
     }).catch(()=>setSync("err","تعذّر تحديث اللوحة، ستُعاد المحاولة"));
   };
@@ -1189,10 +1226,10 @@ function vBoard(b){
   const leaders=top>0?rows.filter(r=>r.pts===top):[],rest=rows.filter(r=>!leaders.includes(r));
   const medal=n=>n===2?"🥈":n===3?"🥉":"";
   const hero=leaders.length?`<div class="lb-hero"><div class="lb-crown" aria-hidden="true">👑</div><div class="lb-label">${leaders.length>1?"المتصدرون":"المركز الأول"}</div>
-    ${leaders.map(r=>`${r.av?futCard(r.av,shortName(r.name),"md"):""}<button class="lb-first" data-act="bsound" data-k="1">${esc(r.name)}</button>`).join("")}<div class="lb-pts num">${top} ★</div></div>`:"";
+    ${leaders.map(r=>`${r.av?futCard(r.av,shortName(r.name),"md"):""}<button class="lb-first" data-act="bsound" data-k="1">${esc(r.name)}</button>${r.t?`<div class="lb-title">${esc(r.t)}</div>`:""}`).join("")}<div class="lb-pts num">${top} ★</div></div>`:"";
   return `<section class="panel"><div class="phead"><div><h2>لوحة النقاط</h2><p>${esc(b.title)} · آخر تحديث ${esc(fmtTime(b.updated))}</p></div></div>${hint}
   ${hero}
-  <ol class="lb">${rest.map((r,i)=>{const k=top>0?rankOf(r):i+1;return `<li class="lb-row ${k<=3&&r.pts>0?"top":""}"><span class="lb-rank num">${(r.pts>0&&medal(k))||k}</span>${r.av?avatarSvg(r.av,36):""}<button class="lb-name" data-act="bsound" data-k="${k}">${esc(r.name)}</button><span class="lb-score num">${r.pts} ★</span></li>`}).join("")}</ol></section>`;
+  <ol class="lb">${rest.map((r,i)=>{const k=top>0?rankOf(r):i+1;return `<li class="lb-row ${k<=3&&r.pts>0?"top":""}"><span class="lb-rank num">${(r.pts>0&&medal(k))||k}</span>${r.av?avatarSvg(r.av,36):""}<button class="lb-name" data-act="bsound" data-k="${k}">${esc(r.name)}</button>${r.t?`<span class="lb-tag">${esc(r.t)}</span>`:""}<span class="lb-score num">${r.pts} ★</span></li>`}).join("")}</ol></section>`;
 }
 function awardBtns(sid,date,got){
   const aw=state.store.awards;if(!aw.length)return "";
@@ -1445,71 +1482,85 @@ function vAvatars(){
 }
 
 /* ---------- student report ---------- */
-/* everything a student earned or lost, across the live points round and the archived ones */
-function studentReport(sid){
+/* medals come from the teacher's own award buttons, counted over the whole year, three levels each */
+const BADGES=[
+  {id:"part",icon:"✋",name:"المشاركة",aid:"a1",steps:[5,15,30],titles:["مشارك نشيط","نجم المشاركة","سفير المشاركة"]},
+  {id:"hw",icon:"📚",name:"الواجبات",aid:"a2",steps:[5,15,30],titles:["ملتزم بالواجبات","بطل الواجبات","أسطورة الواجبات"]},
+  {id:"rec",icon:"📖",name:"التسميع",aid:"a3",steps:[5,15,30],titles:["قارئ مجتهد","نجم التسميع","الحافظ المتقن"]},
+  {id:"beh",icon:"🌟",name:"السلوك",aid:"a4",steps:[5,15,30],titles:["مؤدب","قدوة السلوك","الطالب المثالي"]},
+  {id:"dia",icon:"💎",name:"الإجابات الألماسية",aid:"a5",steps:[3,8,15],titles:["صاحب إجابة ألماسية","العقل الألماسي","عبقري الفصل"]}
+];
+const MEDAL_COLOR=["#CD7F32","#B9C0C9","#F5C542"],MEDAL_LEVEL=["برونزي","فضي","ذهبي"];
+const allAlog=()=>{const st=state.store;return [st.alog||[],...Object.values(st.archive||{}).map(r=>r.alog||[])].flat()};
+function studentBadges(sid){
+  const al=allAlog().filter(l=>l.sid===sid),picks=state.attendance.picks||{};let picked=0;
+  for(const k in picks){const p=picks[k];if((p.done||[]).includes(sid)||(p.done2||[]).includes(sid))picked++}
+  return BADGES.map(b=>{let n=al.filter(l=>l.aid===b.aid).length;if(b.id==="rec")n=Math.max(n,picked);
+    const lvl=b.steps.filter(s=>n>=s).length;return {...b,n,lvl,next:b.steps[lvl]}});
+}
+/* the teacher's own title wins; otherwise the title of the student's highest medal */
+function studentTitle(sid){
+  const s=stuById(sid);if(s&&s.title)return {text:s.title,icon:"🏆",lvl:3};
+  const got=studentBadges(sid).filter(b=>b.lvl);if(!got.length)return null;
+  const top=got.reduce((a,b)=>b.lvl>a.lvl?b:a);return {text:top.titles[top.lvl-1],icon:top.icon,lvl:top.lvl};
+}
+function medalSvg(b){
+  const c=b.lvl?MEDAL_COLOR[b.lvl-1]:"#CFCFCF";
+  return `<svg viewBox="0 0 60 72" width="64" height="76" aria-hidden="true"><path d="M17 0h11l6 24H23z" fill="${b.lvl?"#E5484D":"#BDBDBD"}"/><path d="M43 0H32l-6 24h11z" fill="${b.lvl?"#3D7BE0":"#A8A8A8"}"/><circle cx="30" cy="45" r="24" fill="${c}" stroke="rgba(0,0,0,.25)" stroke-width="3"/><circle cx="30" cy="45" r="17" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2"/><text x="30" y="53" text-anchor="middle" font-size="20">${b.lvl?b.icon:"🔒"}</text></svg>`;
+}
+/* one month of a student ("2026-11"), or the whole year with "all" */
+function studentReport(sid,m){
+  m=m||"all";const inM=d=>m==="all"||String(d||"").startsWith(m);
   const st=state.store,g=state.grades;
   const rounds=[{alog:st.alog||[],log:st.log||[],glog:g.log||{}},...Object.values(st.archive||{}).map(r=>({alog:r.alog||[],log:r.log||[],glog:r.glog||{}}))];
-  const alog=rounds.flatMap(r=>r.alog).filter(l=>l.sid===sid);
-  const buys=rounds.flatMap(r=>r.log).filter(l=>l.sid===sid);
+  const alog=rounds.flatMap(r=>r.alog).filter(l=>l.sid===sid&&inM(l.date));
+  const buys=rounds.flatMap(r=>r.log).filter(l=>l.sid===sid&&inM(l.date));
   const cnt=aid=>alog.filter(l=>l.aid===aid).length;
-  /* recitation: the picker's "سمّع" days, or the recitation award if it was given more often by hand */
   const picks=state.attendance.picks||{};let picked=0,fail=0;
-  for(const k in picks){const p=picks[k];if((p.done||[]).includes(sid)||(p.done2||[]).includes(sid))picked++;if((p.fail||[]).includes(sid))fail++}
+  for(const k in picks){if(!inM(k))continue;const p=picks[k];if((p.done||[]).includes(sid)||(p.done2||[]).includes(sid))picked++;if((p.fail||[]).includes(sid))fail++}
   const awards={};alog.forEach(l=>{const a=awards[l.name||"نقاط"]||(awards[l.name||"نقاط"]={n:0,pts:0});a.n++;a.pts+=Number(l.pts)||0});
   const deds={};let lost=0;
-  rounds.forEach(r=>{for(const day in r.glog)(r.glog[day][sid]||[]).forEach(id=>{const d=g.deductions.find(x=>x.id===id);if(!d)return;
-    const a=deds[d.name]||(deds[d.name]={n:0,pts:0});a.n++;a.pts+=Number(d.pts)||0;lost+=Number(d.pts)||0})});
-  const vio=(state.rules.log||[]).filter(v=>v.sid===sid);
-  const hw=state.homework.list,today=dkey(new Date());
-  const avBuys=avState().log.filter(l=>l.sid===sid);
-  return {att:attCounts(sid),rec:Math.max(cnt("a3"),picked),fail,part:cnt("a1"),hwAward:cnt("a2"),acts:cnt("activity"),awards,deds,lost,vio,
-    hw,hwDue:hw.filter(h=>!h.due||h.due<=today),hwDone:hw.filter(h=>h.done&&h.done[sid]),
+  rounds.forEach(r=>{for(const day in r.glog){if(!inM(day))continue;(r.glog[day][sid]||[]).forEach(id=>{const d=g.deductions.find(x=>x.id===id);if(!d)return;
+    const a=deds[d.name]||(deds[d.name]={n:0,pts:0});a.n++;a.pts+=Number(d.pts)||0;lost+=Number(d.pts)||0})}});
+  const att={p:0,a:0,l:0,e:0};for(const k in state.attendance.days){if(!inM(k))continue;const v=state.attendance.days[k][sid];if(v)att[v]++}
+  const hw=state.homework.list.filter(h=>m==="all"||inM(h.due));
+  const avBuys=avState().log.filter(l=>l.sid===sid&&inM(l.date));
+  return {att,rec:Math.max(cnt("a3"),picked),fail,part:cnt("a1"),hwAward:cnt("a2"),awards,deds,lost,
+    vio:(state.rules.log||[]).filter(v=>v.sid===sid&&inM(v.date)),hw,hwDone:hw.filter(h=>h.done&&h.done[sid]),
     earned:alog.reduce((s,l)=>s+Math.max(0,Number(l.pts)||0),0),
     spent:buys.reduce((s,l)=>s+(Number(l.cost)||0),0)+avBuys.reduce((s,l)=>s+(Number(l.cost)||0),0),
     grade:gradeTotal(sid,"all")};
 }
-/* the last eight school weeks (starting Sunday): points earned and days present or absent */
-const weekStart=k=>{const d=parseKey(k);d.setDate(d.getDate()-d.getDay());return dkey(d)};
-function reportWeeks(sid){
-  const st=state.store,start=parseKey(weekStart(dkey(new Date()))),weeks=[];
-  for(let i=7;i>=0;i--){const w=new Date(start);w.setDate(start.getDate()-i*7);weeks.push({k:dkey(w),pts:0,p:0,a:0})}
-  const byK=Object.fromEntries(weeks.map(w=>[w.k,w]));
-  [st.alog||[],...Object.values(st.archive||{}).map(r=>r.alog||[])].flat().forEach(l=>{if(l.sid!==sid||!(l.pts>0))return;const w=byK[weekStart(l.date)];if(w)w.pts+=l.pts});
-  for(const k in state.attendance.days){const s=state.attendance.days[k][sid],w=byK[weekStart(k)];if(!w||!s)continue;if(s==="a")w.a++;else if(s==="p"||s==="l")w.p++}
-  return weeks;
+/* months that have any data, newest first, always including this month */
+function reportMonths(){
+  const s=new Set([dkey(new Date()).slice(0,7)]);
+  Object.keys(state.attendance.days).forEach(k=>s.add(k.slice(0,7)));
+  allAlog().forEach(l=>l.date&&s.add(String(l.date).slice(0,7)));
+  return [...s].sort().reverse();
 }
-/* one bar per week, rounded at the top only, value above, date below; single series so no legend */
-function weekBars(weeks,parts){
-  const W=320,H=150,top=18,base=H-22,left=6,slot=(W-left*2)/weeks.length,bw=Math.min(24,slot-8);
-  const max=Math.max(1,...weeks.map(w=>parts.reduce((s,p)=>s+w[p.key],0)));
-  const bar=(x,y,w,h,r)=>{r=Math.min(r,h);return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`};
-  let out=`<line x1="${left}" x2="${W-left}" y1="${base}" y2="${base}" style="stroke:var(--line);stroke-width:1"/>`;
-  weeks.forEach((w,i)=>{
-    const x=left+i*slot+(slot-bw)/2,total=parts.reduce((s,p)=>s+w[p.key],0);let y=base;
-    const segs=parts.filter(p=>w[p.key]>0);
-    segs.forEach((p,j)=>{const hgt=Math.max(2,w[p.key]/max*(base-top));y-=hgt;const last=j===segs.length-1;
-      out+=last?`<path d="${bar(x,y,bw,hgt-(j?2:0),4)}" style="fill:${p.color}"/>`:`<rect x="${x}" y="${y}" width="${bw}" height="${hgt-(j?2:0)}" style="fill:${p.color}"/>`});
-    const d=parseKey(w.k);
-    out+=`<g><title>أسبوع ${d.getDate()}/${d.getMonth()+1}: ${parts.map(p=>p.label+" "+w[p.key]).join("، ")}</title><rect x="${left+i*slot}" y="${top-14}" width="${slot}" height="${base-top+14}" fill="transparent"/></g>`;
-    if(total)out+=`<text x="${x+bw/2}" y="${y-4}" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--ink)">${total}</text>`;
-    out+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="9" style="fill:var(--muted)">${d.getDate()}/${d.getMonth()+1}</text>`;
-  });
-  return `<svg class="rep-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${parts.map(p=>p.label).join(" و")} أسبوعياً">${out}</svg>`;
+const monthName=m=>{const [y,mo]=m.split("-").map(Number);try{return new Date(y,mo-1,1).toLocaleDateString("ar-EG-u-nu-latn",{month:"long",year:"numeric"})}catch(e){return m}};
+/* the month as a school calendar, Sunday to Thursday, each day in its attendance colour */
+function attCalendar(sid,m){
+  const [y,mo]=m.split("-").map(Number),n=new Date(y,mo,0).getDate(),today=dkey(new Date());
+  let html=["أحد","اثنين","ثلاثاء","أربعاء","خميس"].map(d=>`<span class="cal-h">${d}</span>`).join(""),started=false;
+  for(let d=1;d<=n;d++){
+    const dt=new Date(y,mo-1,d),wd=dt.getDay();if(wd>4)continue;
+    if(!started){html+="<span></span>".repeat(wd);started=true}
+    const k=dkey(dt),v=(state.attendance.days[k]||{})[sid]||(k>today?"future":"none");
+    html+=`<span class="cal cs-${v}" title="${d}: ${ST[v]||(v==="future"?"لم يأتِ بعد":"لم يُحضَّر")}">${d}</span>`;
+  }
+  return `<div class="cal-grid">${html}</div><div class="rep-legend">${[["p","حاضر"],["a","غائب"],["l","متأخر"],["e","مستأذن"],["none","لم يُحضَّر"]].map(([k,l])=>`<span><i class="cs-${k}"></i>${l}</span>`).join("")}</div>`;
 }
+const hbars=(rows,max)=>`<div class="hbars">${rows.map(([label,val,color])=>`<div class="hb"><span class="hb-l">${esc(label)}</span><span class="hb-t"><i style="width:${Math.round(val/max*100)}%;background:${color||"var(--k-teal)"}"></i></span><b class="num">${val}</b></div>`).join("")}</div>`;
 function vReport(){
   const stu=sortedStudents();
   if(!stu.length)return `<section class="panel"><div class="phead"><div><h2>ملف الإنجاز</h2></div></div>${emptyStudents()}</section>`;
-  const sid=stuById(ui.repSid)?ui.repSid:stu[0].id,s=stuById(sid),r=studentReport(sid),cur=curAvatar(sid);
-  const classRank=1+stu.filter(x=>x.id!==sid&&studentReport(x.id).earned>r.earned).length;
+  const months=reportMonths(),m=ui.repMonth==="all"||months.includes(ui.repMonth)?ui.repMonth:months[0];
+  const sid=stuById(ui.repSid)?ui.repSid:stu[0].id,s=stuById(sid),r=studentReport(sid,m),cur=curAvatar(sid);
   const days=r.att.p+r.att.a+r.att.l+r.att.e,attPct=days?Math.round((r.att.p+r.att.l)/days*100):0;
-  const badges=[];
-  if(days>0&&r.att.a===0)badges.push("🏅 حضور كامل");
-  if(r.rec>=5)badges.push("📖 نجم التسميع");
-  if(r.part>=5)badges.push("✋ مشارك نشيط");
-  if(r.hwDue.length&&r.hwDue.every(h=>h.done&&h.done[sid]))badges.push("📚 ملتزم بالواجبات");
-  if(days>0&&!r.vio.length&&!Object.keys(r.deds).length)badges.push("🌟 سلوك مثالي");
-  if(r.acts>0)badges.push("🎯 فائز في النشاط");
-  if(r.earned>=50)badges.push("💰 جامع النقاط");
+  const medals=studentBadges(sid),title=studentTitle(sid),period=m==="all"?"كل الفترة":monthName(m);
+  const all=stu.map(x=>{const q=x.id===sid?r:studentReport(x.id,m),d=q.att.p+q.att.a+q.att.l+q.att.e;return {id:x.id,earned:q.earned,rec:q.rec,part:q.part,att:d?(q.att.p+q.att.l)/d:0}});
+  const me=all.find(o=>o.id===sid),rank=k=>1+all.filter(o=>o[k]>me[k]).length,medal=n=>n<=3?["🥇","🥈","🥉"][n-1]+" ":"";
   const tiles=[[r.rec,"مرات التسميع",r.fail?`لم يسمّع ${r.fail}`:""],[r.att.p,"أيام الحضور",`غياب ${r.att.a} · تأخر ${r.att.l}`],
     [r.part,"المشاركات",""],[`${r.hwDone.length}/${r.hw.length}`,"الواجبات المسلّمة",r.hwAward?`نقاط الواجبات ${r.hwAward} مرة`:""],
     [r.earned,"النقاط المكتسبة",`الرصيد الحالي ${points(sid)}`],[r.grade.max?r.grade.pct+"%":"—","المتابعة اليومية",r.grade.max?rating(r.grade.pct)[0]:""],
@@ -1518,40 +1569,38 @@ function vReport(){
   const ex=state.grades.exams,sc=ex.scores[sid]||{};
   const vioBy={};r.vio.forEach(v=>vioBy[v.rid]=(vioBy[v.rid]||0)+1);
   const hwRows=[...r.hw].sort((a,b)=>String(b.due||"").localeCompare(String(a.due||""))).slice(0,8);
+  const awardRows=Object.entries(r.awards).filter(([,a])=>a.pts>0).sort((a,b)=>b[1].pts-a[1].pts).map(([n,a])=>[n,a.pts]);
+  const classRank=rank("earned");
   return `<section class="panel">
-  <div class="phead"><div><h2>ملف الإنجاز</h2><p>تقرير مفصل عن الطالب يجمع كل الجولات: حضوره وتسميعه ومشاركاته وواجباته ونقاطه.</p></div>
-    <div class="row"><select id="repStu" aria-label="اختر الطالب">${stu.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${esc(x.name)}</option>`).join("")}</select><button class="btn primary" data-act="print">طباعة</button></div></div>
+  <div class="phead"><div><h2>ملف الإنجاز</h2><p>تقرير ${esc(period)}. الأوسمة تُحسب من بداية السنة.</p></div>
+    <div class="row"><select id="repStu" aria-label="اختر الطالب">${stu.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${esc(x.name)}</option>`).join("")}</select>
+      <select id="repMonth" aria-label="فترة التقرير">${months.map(x=>`<option value="${x}" ${x===m?"selected":""}>${esc(monthName(x))}</option>`).join("")}<option value="all" ${m==="all"?"selected":""}>كل الفترة</option></select>
+      <input type="text" data-f="rep-title" data-id="${sid}" value="${esc(s.title||"")}" placeholder="لقب خاص (اختياري)" style="width:11rem" aria-label="لقب خاص للطالب">
+      <button class="btn primary" data-act="print">طباعة</button></div></div>
   <div class="report anim">
     <div class="rep-head">${cur?futCard(cur,shortName(s.name),"lg"):`<div class="rep-noav" aria-hidden="true">${esc((s.name||"؟").trim().charAt(0))}</div>`}
       <h2 class="rep-name">${esc(s.name)}</h2>
-      <div class="muted">${[state.settings.className,state.settings.school,s.num?"رقم "+s.num:""].filter(Boolean).map(esc).join(" · ")}</div>
-      ${badges.length?`<div class="rep-badges">${badges.map((b,i)=>`<span class="rep-badge" style="animation-delay:${(.9+i*.35).toFixed(2)}s">${b}</span>`).join("")}</div>`:""}</div>
-    <div class="rep-grid">${tiles.map(([v,l,sub],i)=>{const m=String(v).match(/^(\d+(?:\.\d+)?)(.*)$/);return `<div class="rep-tile" style="animation-delay:${(.25+i*.06).toFixed(2)}s"><b class="num"${m?` data-count="${m[1]}" data-suf="${esc(m[2])}"`:""}>${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`}).join("")}</div>
-    ${(()=>{
-      const wk=reportWeeks(sid),hasPts=wk.some(w=>w.pts),hasAtt=wk.some(w=>w.p||w.a);
-      const all=stu.map(x=>{const q=studentReport(x.id),d=q.att.p+q.att.a+q.att.l+q.att.e;return {id:x.id,earned:q.earned,rec:q.rec,part:q.part,att:d?(q.att.p+q.att.l)/d:0}});
-      const me=all.find(o=>o.id===sid),rank=k=>1+all.filter(o=>o[k]>me[k]).length,medal=n=>n===1?"🥇 ":n===2?"🥈 ":n===3?"🥉 ":"";
-      const rk=[["earned","النقاط المكتسبة"],["rec","التسميع"],["part","المشاركات"],["att","نسبة الحضور"]];
-      return `<div class="rep-cols">
-        <div class="rep-box"><h3>النقاط المكتسبة أسبوعياً</h3>${hasPts?weekBars(wk,[{key:"pts",label:"النقاط",color:"var(--k-teal)"}]):`<p class="muted small" style="margin:0">لا توجد نقاط في آخر ثمانية أسابيع.</p>`}</div>
-        <div class="rep-box"><h3>الحضور أسبوعياً</h3>${hasAtt?`<div class="rep-legend"><span><i style="background:var(--ok)"></i>حاضر</span><span><i style="background:var(--bad)"></i>غائب</span></div>${weekBars(wk,[{key:"p",label:"حاضر",color:"var(--ok)"},{key:"a",label:"غائب",color:"var(--bad)"}])}`:`<p class="muted small" style="margin:0">لا يوجد تحضير في آخر ثمانية أسابيع.</p>`}</div>
-        <div class="rep-box"><h3>ترتيبه بين زملائه</h3><ul class="side-list">${rk.map(([k,n])=>{const r=rank(k);return `<li><span>${n}</span><b class="num">${medal(r)}${r} من ${all.length}</b></li>`}).join("")}</ul></div>
-      </div>`})()}
+      ${title?`<div class="rep-title lv${title.lvl}">${title.icon} ${esc(title.text)}</div>`:""}
+      <div class="muted">${[state.settings.className,state.settings.school,s.num?"رقم "+s.num:"","تقرير "+period].filter(Boolean).map(esc).join(" · ")}</div></div>
+    <div class="rep-grid">${tiles.map(([v,l,sub],i)=>{const mm=String(v).match(/^(\d+(?:\.\d+)?)(.*)$/);return `<div class="rep-tile" style="animation-delay:${(.25+i*.06).toFixed(2)}s"><b class="num"${mm?` data-count="${mm[1]}" data-suf="${esc(mm[2])}"`:""}>${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`}).join("")}</div>
+    <div class="rep-box"><h3>خزانة الأوسمة</h3><div class="rep-medals">${medals.map((b,i)=>`<div class="medal ${b.lvl?"got lv"+b.lvl:"locked"}" style="animation-delay:${(.9+i*.3).toFixed(2)}s">${medalSvg(b)}<b>${b.name}</b><span>${b.lvl?MEDAL_LEVEL[b.lvl-1]:"لم يُفتح بعد"}</span>${b.next?`<div class="mbar"><i style="width:${Math.round(b.n/b.next*100)}%"></i></div><small class="num">${b.n} / ${b.next}</small>`:`<small>اكتمل ✓</small>`}</div>`).join("")}</div></div>
     <div class="rep-cols">
-      <div class="rep-box"><h3>الحضور</h3>${list([`<li><span>حاضر</span><b class="num">${r.att.p}</b></li>`,`<li><span>غائب</span><b class="num">${r.att.a}</b></li>`,`<li><span>متأخر</span><b class="num">${r.att.l}</b></li>`,`<li><span>مستأذن</span><b class="num">${r.att.e}</b></li>`,`<li><span>نسبة الحضور</span><b class="num">${attPct}%</b></li>`],"")}</div>
-      <div class="rep-box"><h3>نقاط التحفيز</h3>${list(Object.entries(r.awards).sort((a,b)=>b[1].n-a[1].n).map(([n,a])=>`<li><span>${esc(n)}</span><span class="num">${a.n} مرة · <b>${a.pts>0?"+":""}${a.pts}</b></span></li>`),"لم يحصل على نقاط بعد.")}
-        <p class="small muted" style="margin:0">المكتسب ${r.earned} · المصروف في المتجر والأفتار ${r.spent} · الرصيد ${points(sid)}</p></div>
-      <div class="rep-box"><h3>الواجبات</h3>${list(hwRows.map(h=>`<li><span>${esc(h.title)}</span><b style="color:${h.done&&h.done[sid]?"var(--ok)":"var(--bad)"}">${h.done&&h.done[sid]?"سلّم":"لم يسلّم"}</b></li>`),"لا توجد واجبات مسجلة.")}</div>
+      <div class="rep-box"><h3>الحضور <span class="rep-pct num">${attPct}%</span></h3>${m==="all"?hbars([["حاضر",r.att.p,"var(--ok)"],["غائب",r.att.a,"var(--bad)"],["متأخر",r.att.l,"var(--warn)"],["مستأذن",r.att.e,"var(--info)"]],Math.max(1,days)):attCalendar(sid,m)}</div>
+      <div class="rep-box"><h3>من أين جاءت نقاطه</h3>${awardRows.length?hbars(awardRows,Math.max(1,...awardRows.map(x=>x[1]))):`<p class="muted small" style="margin:0">لم يحصل على نقاط في هذه الفترة.</p>`}
+        <p class="small muted" style="margin:0">المكتسب ${r.earned} · المصروف ${r.spent} · الرصيد ${points(sid)}</p></div>
+      <div class="rep-box"><h3>مجموع النقاط والترتيب</h3><div class="rep-bignums"><div><b class="num" data-count="${r.earned}" data-suf="">${r.earned}</b><span>مجموع نقاطه</span></div><div><b class="num">${medal(classRank)}${classRank}</b><span>ترتيبه من ${stu.length}</span></div></div>
+        <ul class="side-list">${[["rec","التسميع"],["part","المشاركات"],["att","نسبة الحضور"]].map(([k,n])=>{const x=rank(k);return `<li><span>${n}</span><b class="num">${medal(x)}${x} من ${stu.length}</b></li>`}).join("")}</ul></div>
+    </div>
+    <div class="rep-cols">
+      <div class="rep-box"><h3>الواجبات</h3>${list(hwRows.map(h=>`<li><span>${esc(h.title)}</span><b style="color:${h.done&&h.done[sid]?"var(--ok)":"var(--bad)"}">${h.done&&h.done[sid]?"سلّم":"لم يسلّم"}</b></li>`),"لا توجد واجبات في هذه الفترة.")}</div>
       <div class="rep-box"><h3>الاختبارات</h3>${list(ex.items.map(e=>`<li><span>${esc(e.name)}</span><b class="num">${sc[e.id]!=null?esc(sc[e.id])+(Number(e.max)>0?" / "+esc(e.max):""):"—"}</b></li>`),"لا توجد اختبارات.")}</div>
       <div class="rep-box"><h3>المخالفات والخصومات</h3>${list([...Object.entries(vioBy).map(([n,c])=>`<li><span>القانون ${esc(n)}: ${esc((ruleOf(Number(n))||{}).text||"")}</span><b class="num">${c} مرة</b></li>`),
         ...Object.entries(r.deds).filter(([n])=>!/^مخالفة القانون/.test(n)).map(([n,a])=>`<li><span>${esc(n)}</span><b class="num">${a.n} مرة · −${a.pts}</b></li>`)],"لا توجد مخالفات ولا خصومات.")}</div>
-      <div class="rep-box"><h3>مجموع النقاط والترتيب</h3><div class="rep-bignums"><div><b class="num" data-count="${r.earned}" data-suf="">${r.earned}</b><span>مجموع نقاطه</span></div><div><b class="num">${classRank<=3?["🥇","🥈","🥉"][classRank-1]+" ":""}${classRank}</b><span>ترتيبه من ${stu.length}</span></div></div></div>
     </div>
     <div class="rep-foot"><span>تاريخ التقرير: ${esc(fmtDate(new Date()))}</span><span>توقيع المعلم: ..................</span></div>
   </div></section>`;
 }
 
-/* numbers count up from zero, a reveal sound plays, then a coin for each badge as it pops in */
 let repPrinting=false;
 window.addEventListener("beforeprint",()=>{repPrinting=true;document.querySelectorAll(".report [data-count]").forEach(el=>el.textContent=el.dataset.count+(el.dataset.suf||""))});
 window.addEventListener("afterprint",()=>{repPrinting=false});
@@ -1563,8 +1612,10 @@ function animateReport(){
     const step=now=>{const p=repPrinting?1:Math.min(1,Math.max(0,(now-t0)/dur));el.textContent=(to*(1-Math.pow(1-p,3))).toFixed(dec)+suf;if(p<1)requestAnimationFrame(step)};
     requestAnimationFrame(step);
   });
+  /* if the tab is hidden the animation frames pause, so the final numbers are written anyway */
+  setTimeout(()=>rep.querySelectorAll("[data-count]").forEach(el=>el.textContent=el.dataset.count+(el.dataset.suf||"")),2400);
   setTimeout(()=>SFX.play("reveal"),150);
-  rep.querySelectorAll(".rep-badge").forEach((b,i)=>setTimeout(()=>SFX.play("coin"),900+i*350));
+  rep.querySelectorAll(".medal.got").forEach((b,i)=>setTimeout(()=>SFX.play("coin"),900+i*300));
 }
 /* ---------- settings ---------- */
 function vSetup(){
@@ -1840,6 +1891,7 @@ document.addEventListener("input",e=>{
     case "si-qty":{const it=find(state.store.items);it.qty=t.value===""?"":Math.max(0,Math.floor(Number(t.value))||0);save("store");break}
     case "si-cost":find(state.store.items).cost=Math.max(1,Number(t.value)||1);save("store");break;
     case "rule":find(state.rules.list).text=t.value;save("rules");break;
+    case "rep-title":{const s=find(students());if(s){s.title=t.value.trim();save("students")}break}
     case "avp-tier":case "avp-item":{const p=avPrices(),bag=f==="avp-tier"?p.tiers:p.items,key=f==="avp-tier"?t.dataset.k:id;
       if(t.value==="")delete bag[key];else bag[key]=Math.max(0,Math.round(Number(t.value)||0));save("store");break}
     case "rule-pts":{const x=find(state.rules.list);x.pts=Math.max(0,Number(t.value)||0);ruleDed(x);save("rules");save("grades");break}
@@ -1856,6 +1908,8 @@ document.addEventListener("change",e=>{
   if(t.id==="redeemStu"){ui.redeemSid=t.value;render()}
   if(t.id==="avStu"){ui.avSid=t.value;render()}
   if(t.id==="repStu"){ui.repSid=t.value;render()}
+  if(t.id==="repMonth"){ui.repMonth=t.value;render()}
+  if(t.dataset&&t.dataset.f==="rep-title")render();
   if(t.dataset&&/^avp-/.test(t.dataset.f||"")){ui.avPriceOpen=true;render()}
   if(t.id==="fixStu")ui.fixSid=t.value;
   if(t.id==="roundSel"){const to=t.value;
