@@ -410,13 +410,20 @@ body[data-tab="report"]{--sec:var(--k-teal)}
 .hb-t i{display:block;height:100%;border-radius:99px}
 .lb-title{font-family:var(--display);font-weight:800;font-size:.95rem;background:#3A2600;color:#FFD84D;border-radius:99px;padding:1px 14px;margin-top:4px}
 .lb-tag{font-size:.75rem;font-weight:700;color:var(--warn);background:var(--accent-soft);border-radius:99px;padding:0 8px;white-space:nowrap}
+/* report groups: four boxes, two by two on a tablet; three boxes side by side */
+.rep-cols.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1150px){.rep-cols.c4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.rep-cols.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:700px){.rep-cols.c4,.rep-cols.c3{grid-template-columns:minmax(0,1fr)}}
+.rep-note{background:color-mix(in srgb,var(--k-sun) 10%,var(--surface));border-inline-start:5px solid var(--k-sun)}
+.rep-note p{margin:0;font-size:1rem;line-height:1.9;font-weight:600}
 /* total points and class rank */
 .rep-bignums{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;align-items:center;flex:1}
 .rep-bignums b{font-family:var(--display);font-size:2.6rem;line-height:1.1;display:block}
 .rep-bignums span{font-weight:700;color:var(--muted);font-size:.85rem}
 /* the report prints on one A4 page: the app around it is removed, and everything is tightened */
 @media print{
-  @page{size:A4;margin:10mm}
+  @page{size:A4;margin:8mm}
   body[data-tab="report"] header.board,body[data-tab="report"] main .phead,body[data-tab="report"] .toast,body[data-tab="report"] #modalRoot{display:none}
   body[data-tab="report"] main .wrap{padding:0;max-width:none}
   body[data-tab="report"] .report{position:static;width:auto;gap:8px;padding:10px 14px;border-radius:14px}
@@ -445,6 +452,26 @@ body[data-tab="report"]{--sec:var(--k-teal)}
   .report .hb{font-size:.7rem;grid-template-columns:5rem minmax(0,1fr) 2rem}
   .report .rep-legend{font-size:.62rem}
   .report input{display:none}
+  .report .rep-cols.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .report .rep-cols.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .report .rep-note p{font-size:.74rem;line-height:1.5}
+  .report .fut-lg{width:100px}
+  .report .fut-lg .fut{padding-top:16px}
+  .report .rep-head .fut .av{width:54px;height:54px}
+  .report .fut-lg .fut-name{font-size:.72rem}
+  .report .fut-rt b{font-size:1.05rem}
+  .report .rep-name{font-size:1.2rem}
+  .report .rep-tile{padding:2px 6px}
+  .report .rep-tile b{font-size:1.1rem}
+  .report .rep-tile small{font-size:.65rem}
+  .report .medal svg{width:34px;height:40px}
+  .report .mbar{height:5px}
+  .report .rep-bignums b{font-size:1.5rem}
+  .report .rep-bignums span{font-size:.68rem}
+  body[data-tab="report"] .report{gap:5px;padding:8px 12px}
+  .report .rep-box{padding:4px 7px}
+  .report .rep-cols{gap:6px}
+  .report .rep-foot{padding-top:4px}
 }
 /* empty + misc */
 .empty{border:2.5px dashed var(--edge);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--surface)}
@@ -1509,8 +1536,8 @@ function medalSvg(b){
   return `<svg viewBox="0 0 60 72" width="64" height="76" aria-hidden="true"><path d="M17 0h11l6 24H23z" fill="${b.lvl?"#E5484D":"#BDBDBD"}"/><path d="M43 0H32l-6 24h11z" fill="${b.lvl?"#3D7BE0":"#A8A8A8"}"/><circle cx="30" cy="45" r="24" fill="${c}" stroke="rgba(0,0,0,.25)" stroke-width="3"/><circle cx="30" cy="45" r="17" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2"/><text x="30" y="53" text-anchor="middle" font-size="20">${b.lvl?b.icon:"🔒"}</text></svg>`;
 }
 /* one month of a student ("2026-11"), or the whole year with "all" */
-function studentReport(sid,m){
-  m=m||"all";const inM=d=>m==="all"||String(d||"").startsWith(m);
+function studentReport(sid,m,upTo){
+  m=m||"all";const inM=d=>(m==="all"||String(d||"").startsWith(m))&&(!upTo||Number(String(d).slice(8,10))<=upTo);
   const st=state.store,g=state.grades;
   const rounds=[{alog:st.alog||[],log:st.log||[],glog:g.log||{}},...Object.values(st.archive||{}).map(r=>({alog:r.alog||[],log:r.log||[],glog:r.glog||{}}))];
   const alog=rounds.flatMap(r=>r.alog).filter(l=>l.sid===sid&&inM(l.date));
@@ -1552,11 +1579,40 @@ function attCalendar(sid,m){
   return `<div class="cal-grid">${html}</div><div class="rep-legend">${[["p","حاضر"],["a","غائب"],["l","متأخر"],["e","مستأذن"],["none","لم يُحضَّر"]].map(([k,l])=>`<span><i class="cs-${k}"></i>${l}</span>`).join("")}</div>`;
 }
 const hbars=(rows,max)=>`<div class="hbars">${rows.map(([label,val,color])=>`<div class="hb"><span class="hb-l">${esc(label)}</span><span class="hb-t"><i style="width:${Math.round(val/max*100)}%;background:${color||"var(--k-teal)"}"></i></span><b class="num">${val}</b></div>`).join("")}</div>`;
+const prevMonth=m=>{const [y,mo]=m.split("-").map(Number),d=new Date(y,mo-2,1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")};
+const attPctOf=q=>{const d=q.att.p+q.att.a+q.att.l+q.att.e;return d?Math.round((q.att.p+q.att.l)/d*100):null};
+/* the teacher's note, written from the numbers: strengths first, then what to work on, then the trend against last month */
+function autoNote(s,r,p){
+  const first=(s.name||"").trim().split(/\s+/)[0]||"الطالب",days=r.att.p+r.att.a+r.att.l+r.att.e,att=attPctOf(r);
+  if(!days&&!r.earned)return `لا توجد بيانات كافية عن ${first} في هذه الفترة.`;
+  const hw=r.hw.length?r.hwDone.length/r.hw.length:null,good=[],need=[];
+  if(att!=null){if(att>=95)good.push("الانتظام في الحضور");else if(att<85)need.push("الانتظام في الحضور")}
+  if(r.rec>=4)good.push("التسميع");else if(days>=5&&!r.rec)need.push("المشاركة في التسميع");
+  if(r.part>=6)good.push("المشاركة في الحصة");else if(days>=5&&r.part<2)need.push("المشاركة في الحصة");
+  if(hw!=null){if(hw>=0.9)good.push("تسليم الواجبات");else if(hw<0.6)need.push("تسليم الواجبات في موعدها")}
+  if(days>=5&&!r.vio.length&&!r.lost)good.push("حسن السلوك");else if(r.vio.length>=2)need.push("الالتزام بقوانين الصف");
+  if(((r.awards["السؤال الذهبي"]||{}).n||0)>0)good.push("الإجابات المميزة");
+  const join=a=>a.join(" و");
+  let t=good.length>=3&&!need.length?`${first} طالب متميز ومجتهد`:good.length>need.length?`${first} طالب مجتهد`:first;
+  if(good.length)t+=(t===first?" يتميز ب":"، يتميز ب")+join(good.slice(0,3));
+  if(need.length)t+=good.length?`، ونتمنى منه الاهتمام أكثر ب${join(need.slice(0,2))}`:` يحتاج إلى الاهتمام أكثر ب${join(need.slice(0,2))}`;
+  t+=".";
+  if(p&&(p.earned||p.att.p)){const d=r.earned-p.earned;
+    if(d>=10)t+=" نلاحظ تحسناً واضحاً في أدائه عن الشهر الماضي.";else if(d<=-10)t+=" تراجعت نقاطه عن الشهر الماضي، ونثق بقدرته على العودة لمستواه."}
+  return t+(need.length?" نأمل متابعته في المنزل، ونشكر تعاونكم.":" نشكره ونتمنى له مزيداً من التفوق.");
+}
+/* this month against the month before: an arrow and the difference; fewer violations counts as better */
+function compareRows(r,p){
+  const rows=[["التسميع",r.rec,p.rec],["المشاركات",r.part,p.part],["النقاط المكتسبة",r.earned,p.earned],["نسبة الحضور",attPctOf(r)??0,attPctOf(p)??0,false,"%"],["المخالفات",r.vio.length,p.vio.length,true]];
+  return `<ul class="side-list">${rows.map(([n,a,b,inv,u=""])=>{const d=a-b,good=inv?d<0:d>0,col=!d?"var(--muted)":good?"var(--ok)":"var(--bad)";
+    return `<li><span>${n}</span><span class="num"><b>${a}${u}</b> <span style="color:${col};font-weight:700">${d?(d>0?"↑ ":"↓ ")+Math.abs(d)+u:"="}</span></span></li>`}).join("")}</ul>`;
+}
 function vReport(){
   const stu=sortedStudents();
   if(!stu.length)return `<section class="panel"><div class="phead"><div><h2>ملف الإنجاز</h2></div></div>${emptyStudents()}</section>`;
   const months=reportMonths(),m=ui.repMonth==="all"||months.includes(ui.repMonth)?ui.repMonth:months[0];
   const sid=stuById(ui.repSid)?ui.repSid:stu[0].id,s=stuById(sid),r=studentReport(sid,m),cur=curAvatar(sid);
+  const partial=m===dkey(new Date()).slice(0,7),prevR=m==="all"?null:studentReport(sid,prevMonth(m),partial?new Date().getDate():0),prevHas=!!prevR&&(prevR.earned>0||prevR.att.p+prevR.att.a+prevR.att.l+prevR.att.e>0);
   const days=r.att.p+r.att.a+r.att.l+r.att.e,attPct=days?Math.round((r.att.p+r.att.l)/days*100):0;
   const medals=studentBadges(sid),title=studentTitle(sid),period=m==="all"?"كل الفترة":monthName(m);
   const all=stu.map(x=>{const q=x.id===sid?r:studentReport(x.id,m),d=q.att.p+q.att.a+q.att.l+q.att.e;return {id:x.id,earned:q.earned,rec:q.rec,part:q.part,att:d?(q.att.p+q.att.l)/d:0}});
@@ -1584,19 +1640,21 @@ function vReport(){
       <div class="muted">${[state.settings.className,state.settings.school,s.num?"رقم "+s.num:"","تقرير "+period].filter(Boolean).map(esc).join(" · ")}</div></div>
     <div class="rep-grid">${tiles.map(([v,l,sub],i)=>{const mm=String(v).match(/^(\d+(?:\.\d+)?)(.*)$/);return `<div class="rep-tile" style="animation-delay:${(.25+i*.06).toFixed(2)}s"><b class="num"${mm?` data-count="${mm[1]}" data-suf="${esc(mm[2])}"`:""}>${esc(v)}</b><span>${l}</span>${sub?`<small>${esc(sub)}</small>`:""}</div>`}).join("")}</div>
     <div class="rep-box"><h3>خزانة الأوسمة</h3><div class="rep-medals">${medals.map((b,i)=>`<div class="medal ${b.lvl?"got lv"+b.lvl:"locked"}" style="animation-delay:${(.9+i*.3).toFixed(2)}s">${medalSvg(b)}<b>${b.name}</b><span>${b.lvl?MEDAL_LEVEL[b.lvl-1]:"لم يُفتح بعد"}</span>${b.next?`<div class="mbar"><i style="width:${Math.round(b.n/b.next*100)}%"></i></div><small class="num">${b.n} / ${b.next}</small>`:`<small>اكتمل ✓</small>`}</div>`).join("")}</div></div>
-    <div class="rep-cols">
+    <div class="rep-cols c4">
       <div class="rep-box"><h3>الحضور <span class="rep-pct num">${attPct}%</span></h3>${m==="all"?hbars([["حاضر",r.att.p,"var(--ok)"],["غائب",r.att.a,"var(--bad)"],["متأخر",r.att.l,"var(--warn)"],["مستأذن",r.att.e,"var(--info)"]],Math.max(1,days)):attCalendar(sid,m)}</div>
       <div class="rep-box"><h3>من أين جاءت نقاطه</h3>${awardRows.length?hbars(awardRows,Math.max(1,...awardRows.map(x=>x[1]))):`<p class="muted small" style="margin:0">لم يحصل على نقاط في هذه الفترة.</p>`}
         <p class="small muted" style="margin:0">المكتسب ${r.earned} · المصروف ${r.spent} · الرصيد ${points(sid)}</p></div>
       <div class="rep-box"><h3>مجموع النقاط والترتيب</h3><div class="rep-bignums"><div><b class="num" data-count="${r.earned}" data-suf="">${r.earned}</b><span>مجموع نقاطه</span></div><div><b class="num">${medal(classRank)}${classRank}</b><span>ترتيبه من ${stu.length}</span></div></div>
         <ul class="side-list">${[["rec","التسميع"],["part","المشاركات"],["att","نسبة الحضور"]].map(([k,n])=>{const x=rank(k);return `<li><span>${n}</span><b class="num">${medal(x)}${x} من ${stu.length}</b></li>`}).join("")}</ul></div>
+      <div class="rep-box"><h3>${m==="all"?"المقارنة بالشهر الماضي":(partial?"مقارنة بنفس الفترة من ":"مقارنة بشهر ")+esc(monthName(prevMonth(m)))}</h3>${m==="all"?`<p class="muted small" style="margin:0">اختر شهراً لترى المقارنة بالشهر الذي قبله.</p>`:prevHas?compareRows(r,prevR):`<p class="muted small" style="margin:0">لا توجد بيانات في ${esc(monthName(prevMonth(m)))} للمقارنة.</p>`}</div>
     </div>
-    <div class="rep-cols">
+    <div class="rep-cols c3">
       <div class="rep-box"><h3>الواجبات</h3>${list(hwRows.map(h=>`<li><span>${esc(h.title)}</span><b style="color:${h.done&&h.done[sid]?"var(--ok)":"var(--bad)"}">${h.done&&h.done[sid]?"سلّم":"لم يسلّم"}</b></li>`),"لا توجد واجبات في هذه الفترة.")}</div>
       <div class="rep-box"><h3>الاختبارات</h3>${list(ex.items.map(e=>`<li><span>${esc(e.name)}</span><b class="num">${sc[e.id]!=null?esc(sc[e.id])+(Number(e.max)>0?" / "+esc(e.max):""):"—"}</b></li>`),"لا توجد اختبارات.")}</div>
       <div class="rep-box"><h3>المخالفات والخصومات</h3>${list([...Object.entries(vioBy).map(([n,c])=>`<li><span>القانون ${esc(n)}: ${esc((ruleOf(Number(n))||{}).text||"")}</span><b class="num">${c} مرة</b></li>`),
         ...Object.entries(r.deds).filter(([n])=>!/^مخالفة القانون/.test(n)).map(([n,a])=>`<li><span>${esc(n)}</span><b class="num">${a.n} مرة · −${a.pts}</b></li>`)],"لا توجد مخالفات ولا خصومات.")}</div>
     </div>
+    <div class="rep-box rep-note"><h3>ملاحظة المعلم</h3><p>${esc(autoNote(s,r,prevHas?prevR:null))}</p>${state.settings.teacher?`<span class="small muted">أ. ${esc(state.settings.teacher)}</span>`:""}</div>
     <div class="rep-foot"><span>تاريخ التقرير: ${esc(fmtDate(new Date()))}</span><span>توقيع المعلم: ..................</span></div>
   </div></section>`;
 }
