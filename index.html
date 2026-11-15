@@ -1313,7 +1313,9 @@ const AVATARS=[
   ["megaman","ميغا مان","game","#2E6FDB","#6EC1FF",0,"l","k","none","","","",{hood:"#2E6FDB",shade:"#2E6FDB",stripe:"#6EC1FF"}],
   ["wario","واريو","game","#F7D51D","#F7D51D",0,"l","k","short","bigstache","overalls","",{hat:"#F7D51D",over:"#6A2C91",bc:"#1E1B1B"}],
   ["villager","القروي (ماين كرافت)","game","#6B4423","#4E3016",0,"#BD8B72","k","none","","robe","",{noears:true,unibrow:"#4A3326",eyeColor:"#2E9E48",nose:"#A06B52"}],
-  ["gullit","رود خوليت","legend","#FF6600","#111111",10,"b","k","dreads","mustache"]
+  ["gullit","رود خوليت","legend","#FF6600","#111111",10,"b","k","dreads","mustache"],
+  ["bounou","ياسين بونو","star","#2E7D32","#111111",1,"m","k","short","full","","gk"],
+  ["owais","محمد العويس","star","#F57C00","#111111",21,"t","k","short","full","","gk"]
 ].map(([id,name,tier,shirt,trim,num,skin,hc,hair,beard,pat,gk,x])=>({id,name,tier,shirt,trim,num,skin:SKIN[skin]||skin,hc:HAIR[hc]||hc,hair,beard:beard||"",pat:pat||"",gk:!!gk,x:x||{},cost:AV_PRICE[tier],rank:tier}));
 const avById=id=>AVATARS.find(a=>a.id===id);
 const lum=hex=>{const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255};
